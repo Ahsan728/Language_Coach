@@ -186,6 +186,123 @@ app.run(debug=False, host='127.0.0.1', port=5000)
 
 ---
 
+---
+
+## ☁️ Deployment — Share with Friends
+
+Two recommended free options. **PythonAnywhere is the best choice** — always online, no sleep, SQLite data persists.
+
+---
+
+### 🥇 Option A — PythonAnywhere (Recommended — Free, Always On)
+
+**Why:** Free forever · No spin-down · SQLite persists · 500 MB storage · Perfect for small groups
+
+#### Step 1 — Sign up
+Go to [www.pythonanywhere.com](https://www.pythonanywhere.com) → **Create a Beginner account** (free)
+
+#### Step 2 — Open a Bash console
+Dashboard → **Consoles** → **Bash** → Start
+
+#### Step 3 — Clone your repo
+```bash
+git clone https://github.com/Ahsan728/Language_Coach.git
+cd Language_Coach
+pip install -r requirements.txt --user
+```
+
+#### Step 4 — Create the Web App
+Dashboard → **Web** → **Add a new web app** →
+- Click **Next** → choose **Manual configuration** → choose **Python 3.10**
+
+#### Step 5 — Configure the WSGI file
+In the Web tab, click the **WSGI configuration file** link (e.g. `/var/www/ahsan728_pythonanywhere_com_wsgi.py`)
+
+**Delete everything** in that file and replace with:
+```python
+import sys, os
+project_home = '/home/ahsan728/Language_Coach'
+if project_home not in sys.path:
+    sys.path.insert(0, project_home)
+from app import app as application
+```
+> ⚠️ Replace `ahsan728` with your actual PythonAnywhere username
+
+#### Step 6 — Reload & visit
+Back in the **Web** tab → click the green **Reload** button
+
+Your app will be live at:
+```
+https://ahsan728.pythonanywhere.com
+```
+Share this URL with your friends! 🎉
+
+---
+
+### 🥈 Option B — Render (Easy GitHub Auto-Deploy)
+
+**Why:** Pushes to GitHub auto-deploy · Free · But sleeps after 15 min inactivity (30s to wake up)
+> ⚠️ SQLite resets on sleep — friends' quiz progress won't be saved between sessions. Vocabulary and lessons work perfectly.
+
+#### Step 1 — Sign up
+Go to [render.com](https://render.com) → **Sign up with GitHub**
+
+#### Step 2 — Create a Web Service
+Dashboard → **New +** → **Web Service** → Connect **Ahsan728/Language_Coach**
+
+#### Step 3 — Configure
+| Setting | Value |
+|---------|-------|
+| **Runtime** | Python 3 |
+| **Build Command** | `pip install -r requirements.txt` |
+| **Start Command** | `gunicorn app:app` |
+| **Instance Type** | Free |
+
+#### Step 4 — Deploy
+Click **Create Web Service** — Render builds and deploys automatically.
+
+Your app URL will be:
+```
+https://language-coach.onrender.com   (or similar)
+```
+
+#### Auto-deploy on every push
+Every time you run `git push`, Render **automatically redeploys** your app. No manual steps needed.
+
+---
+
+### Comparison
+
+| | PythonAnywhere | Render |
+|--|---------------|--------|
+| Cost | Free forever | Free |
+| Always online | ✅ Yes | ⚠️ Sleeps 15 min |
+| SQLite persists | ✅ Yes | ❌ Resets on sleep |
+| Auto-deploy from GitHub | Manual pull | ✅ Automatic |
+| Custom domain | Paid plan | Free `.onrender.com` |
+| Best for | Permanent sharing | Quick demos |
+
+---
+
+### 🔄 Updating the live app after code changes
+
+**PythonAnywhere** — open a Bash console and run:
+```bash
+cd ~/Language_Coach
+git pull
+```
+Then reload the web app from the **Web** tab.
+
+**Render** — just push to GitHub:
+```bash
+git add .
+git commit -m "your change"
+git push
+```
+Render deploys automatically within ~2 minutes.
+
+---
+
 ## 📈 Roadmap / Future Features
 
 - [ ] Audio pronunciation (text-to-speech)
