@@ -19,9 +19,6 @@ with open(os.path.join(DATA_DIR, 'vocabulary.json'), encoding='utf-8') as f:
 with open(os.path.join(DATA_DIR, 'lessons.json'), encoding='utf-8') as f:
     LESSONS = json.load(f)
 
-# Initialise DB at import time so gunicorn (production) also creates tables
-init_db()
-
 # ---------- Database helpers ----------
 def get_db():
     conn = sqlite3.connect(DB_PATH)
@@ -53,6 +50,9 @@ def init_db():
     ''')
     conn.commit()
     conn.close()
+
+# Initialise DB at import time so gunicorn (production) also creates tables
+init_db()
 
 def load_progress(lang):
     conn = get_db()
@@ -247,12 +247,14 @@ def api_word_progress():
 
 # ---------- Entry point (local dev only) ----------
 if __name__ == '__main__':
+    import sys
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
     port = int(os.environ.get('PORT', 5000))
     # Bind to all interfaces in production (PORT env set by host), localhost otherwise
     host = '0.0.0.0' if os.environ.get('PORT') else '127.0.0.1'
     print()
     print("=" * 55)
-    print("  🌍  Language Coach  —  ভাষা শিক্ষক")
+    print("  Language Coach  --  Bhasha Shikkha")
     print("=" * 55)
     print(f"  Open your browser:  http://localhost:{port}")
     print("  Press Ctrl+C to stop")
