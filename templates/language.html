@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}{{ meta.name }} Lessons — Language Coach{% endblock %}
+{% block body_class %}lang-{{ lang }}-page{% endblock %}
+
+{% block content %}
+<!-- Language Header -->
+<div class="lang-header lang-header-{{ lang }} py-5">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col">
+        <h1 class="display-4 fw-bold text-white">
+          {{ meta.flag }} {{ meta.name }}
+          <small class="d-block fs-4 opacity-75">{{ meta.name_bn }} শিক্ষা</small>
+        </h1>
+        <p class="text-white opacity-75 mb-0">
+          {{ lessons|length }} lessons &bull; Vocabulary · Grammar · Tenses
+        </p>
+      </div>
+      <div class="col-auto">
+        {% set completed_count = progress.values() | selectattr('completed') | list | length %}
+        {% set total = lessons | length %}
+        <div class="progress-circle text-center">
+          <div class="circle-num text-white fw-bold display-5">{{ completed_count }}</div>
+          <div class="text-white opacity-75 small">of {{ total }} done</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container py-5">
+  <!-- Level sections -->
+  {% set level_order = ['beginner', 'intermediate', 'grammar'] %}
+  {% set level_labels = {'beginner': ('🌱 Beginner — শুরু', 'Start here with vocabulary basics'), 'intermediate': ('🌿 Intermediate — মধ্যবর্তী', 'Expand with verbs, transport, phrases'), 'grammar': ('📚 Grammar — ব্যাকরণ', 'Articles, present, past and future tenses')} %}
+
+  {% for lvl in level_order %}
+  {% set lvl_lessons = lessons | selectattr('level', 'equalto', lvl) | list %}
+  {% if lvl_lessons %}
+  <div class="level-section mb-5">
+    <div class="level-header mb-4">
+      <h2 class="fw-bold">{{ level_labels[lvl][0] }}</h2>
+      <p class="text-muted">{{ level_labels[lvl][1] }}</p>
+    </div>
+    <div class="row g-3">
+      {% for lesson in lvl_lessons %}
+      {% set prog = progress.get(lesson.id, {}) %}
+      {% set is_done = prog.get('completed', 0) %}
+      <div class="col-md-6 col-lg-4">
+        <div class="lesson-card card h-100 {% if is_done %}lesson-done{% endif %}">
+          <div class="card-body p-4">
+            <div class="d-flex align-items-start gap-3">
+              <div class="lesson-icon-wrap">
+                <span class="lesson-icon">{{ lesson.icon }}</span>
+                {% if is_done %}
+                <span class="done-badge"><i class="fas fa-check"></i></span>
+                {% endif %}
+              </div>
+              <div class="flex-grow-1 min-w-0">
+                <div class="lesson-num text-muted small mb-1">Lesson {{ lesson.id }}</div>
+                <h5 class="card-title mb-1 fw-semibold">{{ lesson.title_en }}</h5>
+                <p class="card-subtitle text-muted small mb-2">{{ lesson.title_bn }}</p>
+                <p class="card-text small text-muted">{{ lesson.description_en[:80] }}...</p>
+                {% if is_done and prog.get('best_score', 0) > 0 %}
+                <div class="score-badge mt-2">
+                  <i class="fas fa-star text-warning"></i>
+                  Best score: {{ prog.best_score }}%
+                </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          <div class="card-footer bg-transparent border-0 p-3 pt-0">
+            <a href="/lesson/{{ lang }}/{{ lesson.id }}" class="btn btn-{{ 'french' if lang == 'french' else 'spanish' }} btn-sm w-100">
+              {{ '✔ Review' if is_done else '▶ Start Lesson' }}
+            </a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+  {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block title %}Progress — Language Coach{% endblock %}
+{% block body_class %}progress-page{% endblock %}
+
+{% block content %}
+<div class="lang-header lang-header-multi py-4">
+  <div class="container">
+    <h1 class="text-white fw-bold">
+      <i class="fas fa-chart-bar me-2"></i> Your Progress — আপনার অগ্রগতি
+    </h1>
+    <p class="text-white opacity-75 mb-0">Track your learning journey across French and Spanish</p>
+  </div>
+</div>
+
+<div class="container py-5">
+  {% for lang, lessons in progress.items() %}
+  {% set meta = lang_meta[lang] %}
+  {% set done = lessons | selectattr('completed') | list | length %}
+  {% set total = lessons | length %}
+  {% set pct = (done / total * 100) | int if total else 0 %}
+
+  <div class="mb-5">
+    <div class="d-flex align-items-center gap-3 mb-3">
+      <span class="fs-1">{{ meta.flag }}</span>
+      <div>
+        <h2 class="fw-bold mb-0">{{ meta.name }} <small class="fs-5 text-muted">{{ meta.name_bn }}</small></h2>
+        <div class="text-muted">{{ done }} of {{ total }} lessons completed</div>
+      </div>
+      <div class="ms-auto">
+        <div class="big-percent text-{{ 'french' if lang == 'french' else 'spanish' }}">{{ pct }}%</div>
+      </div>
+    </div>
+    <div class="progress mb-4" style="height:14px">
+      <div class="progress-bar bg-{{ 'french' if lang == 'french' else 'spanish' }}" style="width:{{ pct }}%">
+        {{ pct }}%
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>#</th>
+            <th>Lesson</th>
+            <th>Level</th>
+            <th class="text-center">Status</th>
+            <th class="text-center">Best Score</th>
+            <th class="text-center">Attempts</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for lesson in lessons %}
+          <tr class="{% if lesson.completed %}table-success table-success-soft{% endif %}">
+            <td class="text-muted small">{{ lesson.id }}</td>
+            <td>
+              <span class="me-2">{{ lesson.icon }}</span>
+              <strong>{{ lesson.title_en }}</strong>
+              <div class="small bengali-text text-muted">{{ lesson.title_bn }}</div>
+            </td>
+            <td>
+              <span class="badge bg-{{ 'success' if lesson.level == 'beginner' else ('warning text-dark' if lesson.level == 'intermediate' else 'primary') }}">
+                {{ lesson.level }}
+              </span>
+            </td>
+            <td class="text-center">
+              {% if lesson.completed %}
+              <span class="badge bg-success"><i class="fas fa-check-circle me-1"></i> Done</span>
+              {% else %}
+              <span class="badge bg-secondary">Pending</span>
+              {% endif %}
+            </td>
+            <td class="text-center">
+              {% if lesson.best_score %}
+              <span class="fw-semibold {% if lesson.best_score >= 80 %}text-success{% elif lesson.best_score >= 60 %}text-warning{% else %}text-danger{% endif %}">
+                {{ lesson.best_score }}%
+              </span>
+              {% else %}
+              <span class="text-muted">—</span>
+              {% endif %}
+            </td>
+            <td class="text-center text-muted small">{{ lesson.attempts or '—' }}</td>
+            <td>
+              <a href="/lesson/{{ lang }}/{{ lesson.id }}" class="btn btn-sm btn-outline-{{ 'french' if lang == 'french' else 'spanish' }}">
+                {{ 'Review' if lesson.completed else 'Start' }}
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Language Coach — ভাষা শিক্ষক{% endblock %}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Noto+Serif+Bengali:wght@400;600&display=swap" rel="stylesheet">
+  <link href="/static/css/style.css" rel="stylesheet">
+  {% block extra_head %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand fw-bold d-flex align-items-center gap-2" href="/">
+      <span class="brand-icon">🌍</span>
+      <div>
+        <div class="brand-title">Language Coach</div>
+        <div class="brand-subtitle">ভাষা শিক্ষক</div>
+      </div>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
+        <li class="nav-item">
+          <a class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}" href="/">
+            <i class="fas fa-home me-1"></i> Home
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link flag-link {% if request.endpoint == 'language_home' and lang == 'french' %}active{% endif %}" href="/language/french">
+            🇫🇷 <span>Français</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link flag-link {% if request.endpoint == 'language_home' and lang == 'spanish' %}active{% endif %}" href="/language/spanish">
+            🇪🇸 <span>Español</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.endpoint == 'progress_view' %}active{% endif %}" href="/progress">
+            <i class="fas fa-chart-bar me-1"></i> Progress
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Main content -->
+<main>
+  {% block content %}{% endblock %}
+</main>
+
+<!-- Footer -->
+<footer class="py-4 mt-5">
+  <div class="container text-center text-muted">
+    <p class="mb-1">🌍 Language Coach — ভাষা শিক্ষক</p>
+    <small>Bengali · English · Français · Español</small>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/static/js/app.js"></script>
+{% block extra_scripts %}{% endblock %}
+</body>
+</html>

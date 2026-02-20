@@ -1,0 +1,198 @@
+{% extends "base.html" %}
+{% block title %}{{ lesson.title_en }} — Language Coach{% endblock %}
+{% block body_class %}lang-{{ lang }}-page lesson-page{% endblock %}
+
+{% block content %}
+<!-- Lesson Header -->
+<div class="lang-header lang-header-{{ lang }} py-4">
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-2">
+        <li class="breadcrumb-item"><a href="/" class="text-white opacity-75">Home</a></li>
+        <li class="breadcrumb-item"><a href="/language/{{ lang }}" class="text-white opacity-75">{{ meta.flag }} {{ meta.name }}</a></li>
+        <li class="breadcrumb-item active text-white">Lesson {{ lesson.id }}</li>
+      </ol>
+    </nav>
+    <div class="d-flex align-items-center gap-3">
+      <span style="font-size:2.5rem">{{ lesson.icon }}</span>
+      <div>
+        <h1 class="fw-bold text-white mb-0">{{ lesson.title_en }}</h1>
+        <p class="text-white opacity-75 mb-0">{{ lesson.title_bn }} &bull; {{ lesson.title_lang }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container py-4">
+  <div class="row">
+    <!-- Main content -->
+    <div class="col-lg-8">
+
+      <!-- Description card -->
+      <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body p-4">
+          <p class="mb-1">{{ lesson.description_en }}</p>
+          <p class="text-muted mb-0 bengali-text">{{ lesson.description_bn }}</p>
+        </div>
+      </div>
+
+      <!-- Tip box -->
+      {% if lesson.get('tip_en') %}
+      <div class="tip-box mb-4">
+        <div class="tip-icon">💡</div>
+        <div>
+          <strong>Pro Tip:</strong> {{ lesson.tip_en }}
+          <div class="mt-1 text-muted small bengali-text">{{ lesson.tip_bn }}</div>
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- ========== VOCABULARY SECTION ========== -->
+      {% if vocabulary %}
+      <h3 class="section-label mb-3">
+        <i class="fas fa-book-open me-2 text-{{ 'french' if lang == 'french' else 'spanish' }}"></i>
+        Vocabulary — শব্দভান্ডার
+      </h3>
+      <div class="row g-3 mb-4">
+        {% for word in vocabulary %}
+        <div class="col-md-6">
+          <div class="vocab-card card border-0 shadow-sm h-100">
+            <div class="card-body p-3">
+              <div class="d-flex justify-content-between align-items-start">
+                <div class="vocab-word fw-bold fs-5 text-{{ 'french' if lang == 'french' else 'spanish' }}">
+                  {{ word.word }}
+                </div>
+                <span class="pron-badge">{{ word.pronunciation }}</span>
+              </div>
+              <div class="vocab-english mt-1">🇬🇧 {{ word.english }}</div>
+              <div class="vocab-bengali bengali-text mt-1">🇧🇩 {{ word.bengali }}</div>
+              {% if word.get('example') %}
+              <div class="example-box mt-2">
+                <div class="example-lang">{{ meta.flag }} <em>{{ word.example }}</em></div>
+                <div class="example-en">🇬🇧 {{ word.example_en }}</div>
+                <div class="example-bn bengali-text">🇧🇩 {{ word.example_bn }}</div>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <!-- ========== GRAMMAR SECTION ========== -->
+      {% if grammar %}
+      <h3 class="section-label mb-3">
+        <i class="fas fa-graduation-cap me-2 text-{{ 'french' if lang == 'french' else 'spanish' }}"></i>
+        Grammar — ব্যাকরণ
+      </h3>
+
+      <!-- Grammar intro -->
+      <div class="grammar-intro card border-0 shadow-sm mb-4">
+        <div class="card-body p-4">
+          <p class="mb-2">{{ grammar.intro_en }}</p>
+          <p class="bengali-text text-muted mb-0">{{ grammar.intro_bn }}</p>
+        </div>
+      </div>
+
+      <!-- Grammar sections -->
+      {% for section in grammar.sections %}
+      <div class="grammar-section card border-0 shadow-sm mb-4">
+        <div class="card-header grammar-section-header">
+          <h5 class="mb-0 fw-semibold">{{ section.title_en }}</h5>
+          <small class="bengali-text text-muted">{{ section.title_bn }}</small>
+        </div>
+        <div class="card-body p-0">
+          {% if section.get('table') %}
+          <div class="table-responsive">
+            <table class="table grammar-table mb-0">
+              {% for row in section.table %}
+              <tr class="{% if loop.first %}table-header-row{% endif %}">
+                {% for cell in row %}
+                <{% if loop.first and not loop.last or (loop.index == 1 and not loop.last) %}th{% else %}td{% endif %} class="{% if loop.first %}fw-semibold{% endif %} {% if 'বাংলা' in cell or loop.index == 4 %}bengali-text{% endif %}">
+                  {{ cell }}
+                </{% if loop.first and not loop.last or (loop.index == 1 and not loop.last) %}th{% else %}td{% endif %}>
+                {% endfor %}
+              </tr>
+              {% endfor %}
+            </table>
+          </div>
+          {% endif %}
+          <div class="p-4">
+            <div class="note-box">
+              <strong>📌 Note:</strong> {{ section.note_en }}
+              <div class="mt-2 bengali-text text-muted">{{ section.note_bn }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+      {% endif %}
+
+    </div>
+
+    <!-- Sidebar -->
+    <div class="col-lg-4">
+      <div class="sidebar sticky-top" style="top:80px">
+
+        <!-- Practice buttons -->
+        <div class="card border-0 shadow-sm mb-4">
+          <div class="card-header fw-semibold">
+            <i class="fas fa-dumbbell me-2"></i> Practice — অভ্যাস
+          </div>
+          <div class="card-body p-3 d-grid gap-2">
+            {% if vocabulary %}
+            <a href="/flashcards/{{ lang }}/{{ lesson.id }}" class="btn btn-outline-{{ 'french' if lang == 'french' else 'spanish' }}">
+              🃏 Flashcards — ফ্ল্যাশকার্ড
+            </a>
+            {% endif %}
+            <a href="/quiz/{{ lang }}/{{ lesson.id }}" class="btn btn-{{ 'french' if lang == 'french' else 'spanish' }}">
+              🧠 Take Quiz — কুইজ দিন
+            </a>
+          </div>
+        </div>
+
+        <!-- Lesson info -->
+        <div class="card border-0 shadow-sm mb-4">
+          <div class="card-body p-3">
+            <div class="info-row">
+              <span class="text-muted small">Language</span>
+              <span class="fw-semibold">{{ meta.flag }} {{ meta.name }}</span>
+            </div>
+            <div class="info-row">
+              <span class="text-muted small">Level</span>
+              <span class="badge bg-{{ 'success' if lesson.level == 'beginner' else ('warning text-dark' if lesson.level == 'intermediate' else 'primary') }}">
+                {{ lesson.level | capitalize }}
+              </span>
+            </div>
+            <div class="info-row">
+              <span class="text-muted small">Words</span>
+              <span class="fw-semibold">{{ vocabulary | length }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="card border-0 shadow-sm">
+          <div class="card-body p-3 d-grid gap-2">
+            {% if prev_lesson %}
+            <a href="/lesson/{{ lang }}/{{ prev_lesson.id }}" class="btn btn-sm btn-outline-secondary">
+              ← {{ prev_lesson.title_en }}
+            </a>
+            {% endif %}
+            <a href="/language/{{ lang }}" class="btn btn-sm btn-outline-secondary">
+              ☰ All {{ meta.name }} Lessons
+            </a>
+            {% if next_lesson %}
+            <a href="/lesson/{{ lang }}/{{ next_lesson.id }}" class="btn btn-sm btn-outline-{{ 'french' if lang == 'french' else 'spanish' }}">
+              {{ next_lesson.title_en }} →
+            </a>
+            {% endif %}
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

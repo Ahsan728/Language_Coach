@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+{% block title %}Language Coach — Home{% endblock %}
+{% block body_class %}dashboard-page{% endblock %}
+
+{% block content %}
+<!-- Hero -->
+<section class="hero-section">
+  <div class="container">
+    <div class="row align-items-center py-5">
+      <div class="col-lg-7">
+        <h1 class="hero-title">আপনাকে স্বাগতম! <span class="wave">👋</span></h1>
+        <p class="hero-subtitle">Learn <strong>French</strong> &amp; <strong>Spanish</strong> through <strong>Bengali</strong> and <strong>English</strong></p>
+        <p class="hero-desc text-muted">
+          ফরাসি ও স্প্যানিশ শিখুন বাংলা ও ইংরেজির মাধ্যমে — ধাপে ধাপে, ইন্টারেক্টিভ পদ্ধতিতে।
+        </p>
+        <div class="d-flex gap-3 flex-wrap mt-4">
+          <a href="/language/french" class="btn btn-french btn-lg">🇫🇷 Start French</a>
+          <a href="/language/spanish" class="btn btn-spanish btn-lg">🇪🇸 Start Spanish</a>
+        </div>
+      </div>
+      <div class="col-lg-5 d-none d-lg-flex justify-content-center">
+        <div class="hero-flags">
+          <div class="flag-card flag-card-fr">🇫🇷<br><small>Français</small></div>
+          <div class="flag-card flag-card-bd">🇧🇩<br><small>বাংলা</small></div>
+          <div class="flag-card flag-card-es">🇪🇸<br><small>Español</small></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Progress Cards -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <h2 class="section-title text-center mb-4">আপনার অগ্রগতি — Your Progress</h2>
+    <div class="row g-4">
+      {% for lang, s in stats.items() %}
+      {% set meta = lang_meta[lang] %}
+      <div class="col-md-6">
+        <div class="progress-card card shadow-sm h-100">
+          <div class="card-body p-4">
+            <div class="d-flex align-items-center gap-3 mb-3">
+              <span class="lang-flag">{{ meta.flag }}</span>
+              <div>
+                <h3 class="mb-0 fw-bold">{{ meta.name }}</h3>
+                <small class="text-muted">{{ meta.name_bn }}</small>
+              </div>
+              <div class="ms-auto">
+                <span class="badge bg-{{ 'french-badge' if lang == 'french' else 'spanish-badge' }} fs-6">
+                  {{ s.completed }}/{{ s.total }}
+                </span>
+              </div>
+            </div>
+            <div class="progress mb-3" style="height:12px">
+              <div class="progress-bar bg-{{ 'french' if lang == 'french' else 'spanish' }}"
+                   style="width:{{ s.percent }}%">{{ s.percent }}%</div>
+            </div>
+            <p class="text-muted small mb-3">
+              {{ s.completed }} lessons completed out of {{ s.total }} total
+              <br>{{ s.completed }} টি পাঠ সম্পন্ন, মোট {{ s.total }} টি
+            </p>
+            <a href="/language/{{ lang }}" class="btn btn-{{ 'french' if lang == 'french' else 'spanish' }} w-100">
+              {{ '▶ Continue French' if lang == 'french' else '▶ Continue Spanish' }}
+            </a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="py-5">
+  <div class="container">
+    <h2 class="section-title text-center mb-5">কীভাবে শিখবেন — How You Learn</h2>
+    <div class="row g-4 text-center">
+      <div class="col-md-3 col-6">
+        <div class="feature-card p-3">
+          <div class="feature-icon">📖</div>
+          <h5 class="mt-3">Vocabulary<br><small class="text-muted">শব্দভান্ডার</small></h5>
+          <p class="small text-muted">Words with Bengali, English &amp; pronunciation</p>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="feature-card p-3">
+          <div class="feature-icon">🃏</div>
+          <h5 class="mt-3">Flashcards<br><small class="text-muted">ফ্ল্যাশকার্ড</small></h5>
+          <p class="small text-muted">Interactive flip cards for memorization</p>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="feature-card p-3">
+          <div class="feature-icon">🧠</div>
+          <h5 class="mt-3">Quizzes<br><small class="text-muted">কুইজ</small></h5>
+          <p class="small text-muted">Test yourself with multiple-choice questions</p>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="feature-card p-3">
+          <div class="feature-icon">📐</div>
+          <h5 class="mt-3">Grammar<br><small class="text-muted">ব্যাকরণ</small></h5>
+          <p class="small text-muted">Articles, tenses explained in Bengali</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Learning Path -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <h2 class="section-title text-center mb-5">শিক্ষার পথ — Learning Path</h2>
+    <div class="row g-3">
+      {% set steps = [
+        ('1', '🌱', 'Beginner', 'শুরু', 'Greetings, Numbers, Colors, Family, Body, Food'),
+        ('2', '🌿', 'Intermediate', 'মধ্যবর্তী', 'Transport, Verbs, Adjectives, Phrases'),
+        ('3', '📚', 'Grammar', 'ব্যাকরণ', 'Articles, Present, Past & Future Tenses')
+      ] %}
+      {% for num, icon, level, level_bn, topics in steps %}
+      <div class="col-md-4">
+        <div class="path-card p-4 text-center">
+          <div class="path-number">{{ num }}</div>
+          <div class="path-icon">{{ icon }}</div>
+          <h4 class="mt-2">{{ level }}<br><small class="text-muted">{{ level_bn }}</small></h4>
+          <p class="small text-muted mt-2">{{ topics }}</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

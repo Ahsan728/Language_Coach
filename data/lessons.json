@@ -1,0 +1,674 @@
+{
+  "french": [
+    {
+      "id": 1, "level": "beginner", "icon": "👋",
+      "title_en": "Greetings & Basic Phrases",
+      "title_bn": "অভিবাদন ও মূল বাক্যাংশ",
+      "title_lang": "Salutations et Phrases de Base",
+      "description_en": "Learn essential French greetings and how to introduce yourself.",
+      "description_bn": "জরুরি ফরাসি অভিবাদন শিখুন এবং নিজেকে পরিচয় করিয়ে দিতে শিখুন।",
+      "vocabulary_categories": ["greetings"],
+      "tip_en": "In French, 'bonjour' (hello) is used until evening, then switch to 'bonsoir' (good evening). Always use 'vous' (formal) with strangers!",
+      "tip_bn": "ফরাসিতে 'bonjour' সন্ধ্যা পর্যন্ত ব্যবহার করুন, তারপর 'bonsoir' বলুন। অপরিচিত মানুষের সাথে সবসময় 'vous' (আনুষ্ঠানিক) ব্যবহার করুন!"
+    },
+    {
+      "id": 2, "level": "beginner", "icon": "🔢",
+      "title_en": "Numbers 1–1000",
+      "title_bn": "সংখ্যা ১–১০০০",
+      "title_lang": "Les Nombres 1–1000",
+      "description_en": "Count in French from one to a thousand.",
+      "description_bn": "ফরাসিতে এক থেকে হাজার পর্যন্ত গণনা করুন।",
+      "vocabulary_categories": ["numbers"],
+      "tip_en": "French numbers 70–99 are tricky! 70 = soixante-dix (sixty-ten), 80 = quatre-vingts (four-twenties), 90 = quatre-vingt-dix (four-twenty-ten).",
+      "tip_bn": "ফরাসিতে ৭০-৯৯ একটু কঠিন! ৭০ = soixante-dix (ষাট-দশ), ৮০ = quatre-vingts (চার-বিশ), ৯০ = quatre-vingt-dix (চার-বিশ-দশ)।"
+    },
+    {
+      "id": 3, "level": "beginner", "icon": "🎨",
+      "title_en": "Colors & Descriptions",
+      "title_bn": "রঙ ও বর্ণনা",
+      "title_lang": "Les Couleurs et Descriptions",
+      "description_en": "Learn colors and how to describe things in French.",
+      "description_bn": "ফরাসিতে রঙ এবং জিনিসপত্র বর্ণনা করতে শিখুন।",
+      "vocabulary_categories": ["colors"],
+      "tip_en": "Adjectives in French usually come AFTER the noun: 'une robe rouge' (a red dress). Exceptions: grand, petit, beau, nouveau come BEFORE.",
+      "tip_bn": "ফরাসিতে বিশেষণ সাধারণত বিশেষ্যের পরে আসে: 'une robe rouge' (একটি লাল পোশাক)। ব্যতিক্রম: grand, petit, beau, nouveau বিশেষ্যের আগে আসে।"
+    },
+    {
+      "id": 4, "level": "beginner", "icon": "📅",
+      "title_en": "Days, Time & Seasons",
+      "title_bn": "দিন, সময় ও ঋতু",
+      "title_lang": "Les Jours, le Temps et les Saisons",
+      "description_en": "Talk about days of the week, time expressions, and seasons.",
+      "description_bn": "সপ্তাহের দিন, সময়ের অভিব্যক্তি এবং ঋতু সম্পর্কে কথা বলুন।",
+      "vocabulary_categories": ["time"],
+      "tip_en": "Days of the week are NOT capitalized in French: lundi, mardi... Same for months: janvier, février...",
+      "tip_bn": "ফরাসিতে সপ্তাহের দিন বড় হাতে লেখা হয় না: lundi, mardi... মাসের নামও: janvier, février..."
+    },
+    {
+      "id": 5, "level": "beginner", "icon": "👨‍👩‍👧‍👦",
+      "title_en": "Family & Relationships",
+      "title_bn": "পরিবার ও সম্পর্ক",
+      "title_lang": "La Famille et les Relations",
+      "description_en": "Describe your family members and talk about relationships.",
+      "description_bn": "আপনার পরিবারের সদস্যদের বর্ণনা করুন এবং সম্পর্ক নিয়ে কথা বলুন।",
+      "vocabulary_categories": ["family"],
+      "tip_en": "To say 'my father' use 'mon père' (masculine), 'my mother' = 'ma mère' (feminine). Possessives agree with the noun, not the owner!",
+      "tip_bn": "ফরাসিতে 'আমার বাবা' = 'mon père' (পুংলিঙ্গ), 'আমার মা' = 'ma mère' (স্ত্রীলিঙ্গ)। সর্বনাম মালিকের সাথে নয়, বিশেষ্যের সাথে মিলিয়ে বলে!"
+    },
+    {
+      "id": 6, "level": "beginner", "icon": "🫀",
+      "title_en": "Body Parts",
+      "title_bn": "শরীরের অঙ্গ",
+      "title_lang": "Les Parties du Corps",
+      "description_en": "Learn to name body parts and describe health issues.",
+      "description_bn": "শরীরের অঙ্গের নাম জানুন এবং স্বাস্থ্য সমস্যা বর্ণনা করতে শিখুন।",
+      "vocabulary_categories": ["body"],
+      "tip_en": "To say something hurts: 'J'ai mal à + body part' → J'ai mal à la tête (I have a headache). Very useful at the doctor!",
+      "tip_bn": "কোনো কিছু ব্যথা করলে: 'J'ai mal à + শরীরের অঙ্গ' → J'ai mal à la tête (আমার মাথাব্যথা)। ডাক্তারের কাছে খুবই কাজে লাগবে!"
+    },
+    {
+      "id": 7, "level": "beginner", "icon": "🍽️",
+      "title_en": "Food & Drinks",
+      "title_bn": "খাবার ও পানীয়",
+      "title_lang": "La Nourriture et les Boissons",
+      "description_en": "Order food, talk about what you eat, and navigate a French menu.",
+      "description_bn": "খাবার অর্ডার করুন, আপনি কী খান তা বলুন, এবং ফরাসি মেনু পড়তে শিখুন।",
+      "vocabulary_categories": ["food"],
+      "tip_en": "At a French café: 'Je voudrais...' (I would like...) is polite. 'Je prends...' (I'll have...) is common. Always say 'Monsieur/Madame' to get attention!",
+      "tip_bn": "ফরাসি ক্যাফেতে: 'Je voudrais...' (আমি চাই...) ভদ্র। 'Je prends...' (আমি নিচ্ছি...) সাধারণ। মনোযোগ পেতে সবসময় 'Monsieur/Madame' বলুন!"
+    },
+    {
+      "id": 8, "level": "intermediate", "icon": "🚗",
+      "title_en": "Transport & Travel",
+      "title_bn": "যানবাহন ও ভ্রমণ",
+      "title_lang": "Le Transport et les Voyages",
+      "description_en": "Navigate French cities, buy tickets, and ask for directions.",
+      "description_bn": "ফরাসি শহরে চলাচল করুন, টিকিট কিনুন এবং পথ জিজ্ঞেস করুন।",
+      "vocabulary_categories": ["transport"],
+      "tip_en": "In Paris, the metro is called 'le métro'. Ask: 'Excusez-moi, où est le métro?' or 'Pour aller à...?' (How do I get to...?)",
+      "tip_bn": "প্যারিসে মেট্রোকে 'le métro' বলে। জিজ্ঞেস করুন: 'Excusez-moi, où est le métro?' বা 'Pour aller à...?' (... যেতে কীভাবে যাব?)"
+    },
+    {
+      "id": 9, "level": "intermediate", "icon": "⚡",
+      "title_en": "Essential Verbs",
+      "title_bn": "গুরুত্বপূর্ণ ক্রিয়া",
+      "title_lang": "Les Verbes Essentiels",
+      "description_en": "Master the most important French verbs for daily conversation.",
+      "description_bn": "দৈনন্দিন কথোপকথনের জন্য সবচেয়ে গুরুত্বপূর্ণ ফরাসি ক্রিয়াগুলো আয়ত্ত করুন।",
+      "vocabulary_categories": ["verbs"],
+      "tip_en": "Être (to be) and Avoir (to have) are the two most important verbs. They are irregular but used in almost every sentence!",
+      "tip_bn": "Être (হওয়া) এবং Avoir (থাকা) দুটি সবচেয়ে গুরুত্বপূর্ণ ক্রিয়া। এগুলো অনিয়মিত কিন্তু প্রায় প্রতিটি বাক্যে ব্যবহার হয়!"
+    },
+    {
+      "id": 10, "level": "intermediate", "icon": "✨",
+      "title_en": "Adjectives & Descriptions",
+      "title_bn": "বিশেষণ ও বর্ণনা",
+      "title_lang": "Les Adjectifs et Descriptions",
+      "description_en": "Describe people, places, and things using French adjectives.",
+      "description_bn": "ফরাসি বিশেষণ ব্যবহার করে মানুষ, জায়গা এবং জিনিস বর্ণনা করুন।",
+      "vocabulary_categories": ["adjectives"],
+      "tip_en": "Adjectives must agree with the noun in gender and number. Add -e for feminine, -s for plural: grand → grande → grands → grandes.",
+      "tip_bn": "বিশেষণকে বিশেষ্যের লিঙ্গ ও বচনের সাথে মিলিয়ে নিতে হয়। স্ত্রীলিঙ্গে -e যোগ করুন, বহুবচনে -s: grand → grande → grands → grandes।"
+    },
+    {
+      "id": 11, "level": "grammar", "icon": "📚",
+      "title_en": "Grammar: Articles & Gender",
+      "title_bn": "ব্যাকরণ: আর্টিকেল ও লিঙ্গ",
+      "title_lang": "Grammaire : Les Articles et le Genre",
+      "description_en": "Understand French noun gender and definite/indefinite articles.",
+      "description_bn": "ফরাসি বিশেষ্যের লিঙ্গ এবং নির্দিষ্ট/অনির্দিষ্ট আর্টিকেল বুঝুন।",
+      "vocabulary_categories": [],
+      "grammar": {
+        "intro_en": "Every French noun has a gender — masculine (m) or feminine (f). This is different from Bengali or English! You MUST memorize the gender with each word.",
+        "intro_bn": "প্রতিটি ফরাসি বিশেষ্যের লিঙ্গ আছে — পুংলিঙ্গ (m) বা স্ত্রীলিঙ্গ (f)। এটি বাংলা বা ইংরেজি থেকে আলাদা! প্রতিটি শব্দের সাথে লিঙ্গ মনে রাখতে হবে।",
+        "sections": [
+          {
+            "title_en": "Definite Articles — The",
+            "title_bn": "নির্দিষ্ট আর্টিকেল — The",
+            "table": [
+              ["", "Masculine", "Feminine", "Before vowel/h", "Plural"],
+              ["Article", "le", "la", "l'", "les"],
+              ["Example", "le livre (the book)", "la table (the table)", "l'école (the school)", "les livres (the books)"],
+              ["Bengali", "বইটি", "টেবিলটি", "স্কুলটি", "বইগুলো"]
+            ],
+            "note_en": "Use 'le' for masculine nouns, 'la' for feminine, 'l'' before vowels, and 'les' for all plurals.",
+            "note_bn": "পুংলিঙ্গে 'le', স্ত্রীলিঙ্গে 'la', স্বরবর্ণের আগে 'l'', এবং সব বহুবচনে 'les' ব্যবহার করুন।"
+          },
+          {
+            "title_en": "Indefinite Articles — A / An / Some",
+            "title_bn": "অনির্দিষ্ট আর্টিকেল — A / An / Some",
+            "table": [
+              ["", "Masculine", "Feminine", "Plural"],
+              ["Article", "un", "une", "des"],
+              ["Example", "un livre (a book)", "une table (a table)", "des livres (some books)"],
+              ["Bengali", "একটি বই", "একটি টেবিল", "কিছু বই"]
+            ],
+            "note_en": "Use 'un' for masculine, 'une' for feminine, 'des' for plural.",
+            "note_bn": "পুংলিঙ্গে 'un', স্ত্রীলিঙ্গে 'une', বহুবচনে 'des' ব্যবহার করুন।"
+          }
+        ],
+        "quiz_questions": [
+          {"question_en": "Which article goes with 'livre' (book — masculine)?", "question_bn": "'livre' (বই — পুংলিঙ্গ) এর সাথে কোন আর্টিকেল যাবে?", "correct": "le livre", "choices": ["le livre", "la livre", "l'livre", "les livre"]},
+          {"question_en": "Which article goes with 'table' (table — feminine)?", "question_bn": "'table' (টেবিল — স্ত্রীলিঙ্গ) এর সাথে কোন আর্টিকেল?", "correct": "la table", "choices": ["le table", "la table", "un table", "des table"]},
+          {"question_en": "How do you say 'a book' (indefinite, masculine)?", "question_bn": "'একটি বই' (অনির্দিষ্ট, পুংলিঙ্গ) ফরাসিতে কীভাবে বলে?", "correct": "un livre", "choices": ["un livre", "une livre", "le livre", "des livres"]},
+          {"question_en": "What is the plural article for all genders?", "question_bn": "সব লিঙ্গের বহুবচন আর্টিকেল কোনটি?", "correct": "les", "choices": ["les", "des", "le", "la"]},
+          {"question_en": "Which article goes before 'école' (school — vowel start)?", "question_bn": "'école' (স্কুল — স্বরবর্ণ দিয়ে শুরু) এর আগে কোন আর্টিকেল?", "correct": "l'école", "choices": ["l'école", "le école", "la école", "un école"]}
+        ]
+      }
+    },
+    {
+      "id": 12, "level": "grammar", "icon": "🕐",
+      "title_en": "Grammar: Present Tense",
+      "title_bn": "ব্যাকরণ: বর্তমান কাল",
+      "title_lang": "Grammaire : Le Présent",
+      "description_en": "Conjugate regular and common irregular verbs in the present tense.",
+      "description_bn": "বর্তমান কালে নিয়মিত এবং সাধারণ অনিয়মিত ক্রিয়া পরিবর্তন করুন।",
+      "vocabulary_categories": [],
+      "grammar": {
+        "intro_en": "French verbs must change form (conjugate) depending on who is doing the action. There are 3 types of regular verbs: -er, -ir, -re. The most common is -er.",
+        "intro_bn": "ফরাসি ক্রিয়া কর্তার উপর নির্ভর করে পরিবর্তিত হয়। তিন ধরনের নিয়মিত ক্রিয়া আছে: -er, -ir, -re। সবচেয়ে সাধারণ হলো -er ক্রিয়া।",
+        "sections": [
+          {
+            "title_en": "Regular -er Verbs: PARLER (to speak)",
+            "title_bn": "নিয়মিত -er ক্রিয়া: PARLER (কথা বলা)",
+            "table": [
+              ["Subject", "French", "English", "Bengali"],
+              ["je (I)", "je parle", "I speak", "আমি বলি"],
+              ["tu (you, informal)", "tu parles", "you speak", "তুমি বল"],
+              ["il/elle (he/she)", "il/elle parle", "he/she speaks", "সে বলে"],
+              ["nous (we)", "nous parlons", "we speak", "আমরা বলি"],
+              ["vous (you, formal/pl)", "vous parlez", "you speak", "আপনি/আপনারা বলেন"],
+              ["ils/elles (they)", "ils/elles parlent", "they speak", "তারা বলে"]
+            ],
+            "note_en": "Remove -er and add: -e, -es, -e, -ons, -ez, -ent. Note: je/tu/il/elle/ils/elles endings all sound the same (-e, -es, -ent are all silent)!",
+            "note_bn": "-er সরিয়ে যোগ করুন: -e, -es, -e, -ons, -ez, -ent। লক্ষ্য করুন: je/tu/il/elle/ils/elles এর শেষাংশ (-e, -es, -ent) সবই চুপ থাকে!"
+          },
+          {
+            "title_en": "Irregular: ÊTRE (to be) — Must Memorize!",
+            "title_bn": "অনিয়মিত: ÊTRE (হওয়া) — অবশ্যই মুখস্থ করুন!",
+            "table": [
+              ["Subject", "French", "English", "Bengali"],
+              ["je", "je suis", "I am", "আমি আছি"],
+              ["tu", "tu es", "you are", "তুমি আছ"],
+              ["il/elle", "il/elle est", "he/she is", "সে আছে"],
+              ["nous", "nous sommes", "we are", "আমরা আছি"],
+              ["vous", "vous êtes", "you are", "আপনি/আপনারা আছেন"],
+              ["ils/elles", "ils/elles sont", "they are", "তারা আছে"]
+            ],
+            "note_en": "ÊTRE is completely irregular — memorize each form! 'Je suis étudiant' (I am a student). Very important for introducing yourself.",
+            "note_bn": "ÊTRE সম্পূর্ণ অনিয়মিত — প্রতিটি রূপ মুখস্থ করুন! 'Je suis étudiant' (আমি একজন ছাত্র)। পরিচয় দেওয়ার জন্য খুবই গুরুত্বপূর্ণ।"
+          },
+          {
+            "title_en": "Irregular: AVOIR (to have)",
+            "title_bn": "অনিয়মিত: AVOIR (থাকা)",
+            "table": [
+              ["Subject", "French", "English", "Bengali"],
+              ["je", "j'ai", "I have", "আমার আছে"],
+              ["tu", "tu as", "you have", "তোমার আছে"],
+              ["il/elle", "il/elle a", "he/she has", "তার আছে"],
+              ["nous", "nous avons", "we have", "আমাদের আছে"],
+              ["vous", "vous avez", "you have", "আপনার/আপনাদের আছে"],
+              ["ils/elles", "ils/elles ont", "they have", "তাদের আছে"]
+            ],
+            "note_en": "'J'ai 25 ans' = I am 25 years old (lit: I have 25 years). In French you 'have' an age, not 'are' an age!",
+            "note_bn": "'J'ai 25 ans' = আমার বয়স ২৫ বছর (আক্ষরিক: আমার ২৫ বছর আছে)। ফরাসিতে বয়স 'থাকে', 'হয়' না!"
+          }
+        ],
+        "quiz_questions": [
+          {"question_en": "How do you say 'I speak French'?", "question_bn": "'আমি ফরাসি বলি' ফরাসিতে কীভাবে বলে?", "correct": "Je parle français", "choices": ["Je parle français", "Je parles français", "Je parlons français", "Je parlent français"]},
+          {"question_en": "Complete: 'Tu ___ étudiant.' (You are a student)", "question_bn": "পূরণ করুন: 'Tu ___ étudiant.' (তুমি একজন ছাত্র)", "correct": "es", "choices": ["es", "est", "suis", "sommes"]},
+          {"question_en": "How do you say 'We have a car'?", "question_bn": "'আমাদের একটি গাড়ি আছে' ফরাসিতে?", "correct": "Nous avons une voiture", "choices": ["Nous avons une voiture", "Nous avez une voiture", "Nous ont une voiture", "Nous avions une voiture"]},
+          {"question_en": "How old is someone who says 'J'ai trente ans'?", "question_bn": "'J'ai trente ans' বললে কারো বয়স কত?", "correct": "30 years old / ৩০ বছর", "choices": ["30 years old / ৩০ বছর", "13 years old / ১৩ বছর", "3 years old / ৩ বছর", "300 years old / ৩০০ বছর"]},
+          {"question_en": "What is 'ils sont' in English?", "question_bn": "'ils sont' ইংরেজিতে কী?", "correct": "they are", "choices": ["they are", "he is", "we are", "you are"]}
+        ]
+      }
+    },
+    {
+      "id": 13, "level": "grammar", "icon": "⏮️",
+      "title_en": "Grammar: Past Tense (Passé Composé)",
+      "title_bn": "ব্যাকরণ: অতীত কাল (Passé Composé)",
+      "title_lang": "Grammaire : Le Passé Composé",
+      "description_en": "Talk about completed actions in the past using Passé Composé.",
+      "description_bn": "Passé Composé ব্যবহার করে অতীতে সম্পন্ন কাজ সম্পর্কে কথা বলুন।",
+      "vocabulary_categories": [],
+      "grammar": {
+        "intro_en": "The Passé Composé is the most common past tense in spoken French. It is formed with: AVOIR or ÊTRE + past participle. Think of it like 'I have eaten' in English.",
+        "intro_bn": "Passé Composé হলো কথ্য ফরাসিতে সবচেয়ে সাধারণ অতীত কাল। এটি গঠিত হয়: AVOIR বা ÊTRE + past participle দিয়ে। ইংরেজির 'I have eaten' এর মতো ভাবুন।",
+        "sections": [
+          {
+            "title_en": "With AVOIR (most verbs)",
+            "title_bn": "AVOIR দিয়ে (বেশিরভাগ ক্রিয়া)",
+            "table": [
+              ["Subject", "Formation", "English", "Bengali"],
+              ["j'", "j'ai parlé", "I spoke / I have spoken", "আমি বলেছিলাম"],
+              ["tu", "tu as parlé", "you spoke", "তুমি বলেছিলে"],
+              ["il/elle", "il/elle a parlé", "he/she spoke", "সে বলেছিল"],
+              ["nous", "nous avons parlé", "we spoke", "আমরা বলেছিলাম"],
+              ["vous", "vous avez parlé", "you spoke", "আপনি বলেছিলেন"],
+              ["ils/elles", "ils/elles ont parlé", "they spoke", "তারা বলেছিল"]
+            ],
+            "note_en": "Past participles of -er verbs: drop -er, add -é (parler → parlé, manger → mangé, étudier → étudié).",
+            "note_bn": "-er ক্রিয়ার past participle: -er সরিয়ে -é যোগ করুন (parler → parlé, manger → mangé, étudier → étudié)।"
+          },
+          {
+            "title_en": "With ÊTRE (motion & reflexive verbs) — DR & MRS VANDERTRAMP",
+            "title_bn": "ÊTRE দিয়ে (গতির ক্রিয়া) — DR & MRS VANDERTRAMP",
+            "table": [
+              ["Verb", "Participle", "Meaning", "Bengali"],
+              ["aller", "allé(e)", "to go", "যাওয়া"],
+              ["venir", "venu(e)", "to come", "আসা"],
+              ["partir", "parti(e)", "to leave", "চলে যাওয়া"],
+              ["arriver", "arrivé(e)", "to arrive", "পৌঁছানো"],
+              ["naître", "né(e)", "to be born", "জন্মানো"],
+              ["mourir", "mort(e)", "to die", "মরা"]
+            ],
+            "note_en": "With ÊTRE verbs, the participle agrees with the subject: Elle est allée (She went) vs. Il est allé (He went). Add -e for feminine, -s for plural.",
+            "note_bn": "ÊTRE ক্রিয়ার সাথে, participle কর্তার সাথে মেলে: Elle est allée (সে গিয়েছিল — মেয়ে) বনাম Il est allé (সে গিয়েছিল — ছেলে)।"
+          }
+        ],
+        "quiz_questions": [
+          {"question_en": "How do you say 'I ate' in French (manger)?", "question_bn": "'আমি খেয়েছিলাম' ফরাসিতে কীভাবে বলে?", "correct": "J'ai mangé", "choices": ["J'ai mangé", "J'ai mange", "Je suis mangé", "J'avais mangé"]},
+          {"question_en": "Which auxiliary (helping verb) does 'aller' use in Passé Composé?", "question_bn": "Passé Composé-তে 'aller' কোন সহায়ক ক্রিয়া ব্যবহার করে?", "correct": "être", "choices": ["être", "avoir", "faire", "aller"]},
+          {"question_en": "Past participle of 'étudier' (to study)?", "question_bn": "'étudier' (পড়া) এর past participle কী?", "correct": "étudié", "choices": ["étudié", "étudier", "étudiant", "étudiais"]},
+          {"question_en": "She went to Paris: 'Elle ___ allée à Paris.'", "question_bn": "সে প্যারিসে গিয়েছিল: 'Elle ___ allée à Paris.'", "correct": "est", "choices": ["est", "a", "sont", "avait"]},
+          {"question_en": "How do you say 'We studied yesterday'?", "question_bn": "'আমরা গতকাল পড়েছিলাম' ফরাসিতে?", "correct": "Nous avons étudié hier", "choices": ["Nous avons étudié hier", "Nous sommes étudié hier", "Nous étudions hier", "Nous avez étudié hier"]}
+        ]
+      }
+    },
+    {
+      "id": 14, "level": "grammar", "icon": "⏭️",
+      "title_en": "Grammar: Future Tense",
+      "title_bn": "ব্যাকরণ: ভবিষ্যৎ কাল",
+      "title_lang": "Grammaire : Le Futur",
+      "description_en": "Talk about future plans and events using the future tense.",
+      "description_bn": "ভবিষ্যৎ কাল ব্যবহার করে ভবিষ্যৎ পরিকল্পনা ও ঘটনা সম্পর্কে কথা বলুন।",
+      "vocabulary_categories": [],
+      "grammar": {
+        "intro_en": "There are two ways to express the future in French: (1) Futur Proche (near future) = aller + infinitive, like English 'going to', and (2) Futur Simple (simple future) = infinitive + endings.",
+        "intro_bn": "ফরাসিতে ভবিষ্যৎ প্রকাশের দুটি উপায়: (১) Futur Proche (নিকট ভবিষ্যৎ) = aller + infinitive, ইংরেজির 'going to' মতো, এবং (২) Futur Simple = infinitive + endings।",
+        "sections": [
+          {
+            "title_en": "Futur Proche — Going to... (aller + infinitive)",
+            "title_bn": "Futur Proche — করতে যাচ্ছি... (aller + infinitive)",
+            "table": [
+              ["Subject", "Formation", "English", "Bengali"],
+              ["je", "je vais manger", "I am going to eat", "আমি খেতে যাচ্ছি"],
+              ["tu", "tu vas étudier", "you are going to study", "তুমি পড়তে যাচ্ছ"],
+              ["il/elle", "il va partir", "he is going to leave", "সে চলে যাচ্ছে"],
+              ["nous", "nous allons voyager", "we are going to travel", "আমরা ভ্রমণ করতে যাচ্ছি"],
+              ["vous", "vous allez travailler", "you are going to work", "আপনি কাজ করতে যাচ্ছেন"],
+              ["ils/elles", "ils vont dormir", "they are going to sleep", "তারা ঘুমাতে যাচ্ছে"]
+            ],
+            "note_en": "Use Futur Proche for plans you've already decided. 'Demain, je vais étudier' (Tomorrow, I'm going to study).",
+            "note_bn": "ইতিমধ্যে নির্ধারিত পরিকল্পনার জন্য Futur Proche ব্যবহার করুন। 'Demain, je vais étudier' (আগামীকাল, আমি পড়তে যাচ্ছি)।"
+          },
+          {
+            "title_en": "Futur Simple — Will... (infinitive + endings)",
+            "title_bn": "Futur Simple — করব... (infinitive + endings)",
+            "table": [
+              ["Subject", "PARLER", "English", "Bengali"],
+              ["je", "je parlerai", "I will speak", "আমি বলব"],
+              ["tu", "tu parleras", "you will speak", "তুমি বলবে"],
+              ["il/elle", "il/elle parlera", "he/she will speak", "সে বলবে"],
+              ["nous", "nous parlerons", "we will speak", "আমরা বলব"],
+              ["vous", "vous parlerez", "you will speak", "আপনি বলবেন"],
+              ["ils/elles", "ils/elles parleront", "they will speak", "তারা বলবে"]
+            ],
+            "note_en": "Endings: -ai, -as, -a, -ons, -ez, -ont. Add to infinitive (keep the -r for -re verbs: prendre → prendrai).",
+            "note_bn": "Endings: -ai, -as, -a, -ons, -ez, -ont। Infinitive-এর সাথে যোগ করুন (-re ক্রিয়ার e বাদ দিন: prendre → prendrai)।"
+          }
+        ],
+        "quiz_questions": [
+          {"question_en": "How do you say 'I am going to eat'? (near future)", "question_bn": "'আমি খেতে যাচ্ছি' ফরাসিতে? (নিকট ভবিষ্যৎ)", "correct": "Je vais manger", "choices": ["Je vais manger", "Je mange", "J'ai mangé", "Je mangerai"]},
+          {"question_en": "Complete: 'Demain, tu ___ étudier.' (Tomorrow, you are going to study)", "question_bn": "পূরণ করুন: 'Demain, tu ___ étudier.'", "correct": "vas", "choices": ["vas", "vais", "vont", "allez"]},
+          {"question_en": "Future simple of 'parler' for 'nous'?", "question_bn": "'nous' এর জন্য 'parler' এর future simple কী?", "correct": "nous parlerons", "choices": ["nous parlerons", "nous parlons", "nous parlerez", "nous parleront"]},
+          {"question_en": "How do you say 'They will arrive tomorrow'?", "question_bn": "'তারা আগামীকাল পৌঁছাবে' ফরাসিতে?", "correct": "Ils arriveront demain", "choices": ["Ils arriveront demain", "Ils arriverons demain", "Ils vont arriveront demain", "Ils arrivent demain"]},
+          {"question_en": "'Elle va partir' means:", "question_bn": "'Elle va partir' অর্থ কী?", "correct": "She is going to leave", "choices": ["She is going to leave", "She left", "She will leave (simple future)", "She leaves every day"]}
+        ]
+      }
+    },
+    {
+      "id": 15, "level": "intermediate", "icon": "💬",
+      "title_en": "Everyday Phrases",
+      "title_bn": "দৈনন্দিন বাক্যাংশ",
+      "title_lang": "Phrases du Quotidien",
+      "description_en": "Master practical phrases for real-life situations in France.",
+      "description_bn": "ফ্রান্সে বাস্তব জীবনের পরিস্থিতির জন্য ব্যবহারিক বাক্যাংশ আয়ত্ত করুন।",
+      "vocabulary_categories": ["phrases"],
+      "tip_en": "These phrases will get you through most situations! Practice saying them out loud every day for one week.",
+      "tip_bn": "এই বাক্যাংশগুলো বেশিরভাগ পরিস্থিতিতে কাজে লাগবে! এক সপ্তাহ প্রতিদিন জোরে বলে অভ্যাস করুন।"
+    }
+  ],
+
+  "spanish": [
+    {
+      "id": 1, "level": "beginner", "icon": "👋",
+      "title_en": "Greetings & Basic Phrases",
+      "title_bn": "অভিবাদন ও মূল বাক্যাংশ",
+      "title_lang": "Saludos y Frases Básicas",
+      "description_en": "Learn essential Spanish greetings and how to introduce yourself.",
+      "description_bn": "জরুরি স্প্যানিশ অভিবাদন শিখুন এবং নিজেকে পরিচয় করিয়ে দিতে শিখুন।",
+      "vocabulary_categories": ["greetings"],
+      "tip_en": "Spanish greetings change by time of day: 'Buenos días' (morning), 'Buenas tardes' (afternoon), 'Buenas noches' (night). In Spain, friends often kiss on both cheeks!",
+      "tip_bn": "স্প্যানিশ অভিবাদন সময়ের সাথে বদলায়: 'Buenos días' (সকাল), 'Buenas tardes' (বিকেল), 'Buenas noches' (রাত)। স্পেনে বন্ধুরা প্রায়ই দুই গালে চুমু খায়!"
+    },
+    {
+      "id": 2, "level": "beginner", "icon": "🔢",
+      "title_en": "Numbers 1–1000",
+      "title_bn": "সংখ্যা ১–১০০০",
+      "title_lang": "Los Números 1–1000",
+      "description_en": "Count in Spanish from one to a thousand.",
+      "description_bn": "স্প্যানিশে এক থেকে হাজার পর্যন্ত গণনা করুন।",
+      "vocabulary_categories": ["numbers"],
+      "tip_en": "16-19 in Spanish are combined: dieciséis (16), diecisiete (17), dieciocho (18), diecinueve (19). 21-29 are: veintiuno, veintidós... etc.",
+      "tip_bn": "স্প্যানিশে ১৬-১৯ মিলিত: dieciséis (১৬), diecisiete (১৭), dieciocho (১৮), diecinueve (১৯)। ২১-২৯: veintiuno, veintidós... ইত্যাদি।"
+    },
+    {
+      "id": 3, "level": "beginner", "icon": "🎨",
+      "title_en": "Colors & Descriptions",
+      "title_bn": "রঙ ও বর্ণনা",
+      "title_lang": "Los Colores y Descripciones",
+      "description_en": "Learn colors and how to describe things in Spanish.",
+      "description_bn": "স্প্যানিশে রঙ এবং জিনিসপত্র বর্ণনা করতে শিখুন।",
+      "vocabulary_categories": ["colors"],
+      "tip_en": "Like French, Spanish adjectives come AFTER the noun: 'una casa roja' (a red house). Colors also agree with gender: rojo (m) / roja (f), azul stays the same for both.",
+      "tip_bn": "ফরাসির মতো, স্প্যানিশ বিশেষণও বিশেষ্যের পরে আসে: 'una casa roja' (একটি লাল বাড়ি)। রঙও লিঙ্গের সাথে মেলে: rojo (পুং) / roja (স্ত্রী)।"
+    },
+    {
+      "id": 4, "level": "beginner", "icon": "📅",
+      "title_en": "Days, Time & Seasons",
+      "title_bn": "দিন, সময় ও ঋতু",
+      "title_lang": "Los Días, el Tiempo y las Estaciones",
+      "description_en": "Talk about days of the week, time, and seasons in Spanish.",
+      "description_bn": "স্প্যানিশে সপ্তাহের দিন, সময় এবং ঋতু সম্পর্কে কথা বলুন।",
+      "vocabulary_categories": ["time"],
+      "tip_en": "In Spanish, 'mañana' can mean both 'tomorrow' AND 'morning'. Context helps: 'mañana por la mañana' = tomorrow morning.",
+      "tip_bn": "স্প্যানিশে 'mañana' মানে 'আগামীকাল' এবং 'সকাল' উভয়ই। প্রসঙ্গ সাহায্য করে: 'mañana por la mañana' = আগামীকাল সকাল।"
+    },
+    {
+      "id": 5, "level": "beginner", "icon": "👨‍👩‍👧‍👦",
+      "title_en": "Family & Relationships",
+      "title_bn": "পরিবার ও সম্পর্ক",
+      "title_lang": "La Familia y las Relaciones",
+      "description_en": "Describe your family members and talk about relationships.",
+      "description_bn": "আপনার পরিবারের সদস্যদের বর্ণনা করুন এবং সম্পর্ক নিয়ে কথা বলুন।",
+      "vocabulary_categories": ["family"],
+      "tip_en": "'Mi familia es muy importante para mí' (My family is very important to me). Use 'tengo' (I have) to talk about family: 'Tengo un hermano' (I have a brother).",
+      "tip_bn": "'Mi familia es muy importante para mí' (আমার পরিবার আমার কাছে খুব গুরুত্বপূর্ণ)। পরিবার সম্পর্কে 'tengo' (আমার আছে) ব্যবহার করুন: 'Tengo un hermano'।"
+    },
+    {
+      "id": 6, "level": "beginner", "icon": "🫀",
+      "title_en": "Body Parts",
+      "title_bn": "শরীরের অঙ্গ",
+      "title_lang": "Las Partes del Cuerpo",
+      "description_en": "Learn body parts and describe health issues in Spanish.",
+      "description_bn": "স্প্যানিশে শরীরের অঙ্গের নাম জানুন এবং স্বাস্থ্য সমস্যা বর্ণনা করুন।",
+      "vocabulary_categories": ["body"],
+      "tip_en": "To say something hurts: 'Me duele + body part' → 'Me duele la cabeza' (My head hurts). For plural: 'Me duelen los pies' (My feet hurt).",
+      "tip_bn": "কোনো কিছু ব্যথা করলে: 'Me duele + শরীরের অঙ্গ' → 'Me duele la cabeza' (আমার মাথাব্যথা)। বহুবচনে: 'Me duelen los pies' (আমার পায়ে ব্যথা)।"
+    },
+    {
+      "id": 7, "level": "beginner", "icon": "🍽️",
+      "title_en": "Food & Drinks",
+      "title_bn": "খাবার ও পানীয়",
+      "title_lang": "Los Alimentos y Bebidas",
+      "description_en": "Order food and navigate a Spanish menu with confidence.",
+      "description_bn": "আত্মবিশ্বাসের সাথে খাবার অর্ডার করুন এবং স্প্যানিশ মেনু পড়ুন।",
+      "vocabulary_categories": ["food"],
+      "tip_en": "In Spanish restaurants: lunch (la comida) is the main meal at 2-3pm! 'Quisiera...' (I would like...) is polite. Ask for 'la cuenta' (the bill) when done.",
+      "tip_bn": "স্প্যানিশ রেস্তোরাঁয়: দুপুরের খাবার (la comida) হলো প্রধান খাবার দুপুর ২-৩টায়! 'Quisiera...' (আমি চাই...) ভদ্র। শেষে 'la cuenta' (বিল) চান।"
+    },
+    {
+      "id": 8, "level": "intermediate", "icon": "🚗",
+      "title_en": "Transport & Travel",
+      "title_bn": "যানবাহন ও ভ্রমণ",
+      "title_lang": "El Transporte y los Viajes",
+      "description_en": "Navigate Spanish cities, buy tickets, and ask for directions.",
+      "description_bn": "স্প্যানিশ শহরে চলাচল করুন, টিকিট কিনুন এবং পথ জিজ্ঞেস করুন।",
+      "vocabulary_categories": ["transport"],
+      "tip_en": "Ask directions: '¿Cómo llego a...?' (How do I get to...?). Directions: recto/todo recto (straight), a la derecha (right), a la izquierda (left), gira (turn).",
+      "tip_bn": "পথ জিজ্ঞেস করুন: '¿Cómo llego a...?' (... কীভাবে যাব?)। দিকনির্দেশনা: recto (সোজা), a la derecha (ডানে), a la izquierda (বামে), gira (ঘুরুন)।"
+    },
+    {
+      "id": 9, "level": "intermediate", "icon": "⚡",
+      "title_en": "Essential Verbs",
+      "title_bn": "গুরুত্বপূর্ণ ক্রিয়া",
+      "title_lang": "Los Verbos Esenciales",
+      "description_en": "Master the most important Spanish verbs for daily conversation.",
+      "description_bn": "দৈনন্দিন কথোপকথনের জন্য সবচেয়ে গুরুত্বপূর্ণ স্প্যানিশ ক্রিয়াগুলো আয়ত্ত করুন।",
+      "vocabulary_categories": ["verbs"],
+      "tip_en": "SER vs ESTAR is the hardest concept for Spanish learners! SER = permanent identity (Soy médico). ESTAR = temporary state (Estoy cansado). Practice both every day!",
+      "tip_bn": "SER বনাম ESTAR হলো স্প্যানিশ শিক্ষার্থীদের জন্য সবচেয়ে কঠিন বিষয়! SER = স্থায়ী পরিচয় (আমি ডাক্তার)। ESTAR = অস্থায়ী অবস্থা (আমি ক্লান্ত)।"
+    },
+    {
+      "id": 10, "level": "intermediate", "icon": "✨",
+      "title_en": "Adjectives & Descriptions",
+      "title_bn": "বিশেষণ ও বর্ণনা",
+      "title_lang": "Los Adjetivos y Descripciones",
+      "description_en": "Describe people, places, and things using Spanish adjectives.",
+      "description_bn": "স্প্যানিশ বিশেষণ ব্যবহার করে মানুষ, জায়গা এবং জিনিস বর্ণনা করুন।",
+      "vocabulary_categories": ["adjectives"],
+      "tip_en": "Adjectives agree with nouns: grande (big) stays grande for all, but bonito (m) → bonita (f). Most -o adjectives become -a for feminine.",
+      "tip_bn": "বিশেষণ বিশেষ্যের সাথে মেলে: grande (বড়) সব ক্ষেত্রে একই, কিন্তু bonito (পুং) → bonita (স্ত্রী)। বেশিরভাগ -o বিশেষণ স্ত্রীলিঙ্গে -a হয়।"
+    },
+    {
+      "id": 11, "level": "grammar", "icon": "📚",
+      "title_en": "Grammar: SER vs ESTAR",
+      "title_bn": "ব্যাকরণ: SER বনাম ESTAR",
+      "title_lang": "Gramática: SER vs ESTAR",
+      "description_en": "Master the two Spanish verbs meaning 'to be' — the most important distinction in Spanish!",
+      "description_bn": "'হওয়া' অর্থে দুটি স্প্যানিশ ক্রিয়া আয়ত্ত করুন — স্প্যানিশের সবচেয়ে গুরুত্বপূর্ণ পার্থক্য!",
+      "vocabulary_categories": [],
+      "grammar": {
+        "intro_en": "Spanish has TWO verbs meaning 'to be': SER (permanent/inherent) and ESTAR (temporary/changeable). This has NO equivalent in Bengali — it's a uniquely Spanish challenge!",
+        "intro_bn": "স্প্যানিশে 'হওয়া' অর্থে দুটি ক্রিয়া: SER (স্থায়ী/সহজাত) এবং ESTAR (অস্থায়ী/পরিবর্তনযোগ্য)। বাংলায় এর কোনো সমতুল্য নেই — এটি একটি বিশেষ স্প্যানিশ চ্যালেঞ্জ!",
+        "sections": [
+          {
+            "title_en": "SER — Permanent characteristics",
+            "title_bn": "SER — স্থায়ী বৈশিষ্ট্য",
+            "table": [
+              ["Subject", "SER", "Use for", "Example"],
+              ["yo", "soy", "identity, origin, profession", "Soy bangladesí (I am Bangladeshi)"],
+              ["tú", "eres", "personality, material", "Eres inteligente (You are intelligent)"],
+              ["él/ella", "es", "relationship", "Es mi madre (She is my mother)"],
+              ["nosotros", "somos", "time, date", "Somos estudiantes (We are students)"],
+              ["vosotros", "sois", "possession", "¿Sois hermanos? (Are you brothers?)"],
+              ["ellos/ellas", "son", "description", "Son españoles (They are Spanish)"]
+            ],
+            "note_en": "Use SER for: origin (Soy de Bangladesh), profession (Soy investigador/a), permanent characteristics (El agua es líquida), time (Son las tres).",
+            "note_bn": "SER ব্যবহার করুন: উৎপত্তি (আমি বাংলাদেশি), পেশা (আমি গবেষক), স্থায়ী বৈশিষ্ট্য (পানি তরল), সময় (তিনটা বাজে)।"
+          },
+          {
+            "title_en": "ESTAR — Temporary states & locations",
+            "title_bn": "ESTAR — অস্থায়ী অবস্থা ও অবস্থান",
+            "table": [
+              ["Subject", "ESTAR", "Use for", "Example"],
+              ["yo", "estoy", "feeling, emotion", "Estoy cansado (I am tired)"],
+              ["tú", "estás", "location", "Estás en casa (You are at home)"],
+              ["él/ella", "está", "health", "Está enfermo (He is sick)"],
+              ["nosotros", "estamos", "ongoing action", "Estamos comiendo (We are eating)"],
+              ["vosotros", "estáis", "result of change", "Estáis contentos (You are happy)"],
+              ["ellos/ellas", "están", "condition", "Están en España (They are in Spain)"]
+            ],
+            "note_en": "Use ESTAR for: location (Estoy en Barcelona), health/mood (Estoy bien/mal), temporary state (La sopa está caliente). Remember: 'caliente' (hot) uses ESTAR because temperature changes!",
+            "note_bn": "ESTAR ব্যবহার করুন: অবস্থান (আমি বার্সেলোনায়), স্বাস্থ্য/মনোভাব (আমি ভালো/খারাপ আছি), অস্থায়ী অবস্থা (স্যুপ গরম)। মনে রাখুন: 'caliente' (গরম) ESTAR ব্যবহার করে কারণ তাপমাত্রা পরিবর্তন হয়!"
+          }
+        ],
+        "quiz_questions": [
+          {"question_en": "'I am a doctor' — SER or ESTAR?", "question_bn": "'আমি একজন ডাক্তার' — SER নাকি ESTAR?", "correct": "SER — Soy médico", "choices": ["SER — Soy médico", "ESTAR — Estoy médico", "SER — Eres médico", "ESTAR — Está médico"]},
+          {"question_en": "'The soup is hot' — SER or ESTAR?", "question_bn": "'স্যুপটি গরম' — SER নাকি ESTAR?", "correct": "ESTAR — La sopa está caliente", "choices": ["ESTAR — La sopa está caliente", "SER — La sopa es caliente", "ESTAR — La sopa están caliente", "SER — La sopa eres caliente"]},
+          {"question_en": "How do you say 'I am from Bangladesh'?", "question_bn": "'আমি বাংলাদেশের' স্প্যানিশে কীভাবে বলে?", "correct": "Soy de Bangladesh", "choices": ["Soy de Bangladesh", "Estoy de Bangladesh", "Soy en Bangladesh", "Estoy en Bangladesh"]},
+          {"question_en": "How do you say 'I am at the university'?", "question_bn": "'আমি বিশ্ববিদ্যালয়ে আছি' স্প্যানিশে?", "correct": "Estoy en la universidad", "choices": ["Estoy en la universidad", "Soy en la universidad", "Estoy a la universidad", "Soy a la universidad"]},
+          {"question_en": "Complete: 'Ella ___ muy cansada hoy.' (She is very tired today)", "question_bn": "পূরণ করুন: 'Ella ___ muy cansada hoy.'", "correct": "está", "choices": ["está", "es", "estoy", "son"]}
+        ]
+      }
+    },
+    {
+      "id": 12, "level": "grammar", "icon": "🕐",
+      "title_en": "Grammar: Present Tense",
+      "title_bn": "ব্যাকরণ: বর্তমান কাল",
+      "title_lang": "Gramática: El Presente",
+      "description_en": "Conjugate -ar, -er, -ir verbs in the Spanish present tense.",
+      "description_bn": "স্প্যানিশ বর্তমান কালে -ar, -er, -ir ক্রিয়া পরিবর্তন করুন।",
+      "vocabulary_categories": [],
+      "grammar": {
+        "intro_en": "Spanish verbs end in -ar, -er, or -ir. Each type has its own set of endings in the present tense. The good news: -er and -ir are almost the same!",
+        "intro_bn": "স্প্যানিশ ক্রিয়া -ar, -er, অথবা -ir দিয়ে শেষ হয়। প্রতিটি ধরনের বর্তমান কালে নিজস্ব শেষাংশ আছে। ভালো খবর: -er এবং -ir প্রায় একই!",
+        "sections": [
+          {
+            "title_en": "-AR Verbs: HABLAR (to speak)",
+            "title_bn": "-AR ক্রিয়া: HABLAR (কথা বলা)",
+            "table": [
+              ["Subject", "Formation", "English", "Bengali"],
+              ["yo", "hablo", "I speak", "আমি বলি"],
+              ["tú", "hablas", "you speak", "তুমি বল"],
+              ["él/ella/usted", "habla", "he/she speaks", "সে বলে"],
+              ["nosotros", "hablamos", "we speak", "আমরা বলি"],
+              ["vosotros", "habláis", "you (pl.) speak", "তোমরা বল"],
+              ["ellos/ellas/ustedes", "hablan", "they speak", "তারা বলে"]
+            ],
+            "note_en": "Remove -ar and add: -o, -as, -a, -amos, -áis, -an. Other -ar verbs: comer→no! trabajar (work), estudiar (study), escuchar (listen), caminar (walk).",
+            "note_bn": "-ar সরিয়ে যোগ করুন: -o, -as, -a, -amos, -áis, -an। অন্যান্য -ar ক্রিয়া: trabajar (কাজ করা), estudiar (পড়া), escuchar (শোনা)।"
+          },
+          {
+            "title_en": "-ER Verbs: COMER (to eat)",
+            "title_bn": "-ER ক্রিয়া: COMER (খাওয়া)",
+            "table": [
+              ["Subject", "Formation", "English", "Bengali"],
+              ["yo", "como", "I eat", "আমি খাই"],
+              ["tú", "comes", "you eat", "তুমি খাও"],
+              ["él/ella", "come", "he/she eats", "সে খায়"],
+              ["nosotros", "comemos", "we eat", "আমরা খাই"],
+              ["vosotros", "coméis", "you eat", "তোমরা খাও"],
+              ["ellos/ellas", "comen", "they eat", "তারা খায়"]
+            ],
+            "note_en": "Remove -er and add: -o, -es, -e, -emos, -éis, -en. Other -er verbs: beber (drink), leer (read), vender (sell), correr (run).",
+            "note_bn": "-er সরিয়ে যোগ করুন: -o, -es, -e, -emos, -éis, -en। অন্যান্য -er ক্রিয়া: beber (পান করা), leer (পড়া), correr (দৌড়ানো)।"
+          }
+        ],
+        "quiz_questions": [
+          {"question_en": "'Yo ___ español.' (I speak Spanish) — hablar", "question_bn": "'Yo ___ español.' — hablar ক্রিয়ার সঠিক রূপ?", "correct": "hablo", "choices": ["hablo", "hablas", "hablan", "hablamos"]},
+          {"question_en": "'Nosotros ___ en la cafetería.' (We eat in the cafeteria) — comer", "question_bn": "'Nosotros ___ en la cafetería.' — comer এর সঠিক রূপ?", "correct": "comemos", "choices": ["comemos", "comen", "como", "comeís"]},
+          {"question_en": "'Ellos ___ mucho.' (They study a lot) — estudiar", "question_bn": "'Ellos ___ mucho.' — estudiar এর সঠিক রূপ?", "correct": "estudian", "choices": ["estudian", "estudiamos", "estudio", "estudias"]},
+          {"question_en": "How do you say 'He works in Madrid'?", "question_bn": "'সে মাদ্রিদে কাজ করে' স্প্যানিশে?", "correct": "Él trabaja en Madrid", "choices": ["Él trabaja en Madrid", "Él trabajas en Madrid", "Él trabajamos en Madrid", "Él trabajáis en Madrid"]},
+          {"question_en": "What ending does 'yo' ALWAYS take in present tense regular verbs?", "question_bn": "বর্তমান কালে নিয়মিত ক্রিয়ায় 'yo' সবসময় কোন শেষাংশ নেয়?", "correct": "-o (hablo, como, vivo)", "choices": ["-o (hablo, como, vivo)", "-s (hablas, comes)", "-n (hablan, comen)", "-mos (hablamos)"]}
+        ]
+      }
+    },
+    {
+      "id": 13, "level": "grammar", "icon": "⏮️",
+      "title_en": "Grammar: Past Tense (Pretérito)",
+      "title_bn": "ব্যাকরণ: অতীত কাল (Pretérito)",
+      "title_lang": "Gramática: El Pretérito Indefinido",
+      "description_en": "Talk about completed past actions using the Pretérito Indefinido.",
+      "description_bn": "Pretérito Indefinido ব্যবহার করে অতীতে সম্পন্ন কাজ সম্পর্কে কথা বলুন।",
+      "vocabulary_categories": [],
+      "grammar": {
+        "intro_en": "The Pretérito Indefinido is used for completed actions in the past with a specific time. 'Ayer comí arroz' (Yesterday I ate rice). It's like the simple past in English.",
+        "intro_bn": "Pretérito Indefinido ব্যবহার হয় নির্দিষ্ট সময়ে অতীতে সম্পন্ন কাজের জন্য। 'Ayer comí arroz' (গতকাল আমি ভাত খেয়েছিলাম)। ইংরেজির simple past এর মতো।",
+        "sections": [
+          {
+            "title_en": "-AR verbs: HABLAR",
+            "title_bn": "-AR ক্রিয়া: HABLAR",
+            "table": [
+              ["Subject", "Formation", "English", "Bengali"],
+              ["yo", "hablé", "I spoke", "আমি বলেছিলাম"],
+              ["tú", "hablaste", "you spoke", "তুমি বলেছিলে"],
+              ["él/ella", "habló", "he/she spoke", "সে বলেছিল"],
+              ["nosotros", "hablamos", "we spoke", "আমরা বলেছিলাম"],
+              ["vosotros", "hablasteis", "you spoke", "তোমরা বলেছিলে"],
+              ["ellos/ellas", "hablaron", "they spoke", "তারা বলেছিল"]
+            ],
+            "note_en": "Note: 'nosotros hablamos' is the SAME for present and past! Context tells you which one.",
+            "note_bn": "লক্ষ্য করুন: 'nosotros hablamos' বর্তমান এবং অতীত উভয়েই একই! প্রসঙ্গ বলে দেবে কোনটি।"
+          },
+          {
+            "title_en": "-ER/-IR verbs: COMER / VIVIR",
+            "title_bn": "-ER/-IR ক্রিয়া: COMER / VIVIR",
+            "table": [
+              ["Subject", "COMER", "VIVIR", "Bengali"],
+              ["yo", "comí", "viví", "আমি খেয়েছিলাম / বেঁচেছিলাম"],
+              ["tú", "comiste", "viviste", "তুমি খেয়েছিলে"],
+              ["él/ella", "comió", "vivió", "সে খেয়েছিল"],
+              ["nosotros", "comimos", "vivimos", "আমরা খেয়েছিলাম"],
+              ["vosotros", "comisteis", "vivisteis", "তোমরা খেয়েছিলে"],
+              ["ellos/ellas", "comieron", "vivieron", "তারা খেয়েছিল"]
+            ],
+            "note_en": "The accent marks are CRUCIAL: habló (he spoke) vs habló (it doesn't mean anything without context). Accents differentiate past from present: habló ≠ hablo.",
+            "note_bn": "উচ্চারণ চিহ্ন অত্যন্ত গুরুত্বপূর্ণ: habló (সে বলেছিল) বনাম hablo (আমি বলি)। উচ্চারণ চিহ্ন অতীত ও বর্তমানের পার্থক্য করে।"
+          }
+        ],
+        "quiz_questions": [
+          {"question_en": "How do you say 'I ate rice yesterday'?", "question_bn": "'গতকাল আমি ভাত খেয়েছিলাম' স্প্যানিশে?", "correct": "Ayer comí arroz", "choices": ["Ayer comí arroz", "Ayer como arroz", "Ayer comeré arroz", "Ayer comió arroz"]},
+          {"question_en": "Past tense of 'hablar' for 'él' (he)?", "question_bn": "'él' এর জন্য 'hablar' এর অতীত কাল?", "correct": "habló", "choices": ["habló", "habla", "hablé", "hablaron"]},
+          {"question_en": "How do you say 'We studied Spanish yesterday'?", "question_bn": "'আমরা গতকাল স্প্যানিশ পড়েছিলাম'?", "correct": "Ayer estudiamos español", "choices": ["Ayer estudiamos español", "Ayer estudié español", "Ayer estudian español", "Ayer estudiaron español"]},
+          {"question_en": "Past tense of 'vivir' for 'yo'?", "question_bn": "'yo' এর জন্য 'vivir' এর অতীত কাল?", "correct": "viví", "choices": ["viví", "vivo", "vivió", "vivía"]},
+          {"question_en": "Which sentence is in the PAST tense?", "question_bn": "কোন বাক্যটি অতীত কালে?", "correct": "Ella comió arroz ayer", "choices": ["Ella comió arroz ayer", "Ella come arroz ahora", "Ella comerá arroz mañana", "Ella comería arroz"]}
+        ]
+      }
+    },
+    {
+      "id": 14, "level": "grammar", "icon": "⏭️",
+      "title_en": "Grammar: Future Tense",
+      "title_bn": "ব্যাকরণ: ভবিষ্যৎ কাল",
+      "title_lang": "Gramática: El Futuro",
+      "description_en": "Talk about future plans using IR A + infinitive and the simple future.",
+      "description_bn": "IR A + infinitive এবং simple future ব্যবহার করে ভবিষ্যৎ পরিকল্পনা সম্পর্কে কথা বলুন।",
+      "vocabulary_categories": [],
+      "grammar": {
+        "intro_en": "Just like French, Spanish has two ways to express the future: (1) IR A + infinitive (going to...) for near future plans, and (2) Futuro Simple (will...) for predictions and promises.",
+        "intro_bn": "ফরাসির মতো, স্প্যানিশেও ভবিষ্যৎ প্রকাশের দুটি উপায়: (১) IR A + infinitive (যাচ্ছি...) নিকট ভবিষ্যতের জন্য, এবং (২) Futuro Simple (করব...) পূর্বানুমান ও প্রতিশ্রুতির জন্য।",
+        "sections": [
+          {
+            "title_en": "IR A + Infinitive — Going to...",
+            "title_bn": "IR A + Infinitive — করতে যাচ্ছি...",
+            "table": [
+              ["Subject", "Formation", "English", "Bengali"],
+              ["yo", "voy a estudiar", "I am going to study", "আমি পড়তে যাচ্ছি"],
+              ["tú", "vas a comer", "you are going to eat", "তুমি খেতে যাচ্ছ"],
+              ["él/ella", "va a dormir", "he is going to sleep", "সে ঘুমাতে যাচ্ছে"],
+              ["nosotros", "vamos a trabajar", "we are going to work", "আমরা কাজ করতে যাচ্ছি"],
+              ["vosotros", "vais a viajar", "you are going to travel", "তোমরা ভ্রমণ করতে যাচ্ছ"],
+              ["ellos/ellas", "van a hablar", "they are going to speak", "তারা বলতে যাচ্ছে"]
+            ],
+            "note_en": "This is the most common future in everyday spoken Spanish. 'Voy a estudiar esta tarde' (I'm going to study this afternoon).",
+            "note_bn": "এটি দৈনন্দিন কথ্য স্প্যানিশে সবচেয়ে সাধারণ ভবিষ্যৎ। 'Voy a estudiar esta tarde' (আমি আজ বিকেলে পড়তে যাচ্ছি)।"
+          },
+          {
+            "title_en": "Futuro Simple — Will...",
+            "title_bn": "Futuro Simple — করব...",
+            "table": [
+              ["Subject", "HABLAR", "English", "Bengali"],
+              ["yo", "hablaré", "I will speak", "আমি বলব"],
+              ["tú", "hablarás", "you will speak", "তুমি বলবে"],
+              ["él/ella", "hablará", "he/she will speak", "সে বলবে"],
+              ["nosotros", "hablaremos", "we will speak", "আমরা বলব"],
+              ["vosotros", "hablaréis", "you will speak", "তোমরা বলবে"],
+              ["ellos/ellas", "hablarán", "they will speak", "তারা বলবে"]
+            ],
+            "note_en": "All -ar, -er, -ir verbs use the same endings: -é, -ás, -á, -emos, -éis, -án. Add to the FULL infinitive (not just the stem)!",
+            "note_bn": "সব -ar, -er, -ir ক্রিয়া একই শেষাংশ ব্যবহার করে: -é, -ás, -á, -emos, -éis, -án। সম্পূর্ণ infinitive-এর সাথে যোগ করুন!"
+          }
+        ],
+        "quiz_questions": [
+          {"question_en": "How do you say 'I am going to eat'? (near future)", "question_bn": "'আমি খেতে যাচ্ছি' স্প্যানিশে? (নিকট ভবিষ্যৎ)", "correct": "Voy a comer", "choices": ["Voy a comer", "Voy comer", "Voy comiendo", "Como"]},
+          {"question_en": "Simple future of 'hablar' for 'nosotros'?", "question_bn": "'nosotros' এর জন্য 'hablar' এর simple future?", "correct": "hablaremos", "choices": ["hablaremos", "hablamos", "hablaréis", "hablarán"]},
+          {"question_en": "How do you say 'She will study tomorrow'?", "question_bn": "'সে আগামীকাল পড়বে' স্প্যানিশে?", "correct": "Ella estudiará mañana", "choices": ["Ella estudiará mañana", "Ella estudiamos mañana", "Ella va estudiar mañana", "Ella estudia mañana"]},
+          {"question_en": "Complete: 'Mañana ___ a trabajar.' (Tomorrow I am going to work)", "question_bn": "পূরণ করুন: 'Mañana ___ a trabajar.'", "correct": "voy", "choices": ["voy", "vas", "van", "vamos"]},
+          {"question_en": "'Ellos hablarán español' means:", "question_bn": "'Ellos hablarán español' অর্থ কী?", "correct": "They will speak Spanish", "choices": ["They will speak Spanish", "They speak Spanish", "They spoke Spanish", "They are going to speak Spanish"]}
+        ]
+      }
+    },
+    {
+      "id": 15, "level": "intermediate", "icon": "💬",
+      "title_en": "Everyday Phrases",
+      "title_bn": "দৈনন্দিন বাক্যাংশ",
+      "title_lang": "Frases del Día a Día",
+      "description_en": "Master practical phrases for real-life situations in Spain.",
+      "description_bn": "স্পেনে বাস্তব জীবনের পরিস্থিতির জন্য ব্যবহারিক বাক্যাংশ আয়ত্ত করুন।",
+      "vocabulary_categories": ["phrases"],
+      "tip_en": "Practice tip: Write 3 sentences about your day using these phrases every evening. After one month, you'll be amazed at your progress!",
+      "tip_bn": "অভ্যাসের টিপস: প্রতি সন্ধ্যায় এই বাক্যাংশ ব্যবহার করে আপনার দিন সম্পর্কে ৩টি বাক্য লিখুন। এক মাস পরে আপনার অগ্রগতি দেখে অবাক হবেন!"
+    }
+  ]
+}

@@ -1,0 +1,272 @@
+/* =============================================
+   Language Coach — Main Stylesheet
+   ============================================= */
+
+:root {
+  --french-color:  #0055A4;
+  --french-light:  #e8f0fb;
+  --french-dark:   #003b78;
+  --spanish-color: #c60b1e;
+  --spanish-light: #fce8ea;
+  --spanish-dark:  #8f0015;
+  --gold:          #FABE00;
+  --text-dark:     #1a1a2e;
+  --bg-light:      #f8f9fa;
+  --radius:        14px;
+  --shadow:        0 4px 20px rgba(0,0,0,0.08);
+}
+
+/* ---- Base ---- */
+body { font-family: 'Poppins', sans-serif; color: var(--text-dark); background: #fff; }
+.bengali-text { font-family: 'Noto Serif Bengali', serif; line-height: 1.8; }
+
+/* ---- Navbar ---- */
+#mainNav {
+  background: linear-gradient(135deg, var(--french-dark) 0%, #1a1a2e 50%, var(--spanish-dark) 100%);
+  box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+  padding: 0.5rem 0;
+}
+.brand-icon { font-size: 1.8rem; }
+.brand-title { font-size: 1.1rem; font-weight: 700; line-height: 1.2; }
+.brand-subtitle { font-size: 0.7rem; opacity: 0.7; font-family: 'Noto Serif Bengali', serif; }
+.nav-link { border-radius: 8px; padding: 0.4rem 0.9rem !important; transition: all .2s; font-size: 0.9rem; }
+.nav-link:hover, .nav-link.active { background: rgba(255,255,255,0.15) !important; }
+.flag-link span { font-weight: 600; }
+
+/* ---- Color utilities ---- */
+.text-french  { color: var(--french-color) !important; }
+.text-spanish { color: var(--spanish-color) !important; }
+.bg-french    { background: var(--french-color) !important; }
+.bg-spanish   { background: var(--spanish-color) !important; }
+.btn-french   { background: var(--french-color); color: #fff; border: none; border-radius: 10px; }
+.btn-french:hover { background: var(--french-dark); color: #fff; }
+.btn-spanish  { background: var(--spanish-color); color: #fff; border: none; border-radius: 10px; }
+.btn-spanish:hover { background: var(--spanish-dark); color: #fff; }
+.btn-outline-french  { border: 2px solid var(--french-color); color: var(--french-color); border-radius: 10px; }
+.btn-outline-french:hover  { background: var(--french-color); color: #fff; }
+.btn-outline-spanish { border: 2px solid var(--spanish-color); color: var(--spanish-color); border-radius: 10px; }
+.btn-outline-spanish:hover { background: var(--spanish-color); color: #fff; }
+.bg-french-badge { background: var(--french-light); color: var(--french-dark); }
+.bg-spanish-badge { background: var(--spanish-light); color: var(--spanish-dark); }
+
+/* ---- Language Header Banners ---- */
+.lang-header {
+  position: relative;
+  overflow: hidden;
+}
+.lang-header-french {
+  background: linear-gradient(135deg, var(--french-dark) 0%, var(--french-color) 100%);
+}
+.lang-header-spanish {
+  background: linear-gradient(135deg, var(--spanish-dark) 0%, #ff4757 100%);
+}
+.lang-header-multi {
+  background: linear-gradient(135deg, var(--french-dark) 0%, #1a1a2e 50%, var(--spanish-dark) 100%);
+}
+.btn-back { font-size: 0.85rem; border-radius: 8px; }
+
+/* ---- Hero ---- */
+.hero-section {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  min-height: 50vh;
+  display: flex;
+  align-items: center;
+}
+.hero-title { font-size: 2.8rem; font-weight: 800; color: #fff; }
+.hero-subtitle { font-size: 1.3rem; color: rgba(255,255,255,0.9); }
+.hero-desc { font-size: 1rem; color: rgba(255,255,255,0.7) !important; }
+.wave { display: inline-block; animation: wave 1.8s infinite; transform-origin: 70% 70%; }
+@keyframes wave { 0%,100% { transform: rotate(0deg); } 25% { transform: rotate(15deg); } 75% { transform: rotate(-10deg); } }
+
+.hero-flags { display: flex; gap: 1rem; align-items: center; }
+.flag-card {
+  width: 110px; height: 110px; border-radius: 20px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  font-size: 2.5rem; font-weight: 600; color: #fff;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+}
+.flag-card small { font-size: 0.7rem; opacity: 0.9; margin-top: 4px; }
+.flag-card-fr { background: linear-gradient(135deg, var(--french-color), var(--french-dark)); }
+.flag-card-es { background: linear-gradient(135deg, var(--spanish-color), var(--spanish-dark)); }
+.flag-card-bd { background: linear-gradient(135deg, #006a4e, #f42a41); }
+
+/* ---- Section titles ---- */
+.section-title { font-weight: 700; font-size: 1.8rem; color: var(--text-dark); }
+
+/* ---- Progress Cards ---- */
+.progress-card { border-radius: var(--radius); transition: transform .2s, box-shadow .2s; }
+.progress-card:hover { transform: translateY(-4px); box-shadow: 0 10px 30px rgba(0,0,0,0.12); }
+.lang-flag { font-size: 2.5rem; }
+.progress-bar { border-radius: 20px; transition: width 1s ease; }
+
+/* ---- Features ---- */
+.feature-card { border-radius: var(--radius); transition: transform .2s; cursor: default; }
+.feature-card:hover { transform: translateY(-4px); }
+.feature-icon { font-size: 2.5rem; }
+
+/* ---- Learning Path ---- */
+.path-card {
+  border-radius: var(--radius); background: #fff;
+  border: 2px solid #e9ecef; transition: all .2s;
+}
+.path-card:hover { border-color: var(--french-color); box-shadow: var(--shadow); }
+.path-number {
+  width: 2.5rem; height: 2.5rem; border-radius: 50%;
+  background: linear-gradient(135deg, var(--french-color), var(--spanish-color));
+  color: #fff; font-weight: 700; font-size: 1.1rem;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 0.5rem;
+}
+.path-icon { font-size: 2rem; }
+
+/* ---- Lesson Cards ---- */
+.lesson-card {
+  border-radius: var(--radius); border: 2px solid #e9ecef;
+  transition: all .2s; cursor: default;
+}
+.lesson-card:hover { border-color: #adb5bd; box-shadow: var(--shadow); transform: translateY(-2px); }
+.lesson-done { border-color: #198754 !important; background: #f0fff4 !important; }
+.lesson-icon-wrap { position: relative; flex-shrink: 0; }
+.lesson-icon { font-size: 2rem; }
+.done-badge {
+  position: absolute; top: -4px; right: -4px;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: #198754; color: #fff; font-size: 0.6rem;
+  display: flex; align-items: center; justify-content: center;
+}
+.lesson-num { letter-spacing: 0.05em; text-transform: uppercase; font-size: 0.7rem; }
+.score-badge { font-size: 0.8rem; color: #f6a800; }
+.level-header h2 { font-size: 1.5rem; color: var(--text-dark); }
+
+/* ---- Vocabulary Cards ---- */
+.vocab-card {
+  border-radius: var(--radius); transition: transform .15s, box-shadow .15s;
+}
+.vocab-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+.vocab-word { letter-spacing: 0.01em; }
+.vocab-english { font-size: 0.9rem; color: #495057; }
+.vocab-bengali { font-size: 0.95rem; color: #495057; }
+.pron-badge {
+  font-size: 0.7rem; color: #6c757d; background: #f0f0f0;
+  border-radius: 6px; padding: 2px 6px; font-family: monospace;
+  flex-shrink: 0;
+}
+.example-box {
+  background: #f8f9fa; border-radius: 8px; padding: 0.6rem 0.8rem;
+  border-left: 3px solid #dee2e6; font-size: 0.82rem;
+}
+.example-lang { color: #343a40; font-style: italic; }
+.example-en, .example-bn { color: #6c757d; margin-top: 2px; }
+
+/* ---- Grammar ---- */
+.grammar-intro { border-left: 4px solid var(--french-color) !important; }
+.lang-spanish-page .grammar-intro { border-left-color: var(--spanish-color) !important; }
+.grammar-section-header {
+  background: #f8f9fa; border-bottom: 1px solid #dee2e6;
+  padding: 1rem 1.25rem;
+}
+.grammar-table { font-size: 0.85rem; }
+.grammar-table .table-header-row th { background: #f1f3f5; font-weight: 600; }
+.grammar-table td, .grammar-table th { padding: 0.5rem 0.75rem; }
+.note-box {
+  background: #fff8e1; border-radius: 8px; padding: 0.75rem 1rem;
+  border-left: 4px solid #ffc107; font-size: 0.85rem;
+}
+.section-label { font-size: 1.2rem; font-weight: 600; color: var(--text-dark); border-bottom: 2px solid #dee2e6; padding-bottom: 0.5rem; }
+.tip-box {
+  display: flex; gap: 0.75rem; align-items: flex-start;
+  background: #e8f5e9; border-radius: var(--radius); padding: 1rem 1.25rem;
+  border-left: 4px solid #4caf50; font-size: 0.9rem;
+}
+.tip-icon { font-size: 1.5rem; flex-shrink: 0; }
+
+/* ---- Sidebar ---- */
+.info-row { display: flex; justify-content: space-between; align-items: center; padding: 0.4rem 0; border-bottom: 1px solid #f0f0f0; }
+.info-row:last-child { border-bottom: none; }
+
+/* ====================================================
+   FLASHCARD
+   ==================================================== */
+.flashcard-container { perspective: 1200px; height: 320px; cursor: pointer; }
+.flashcard {
+  width: 100%; height: 100%; position: relative;
+  transform-style: preserve-3d; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: var(--radius);
+}
+.flashcard.flipped { transform: rotateY(180deg); }
+.flashcard-front, .flashcard-back {
+  position: absolute; width: 100%; height: 100%;
+  backface-visibility: hidden; border-radius: var(--radius);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 2rem; text-align: center; box-shadow: var(--shadow);
+}
+.flashcard-front { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; }
+.lang-french-page .flashcard-front { background: linear-gradient(135deg, var(--french-color) 0%, var(--french-dark) 100%); }
+.lang-spanish-page .flashcard-front { background: linear-gradient(135deg, var(--spanish-color) 0%, var(--spanish-dark) 100%); }
+.flashcard-back { background: #fff; border: 2px solid #dee2e6; transform: rotateY(180deg); }
+.card-lang-tag { font-size: 0.8rem; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; }
+.flashcard-word { font-size: 2.5rem; font-weight: 700; line-height: 1.2; }
+.flashcard-pron { font-size: 0.85rem; opacity: 0.8; margin-top: 0.5rem; font-family: monospace; }
+.back-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; font-size: 1.1rem; }
+.back-flag { font-size: 1.5rem; flex-shrink: 0; }
+.back-english { font-size: 1.1rem; font-weight: 600; color: #343a40; }
+.back-bengali { font-size: 1.1rem; font-weight: 600; color: #495057; }
+.back-example { font-size: 0.8rem; color: #6c757d; background: #f8f9fa; padding: 0.5rem 0.75rem; border-radius: 8px; margin-top: 0.5rem; width: 100%; }
+.flip-hint { font-size: 0.8rem; }
+
+/* ====================================================
+   QUIZ
+   ==================================================== */
+.quiz-card { border-radius: var(--radius); min-height: 300px; }
+.question-text { font-size: 1.25rem; font-weight: 600; line-height: 1.5; }
+.question-bengali { font-size: 1rem; }
+.choices-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+@media (max-width: 500px) { .choices-grid { grid-template-columns: 1fr; } }
+
+.choice-btn {
+  display: block; width: 100%; padding: 0.875rem 1rem;
+  border: 2px solid #dee2e6; border-radius: 12px;
+  background: #fff; text-align: left; cursor: pointer;
+  font-family: 'Poppins', sans-serif; font-size: 0.9rem;
+  transition: all .15s; line-height: 1.4;
+}
+.choice-btn:hover { border-color: #adb5bd; background: #f8f9fa; transform: translateY(-1px); }
+.choice-btn.correct  { border-color: #198754 !important; background: #d1e7dd !important; color: #0a3622; }
+.choice-btn.wrong    { border-color: #dc3545 !important; background: #f8d7da !important; color: #58151c; }
+.choice-btn.revealed { border-color: #198754; background: #d1e7dd; color: #0a3622; }
+.choice-btn:disabled { cursor: not-allowed; }
+
+.feedback-box { border-radius: var(--radius); padding: 1rem 1.25rem; }
+.feedback-box.correct-fb { background: #d1e7dd; }
+.feedback-box.wrong-fb   { background: #f8d7da; }
+.feedback-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+
+/* Results */
+.result-emoji { font-size: 5rem; }
+.score-display { font-size: 3.5rem; font-weight: 800; }
+.stat-box { padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.stat-num { font-size: 2rem; font-weight: 700; }
+.stat-label { font-size: 0.75rem; color: #6c757d; }
+
+/* ====================================================
+   PROGRESS PAGE
+   ==================================================== */
+.big-percent { font-size: 2.5rem; font-weight: 800; }
+.table-success-soft { background: rgba(25, 135, 84, 0.06) !important; }
+
+/* ====================================================
+   COMPLETION / FOOTER
+   ==================================================== */
+.completion-box {
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  border-radius: var(--radius); padding: 2rem;
+  border: 2px dashed #dee2e6;
+}
+
+footer { background: #1a1a2e; color: rgba(255,255,255,0.6); }
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  .hero-title { font-size: 2rem; }
+  .flashcard-word { font-size: 1.8rem; }
+}

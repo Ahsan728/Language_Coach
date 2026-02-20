@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block title %}Quiz — {{ lesson.title_en }}{% endblock %}
+{% block body_class %}lang-{{ lang }}-page quiz-page{% endblock %}
+
+{% block content %}
+<div class="lang-header lang-header-{{ lang }} py-4">
+  <div class="container">
+    <div class="d-flex align-items-center gap-3">
+      <a href="/lesson/{{ lang }}/{{ lesson.id }}" class="btn btn-sm btn-light btn-back">← Back</a>
+      <div>
+        <h2 class="text-white fw-bold mb-0">🧠 Quiz — কুইজ</h2>
+        <p class="text-white opacity-75 mb-0">{{ lesson.title_en }} &bull; {{ lesson.title_bn }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-7 col-md-9">
+
+      {% if not questions %}
+      <div class="alert alert-warning text-center">
+        <h4>⚠️ Not enough vocabulary for a quiz!</h4>
+        <p>This lesson needs at least 4 vocabulary words.</p>
+        <a href="/lesson/{{ lang }}/{{ lesson.id }}" class="btn btn-secondary">← Go Back</a>
+      </div>
+      {% else %}
+
+      <!-- Quiz progress -->
+      <div class="d-flex justify-content-between align-items-center mb-3" id="quizHeader">
+        <span class="text-muted small" id="qCounter">Question 1 of {{ questions | length }}</span>
+        <div class="d-flex gap-2 align-items-center">
+          <span class="badge bg-success fs-6" id="scoreDisplay">Score: 0</span>
+          <span class="text-muted small" id="qAccuracy"></span>
+        </div>
+      </div>
+      <div class="progress mb-4" style="height:8px">
+        <div class="progress-bar bg-{{ 'french' if lang == 'french' else 'spanish' }}" id="quizProgress" style="width:0%"></div>
+      </div>
+
+      <!-- Question card -->
+      <div class="quiz-card card border-0 shadow" id="quizCard">
+        <div class="card-body p-4 p-md-5">
+          <div class="question-num text-muted small mb-3" id="qNum">Question 1</div>
+          <h4 class="question-text mb-2" id="questionEn">Loading...</h4>
+          <p class="question-bengali bengali-text text-muted mb-4" id="questionBn"></p>
+
+          <div class="choices-grid" id="choicesGrid">
+            <!-- Choices injected by JS -->
+          </div>
+
+          <!-- Feedback -->
+          <div class="feedback-box mt-4" id="feedbackBox" style="display:none">
+            <div id="feedbackIcon" class="feedback-icon"></div>
+            <div id="feedbackText"></div>
+            <button class="btn btn-{{ 'french' if lang == 'french' else 'spanish' }} mt-3" onclick="nextQuestion()" id="nextQBtn">
+              Next Question →
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results card (hidden initially) -->
+      <div class="results-card card border-0 shadow" id="resultsCard" style="display:none">
+        <div class="card-body p-5 text-center">
+          <div id="resultEmoji" class="result-emoji"></div>
+          <h2 class="mt-3 fw-bold" id="resultTitle"></h2>
+          <p class="text-muted bengali-text" id="resultBn"></p>
+          <div class="score-display my-4" id="finalScore"></div>
+          <div class="row g-3 mt-2">
+            <div class="col-4">
+              <div class="stat-box">
+                <div class="stat-num text-success" id="correctCount">0</div>
+                <div class="stat-label">Correct ✓</div>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="stat-box">
+                <div class="stat-num text-danger" id="wrongCount">0</div>
+                <div class="stat-label">Wrong ✗</div>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="stat-box">
+                <div class="stat-num text-primary" id="totalCount">0</div>
+                <div class="stat-label">Total</div>
+              </div>
+            </div>
+          </div>
+          <div class="d-flex gap-2 justify-content-center mt-4 flex-wrap">
+            <button class="btn btn-outline-secondary" onclick="restartQuiz()">↺ Try Again</button>
+            {% if lesson.vocabulary_categories %}
+            <a href="/flashcards/{{ lang }}/{{ lesson.id }}" class="btn btn-outline-{{ 'french' if lang == 'french' else 'spanish' }}">
+              🃏 Flashcards
+            </a>
+            {% endif %}
+            <a href="/language/{{ lang }}" class="btn btn-{{ 'french' if lang == 'french' else 'spanish' }}">
+              Next Lesson →
+            </a>
+          </div>
+        </div>
+      </div>
+
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<script>
+const QUESTIONS = {{ questions_json | safe }};
+const LANG = '{{ lang }}';
+const LESSON_ID = {{ lesson.id }};
+const TOTAL_Q = QUESTIONS.length;
+</script>
+{% endblock %}
