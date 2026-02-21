@@ -47,11 +47,11 @@ Then open your browser at **http://localhost:5000**
 
 ## Local Resources (PDFs + Links)
 
-- Add your learning PDFs/links into `French Resources/` and `Spanish Resources/`.
-- Open **Resources** in the navbar to browse them (auto-detected).
-- To enable **Context** questions in **Daily Practice**, build the sentence index:
+- Add your learning PDFs/links into `French Resources/` and `Spanish Resources/` (kept local; ignored by Git).
+- Build the sentence index (optional, safe to re-run after adding new PDFs):
   - `python scripts/build_resource_sentences.py`
-  - This creates `data/resource_sentences.json` (optional; safe to re-run after adding new PDFs).
+- This creates `data/resource_sentences.json` (local-only).
+- The app uses this file to power **Resource Drill** on the dashboard and extra **Context** questions in **Daily Practice** (your PDFs are not served in the web UI).
 
 ## Auto-push to GitHub (Optional)
 

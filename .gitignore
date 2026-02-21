@@ -22,43 +22,11 @@ Dictionaries/
 Spanish A0/
 French A0/
 
-# Local resource folders (keep small notes/links; ignore large binaries)
-French Resources/*.pdf
-French Resources/**/*.pdf
-Spanish Resources/*.pdf
-Spanish Resources/**/*.pdf
-French Resources/*.epub
-French Resources/**/*.epub
-Spanish Resources/*.epub
-Spanish Resources/**/*.epub
-French Resources/*.mp3
-French Resources/**/*.mp3
-Spanish Resources/*.mp3
-Spanish Resources/**/*.mp3
-French Resources/*.wav
-French Resources/**/*.wav
-Spanish Resources/*.wav
-Spanish Resources/**/*.wav
-French Resources/*.m4a
-French Resources/**/*.m4a
-Spanish Resources/*.m4a
-Spanish Resources/**/*.m4a
-French Resources/*.mp4
-French Resources/**/*.mp4
-Spanish Resources/*.mp4
-Spanish Resources/**/*.mp4
-French Resources/*.zip
-French Resources/**/*.zip
-Spanish Resources/*.zip
-Spanish Resources/**/*.zip
-French Resources/*.rar
-French Resources/**/*.rar
-Spanish Resources/*.rar
-Spanish Resources/**/*.rar
-French Resources/*.7z
-French Resources/**/*.7z
-Spanish Resources/*.7z
-Spanish Resources/**/*.7z
+# Local resource folders (private inputs; don't commit)
+French Resources/*
+!French Resources/README.md
+Spanish Resources/*
+!Spanish Resources/README.md
 
 # Build artifacts from dictionary extraction scripts
 data/_bn_cache_*.json

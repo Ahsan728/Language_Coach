@@ -9,8 +9,7 @@ import unicodedata
 import uuid
 from datetime import datetime, date, timedelta
 from typing import Optional
-from urllib.parse import urlparse
-from flask import Flask, render_template, jsonify, request, redirect, url_for, send_file, send_from_directory, abort
+from flask import Flask, render_template, jsonify, request, redirect, url_for, send_file
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'language_coach_dev')
@@ -30,10 +29,6 @@ app.config['TTS_CACHE_DIR'] = TTS_CACHE_DIR
 VOCAB_PATH = os.path.join(DATA_DIR, 'vocabulary.json')
 LESSONS_PATH = os.path.join(DATA_DIR, 'lessons.json')
 RESOURCE_SENTENCES_PATH = os.path.join(DATA_DIR, 'resource_sentences.json')
-RESOURCE_DIRS = {
-    'french': os.path.join(BASE_DIR, 'French Resources'),
-    'spanish': os.path.join(BASE_DIR, 'Spanish Resources'),
-}
 
 _DATA_LOCK = threading.Lock()
 _DATA_CACHE = {}
@@ -87,85 +82,6 @@ def get_resource_sentences():
     return _cached_json('resource_sentences', RESOURCE_SENTENCES_PATH, default={})
 
 
-_CEFR_RE = re.compile(r'\b(A0|A1|A2|B1|B2|C1|C2)\b', re.I)
-_URL_RE = re.compile(r'https?://\S+', re.I)
-
-
-def _infer_cefr_from_filename(name: str) -> Optional[str]:
-    m = _CEFR_RE.search(name.replace('_', ' ').replace('-', ' '))
-    return m.group(1).upper() if m else None
-
-
-def _title_from_filename(filename: str) -> str:
-    base = os.path.splitext(os.path.basename(filename))[0]
-    base = re.sub(r'^\s*\d+\s*[\.\)\-_\s]+', '', base)
-    base = base.replace('_', ' ').replace('-', ' ')
-    base = re.sub(r'\s+', ' ', base).strip()
-    return base or filename
-
-
-def _list_local_pdfs(lang: str):
-    base = RESOURCE_DIRS.get(lang)
-    if not base or not os.path.isdir(base):
-        return []
-
-    out = []
-    for root, _, files in os.walk(base):
-        for name in sorted(files):
-            if not name.lower().endswith('.pdf'):
-                continue
-            full = os.path.join(root, name)
-            rel = os.path.relpath(full, base).replace('\\', '/')
-            try:
-                size_mb = round(os.path.getsize(full) / (1024 * 1024), 1)
-            except OSError:
-                size_mb = None
-
-            out.append({
-                'filename': rel,
-                'title': _title_from_filename(name),
-                'cefr': _infer_cefr_from_filename(name),
-                'size_mb': size_mb,
-            })
-
-    return sorted(out, key=lambda r: (r.get('cefr') or 'Z', (r.get('title') or '').lower()))
-
-
-def _list_local_links(lang: str):
-    base = RESOURCE_DIRS.get(lang)
-    if not base or not os.path.isdir(base):
-        return []
-
-    links = []
-    seen = set()
-    for root, _, files in os.walk(base):
-        for name in files:
-            if not name.lower().endswith('.txt'):
-                continue
-            path = os.path.join(root, name)
-            try:
-                with open(path, encoding='utf-8', errors='replace') as f:
-                    lines = f.readlines()
-            except OSError:
-                continue
-
-            for line in lines:
-                line = line.strip()
-                if not line or line.startswith('#'):
-                    continue
-                m = _URL_RE.search(line)
-                if not m:
-                    continue
-                url = m.group(0).rstrip(').,;')
-                if url in seen:
-                    continue
-                seen.add(url)
-                host = urlparse(url).netloc or url
-                links.append({'url': url, 'label': host})
-
-    return links
-
-
 def _strip_accents(text: str) -> str:
     return ''.join(c for c in unicodedata.normalize('NFD', text) if unicodedata.category(c) != 'Mn')
 
@@ -209,6 +125,218 @@ def _blank_first_token(sentence: str, word: str) -> Optional[str]:
         if tok_norm in variants:
             return sentence[:m.start()] + '____' + sentence[m.end():]
     return None
+
+
+_STOPWORDS = {
+    # Normalized (lowercased, accents stripped) to match _norm_match()
+    'french': {
+        'a', 'au', 'aux', 'avec', 'ce', 'ces', 'cest', 'dans', 'de', 'des', 'du', 'elle', 'en', 'et',
+        'il', 'ils', 'je', 'la', 'le', 'les', 'leur', 'leurs', 'ma', 'mais', 'mes', 'mon', 'ne', 'nous',
+        'on', 'ou', 'par', 'pas', 'pour', 'que', 'qui', 'sa', 'se', 'ses', 'son', 'ta', 'te', 'tes',
+        'toi', 'ton', 'tu', 'un', 'une', 'vous', 'y',
+    },
+    'spanish': {
+        'a', 'al', 'con', 'como', 'de', 'del', 'el', 'ella', 'ellas', 'ellos', 'en', 'es', 'esta', 'esto',
+        'la', 'las', 'lo', 'los', 'mas', 'mi', 'mis', 'muy', 'no', 'nosotros', 'o', 'para', 'pero', 'por',
+        'porque', 'que', 'se', 'si', 'sin', 'su', 'sus', 'tu', 'tus', 'un', 'una', 'unos', 'unas', 'y',
+        'yo',
+    },
+}
+
+
+def _build_vocab_variant_index(vocab_by_cat):
+    entries = []
+    variant_index = {}
+    for cat, words in (vocab_by_cat or {}).items():
+        for w in (words or []):
+            word = (w or {}).get('word')
+            if not word:
+                continue
+            entry = {**w, 'category': cat}
+            entries.append(entry)
+            for v in _word_match_variants(word):
+                if v and v not in variant_index:
+                    variant_index[v] = entry
+    return entries, variant_index
+
+
+def _compute_resource_insights(lang, resource_sentences, vocab_by_cat, lesson_list, progress):
+    if not resource_sentences:
+        return None
+
+    sample_limit = 900
+    sample = (
+        resource_sentences
+        if len(resource_sentences) <= sample_limit
+        else random.sample(resource_sentences, sample_limit)
+    )
+
+    entries, variant_index = _build_vocab_variant_index(vocab_by_cat)
+    category_counts = {}
+    total_tokens = 0
+    matched_tokens = 0
+
+    sources = set()
+    for s in resource_sentences:
+        src = (s.get('source') or '').strip()
+        if src:
+            sources.add(src)
+
+    for s in sample:
+        text = (s.get('text') or '').strip()
+        if not text:
+            continue
+        for tok in _SENT_TOKEN_RE.findall(text):
+            norm = _norm_match(tok)
+            if not norm:
+                continue
+            total_tokens += 1
+            entry = variant_index.get(norm)
+            if not entry:
+                continue
+            matched_tokens += 1
+            cat = entry.get('category')
+            if cat:
+                category_counts[cat] = category_counts.get(cat, 0) + 1
+
+    coverage_pct = int(round((matched_tokens / total_tokens) * 100)) if total_tokens else 0
+    top_cats = sorted(category_counts.items(), key=lambda x: (-x[1], x[0]))[:3]
+    top_categories = [
+        {'id': cat, 'label': cat.replace('_', ' ').title(), 'count': cnt}
+        for cat, cnt in top_cats
+    ]
+
+    focus_lesson = None
+    best_score = 0
+    for lesson in _sorted_lessons(lesson_list):
+        lid = lesson.get('id')
+        if (progress or {}).get(lid, {}).get('completed'):
+            continue
+        score = sum(category_counts.get(c, 0) for c in (lesson.get('vocabulary_categories') or []))
+        if score > best_score:
+            best_score = score
+            focus_lesson = lesson
+
+    if best_score <= 0:
+        focus_lesson = None
+
+    return {
+        'sentence_count': len(resource_sentences),
+        'source_count': len(sources),
+        'coverage_pct': coverage_pct,
+        'top_categories': top_categories,
+        'focus_lesson': focus_lesson,
+    }
+
+
+def _build_resource_drill_questions(lang, total_q, vocab_by_cat, vocab_all, resource_sentences, tts_lang):
+    if not resource_sentences:
+        return []
+
+    entries, variant_index = _build_vocab_variant_index(vocab_by_cat)
+    if not entries:
+        return []
+
+    stop = _STOPWORDS.get(lang, set())
+
+    # Prefer due words, but fall back to any vocab word if no SRS history exists.
+    now_iso = datetime.now().isoformat(timespec='seconds')
+    conn = get_db()
+    due_rows = conn.execute('''
+        SELECT word
+        FROM word_progress
+        WHERE language=?
+          AND (next_due IS NULL OR next_due <= ?)
+        ORDER BY COALESCE(next_due, '') ASC, box ASC, incorrect DESC
+        LIMIT ?
+    ''', (lang, now_iso, max(200, total_q * 12))).fetchall()
+    conn.close()
+    due_set = {r['word'] for r in due_rows if r.get('word')}
+
+    wrong_pool = [w.get('word') for w in vocab_all if w.get('word')]
+    wrong_pool = [w for w in dict.fromkeys(wrong_pool) if w]  # stable de-dupe
+
+    used_words = set()
+    questions = []
+    attempts = 0
+    max_attempts = total_q * 80
+
+    while len(questions) < total_q and attempts < max_attempts:
+        attempts += 1
+        s = random.choice(resource_sentences)
+        text = (s.get('text') or '').strip()
+        if not text:
+            continue
+
+        candidates = []
+        seen = set()
+        for tok in _SENT_TOKEN_RE.findall(text):
+            norm = _norm_match(tok)
+            if not norm or norm in stop:
+                continue
+            entry = variant_index.get(norm)
+            if not entry:
+                continue
+            w = entry.get('word')
+            if not w or w in seen or ' ' in w:
+                continue
+            seen.add(w)
+            candidates.append(entry)
+
+        if due_set:
+            due_candidates = [e for e in candidates if e.get('word') in due_set]
+            if due_candidates:
+                candidates = due_candidates
+
+        if not candidates:
+            continue
+
+        # Prefer not to repeat words in the same session if possible.
+        fresh = [e for e in candidates if e.get('word') and e.get('word') not in used_words]
+        pick_from = fresh or candidates
+        entry = random.choice(pick_from)
+
+        word = entry.get('word')
+        if not word:
+            continue
+        blanked = _blank_first_token(text, word)
+        if not blanked:
+            continue
+
+        english = entry.get('english', '')
+        bengali = entry.get('bengali', '')
+        hint = f"Hint: {english}" if english else 'Hint:'
+        if bengali:
+            hint += f" \u2022 বাংলা: {bengali}"
+
+        # Choices: correct + 3 wrong
+        wrong_choices = [w for w in wrong_pool if w != word]
+        random.shuffle(wrong_choices)
+        choices = [word] + wrong_choices[:3]
+        if len(choices) < 2:
+            continue
+
+        q = {
+            'kind': 'mcq',
+            'mode': 'resource_cloze',
+            'mode_label': '📚 Resource',
+            'prompt_en': f"Fill in the blank: {blanked}",
+            'prompt_bn': hint,
+            'tts_text': text,
+            'tts_lang': tts_lang,
+            'choices': choices,
+            'answer': word,
+            'word': word,
+            'xp_correct': 14,
+            'xp_wrong': 3,
+        }
+
+        q['id'] = len(questions) + 1
+        random.shuffle(q['choices'])
+        questions.append(q)
+        used_words.add(word)
+
+    return questions
 
 # ---------- Database helpers ----------
 def get_db():
@@ -402,6 +530,8 @@ def inject_globals():
 @app.route('/')
 def dashboard():
     lessons_all = get_lessons()
+    vocab_all = get_vocab()
+    resource_all = get_resource_sentences()
     activity = get_activity_summary()
     stats = {}
     for lang in LANGS:
@@ -410,32 +540,19 @@ def dashboard():
         total = len(lesson_list)
         completed = sum(1 for v in prog.values() if v.get('completed'))
         rec = _recommended_lesson(lesson_list, prog)
+        vocab_by_cat = vocab_all.get(lang, {}) or {}
+        resources = resource_all.get(lang, []) or []
+        resource_info = _compute_resource_insights(lang, resources, vocab_by_cat, lesson_list, prog)
         stats[lang] = {'total': total, 'completed': completed,
                        'percent': int(completed / total * 100) if total else 0,
                        'next_lesson': rec,
-                       'continue_url': url_for('lesson_view', lang=lang, lesson_id=rec['id']) if rec else url_for('language_home', lang=lang)}
+                       'continue_url': url_for('lesson_view', lang=lang, lesson_id=rec['id']) if rec else url_for('language_home', lang=lang),
+                       'resource': resource_info}
     return render_template('dashboard.html', stats=stats, activity=activity)
 
 @app.route('/resources')
 def resources_view():
-    local_resources = {
-        lang: {
-            'pdfs': _list_local_pdfs(lang),
-            'links': _list_local_links(lang),
-        }
-        for lang in LANGS
-    }
-    return render_template('resources.html', local_resources=local_resources)
-
-
-@app.route('/resources/local/<lang>/<path:filename>')
-def local_resource_file(lang, filename):
-    if lang not in RESOURCE_DIRS:
-        abort(404)
-    base = RESOURCE_DIRS.get(lang)
-    if not base or not os.path.isdir(base):
-        abort(404)
-    return send_from_directory(base, filename, as_attachment=False)
+    return render_template('resources.html')
 
 @app.route('/language/<lang>')
 def language_home(lang):
@@ -633,10 +750,26 @@ def practice(lang):
     except (TypeError, ValueError):
         total_q = 12
 
+    mode = (request.args.get('mode') or '').strip().lower()
+
     vocab_by_cat = get_vocab().get(lang, {})
     vocab_all = [w for words in vocab_by_cat.values() for w in words if w.get('word') and w.get('english')]
     if not vocab_all:
         return redirect(url_for('language_home', lang=lang))
+
+    tts_lang = 'fr-FR' if lang == 'french' else 'es-ES'
+    resource_sentences = get_resource_sentences().get(lang, []) or []
+
+    if mode in {'resources', 'resource'}:
+        if not resource_sentences:
+            return redirect(url_for('practice', lang=lang))
+        questions = _build_resource_drill_questions(lang, total_q, vocab_by_cat, vocab_all, resource_sentences, tts_lang)
+        if questions:
+            return render_template('practice.html',
+                                   lang=lang, meta=LANG_META[lang],
+                                   questions=questions,
+                                   questions_json=json.dumps(questions, ensure_ascii=False))
+        return redirect(url_for('practice', lang=lang))
 
     # Prefer due words (spaced repetition); otherwise pick random vocabulary.
     now_iso = datetime.now().isoformat(timespec='seconds')
@@ -666,8 +799,6 @@ def practice(lang):
     # Build interactive exercises (Duolingo-like mix: listen, choice, type)
     all_for_wrong = vocab_all[:]
     random.shuffle(all_for_wrong)
-    tts_lang = 'fr-FR' if lang == 'french' else 'es-ES'
-    resource_sentences = get_resource_sentences().get(lang, []) or []
 
     questions = []
     for idx, entry in enumerate(selected[:total_q]):
@@ -737,15 +868,9 @@ def practice(lang):
                 'xp_wrong': 2,
             }
         elif qtype == 'context_cloze' and ctx:
-            source = (ctx.get('source') or '').strip()
-            page = ctx.get('page')
-            src_label = source + (f" \u2022 p.{page}" if page else '') if source else ''
-
             hint = f"Hint: {english}"
             if bengali:
                 hint += f" \u2022 বাংলা: {bengali}"
-            if src_label:
-                hint += f" \u2022 {src_label}"
 
             q = {
                 'kind': 'mcq',

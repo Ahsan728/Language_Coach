@@ -77,6 +77,18 @@
               Next: Lesson {{ s.next_lesson.id }} — {{ s.next_lesson.title_en }}
             </div>
             {% endif %}
+
+            {% if s.resource %}
+            <div class="small text-muted mb-3">
+              Personal corpus: {{ s.resource.sentence_count }} sentence{% if s.resource.sentence_count != 1 %}s{% endif %}{% if s.resource.coverage_pct %} • coverage {{ s.resource.coverage_pct }}%{% endif %}
+              {% if s.resource.top_categories and s.resource.top_categories|length %}
+              <br>Focus: {% for c in s.resource.top_categories %}{{ c.label }}{% if not loop.last %}, {% endif %}{% endfor %}
+              {% endif %}
+              {% if s.resource.focus_lesson %}
+              <br>Suggested: <a href="{{ url_for('lesson_view', lang=lang, lesson_id=s.resource.focus_lesson.id) }}" class="text-decoration-none">Lesson {{ s.resource.focus_lesson.id }} — {{ s.resource.focus_lesson.title_en }}</a>
+              {% endif %}
+            </div>
+            {% endif %}
             <div class="d-grid gap-2">
               <a href="{{ s.continue_url }}" class="btn btn-{{ 'french' if lang == 'french' else 'spanish' }} w-100">
                 {% if s.next_lesson %}▶ Continue Lesson {{ s.next_lesson.id }}{% else %}▶ View Lessons{% endif %}
@@ -89,6 +101,11 @@
                   🃏 Review
                 </a>
               </div>
+              {% if s.resource %}
+              <a href="{{ url_for('practice', lang=lang, mode='resources') }}" class="btn btn-outline-{{ 'french' if lang == 'french' else 'spanish' }} btn-sm w-100">
+                📚 Resource Drill
+              </a>
+              {% endif %}
             </div>
           </div>
         </div>

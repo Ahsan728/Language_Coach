@@ -8,8 +8,13 @@
     <div class="d-flex align-items-center gap-3">
       <a href="{{ url_for('language_home', lang=lang) }}" class="btn btn-sm btn-light btn-back">← Back</a>
       <div>
-        <h2 class="text-white fw-bold mb-0">⚡ Daily Practice</h2>
-        <p class="text-white opacity-75 mb-0">{{ meta.flag }} {{ meta.name }} • Mix of listening, choices & typing</p>
+        {% set mode = (request.args.get('mode') or '')|lower %}
+        {% set is_resource = mode in ['resources', 'resource'] %}
+        <h2 class="text-white fw-bold mb-0">{{ '📚 Resource Drill' if is_resource else '⚡ Daily Practice' }}</h2>
+        <p class="text-white opacity-75 mb-0">
+          {{ meta.flag }} {{ meta.name }} •
+          {{ 'Context questions mined from your private materials' if is_resource else 'Mix of listening, choices & typing' }}
+        </p>
       </div>
     </div>
   </div>
