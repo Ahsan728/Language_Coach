@@ -107,23 +107,32 @@
   </div>
 </section>
 
-<!-- Learning Path -->
+<!-- CEFR Learning Path -->
 <section class="py-5 bg-light">
   <div class="container">
-    <h2 class="section-title text-center mb-5">শিক্ষার পথ — Learning Path</h2>
+    <h2 class="section-title text-center mb-2">CEFR শিক্ষার পথ — Learning Roadmap</h2>
+    <p class="text-center text-muted mb-5 small">Aligned with DELF (French) &amp; DELE (Spanish) international exams</p>
     <div class="row g-3">
-      {% set steps = [
-        ('1', '🌱', 'Beginner', 'শুরু', 'Greetings, Numbers, Colors, Family, Body, Food'),
-        ('2', '🌿', 'Intermediate', 'মধ্যবর্তী', 'Transport, Verbs, Adjectives, Phrases'),
-        ('3', '📚', 'Grammar', 'ব্যাকরণ', 'Articles, Present, Past & Future Tenses')
+      {% set cefr_steps = [
+        ('A1', 'cefr-A1', '🟢', 'Elementary', 'প্রাথমিক', 'Greetings · Numbers · Colors · Family · Body · Food · Nationalities · Daily Routine · Hobbies', 'DELF A1 / DELE A1', '16 lessons'),
+        ('A2', 'cefr-A2', '🔵', 'Pre-intermediate', 'প্রি-ইন্টারমিডিয়েট', 'Past & Future Tenses · Health · Home · Sports · Work · Shopping · Emotions · Travel', 'DELF A2 / DELE A2', '11 lessons'),
+        ('B1', 'cefr-B1', '🟠', 'Intermediate', 'মধ্যবর্তী', 'Complex vocabulary · Advanced cuisine · Cultural topics · Fluent conversation', 'DELF B1 / DELE B1', '1 lesson'),
+        ('B2', 'cefr-B2', '🔴', 'Upper Intermediate', 'উপরের মধ্যবর্তী', 'Debate · Professional contexts · Nuanced expression · Literature', 'DELF B2 / DELE B2', 'Coming soon')
       ] %}
-      {% for num, icon, level, level_bn, topics in steps %}
-      <div class="col-md-4">
-        <div class="path-card p-4 text-center">
-          <div class="path-number">{{ num }}</div>
+      {% for lvl, badge_cls, icon, name, name_bn, topics, exam, count in cefr_steps %}
+      <div class="col-md-6 col-lg-3">
+        <div class="path-card p-4 text-center h-100">
           <div class="path-icon">{{ icon }}</div>
-          <h4 class="mt-2">{{ level }}<br><small class="text-muted">{{ level_bn }}</small></h4>
-          <p class="small text-muted mt-2">{{ topics }}</p>
+          <div class="mt-2 mb-1">
+            <span class="badge {{ badge_cls }} fs-5 px-3 py-2">{{ lvl }}</span>
+          </div>
+          <h5 class="mt-2 mb-0">{{ name }}</h5>
+          <small class="text-muted d-block mb-2">{{ name_bn }}</small>
+          <p class="small text-muted mt-2 mb-2">{{ topics }}</p>
+          <div class="mt-auto pt-2">
+            <span class="badge bg-light text-dark border small d-block mb-1">{{ exam }}</span>
+            <span class="badge bg-secondary-subtle text-secondary small">{{ count }}</span>
+          </div>
         </div>
       </div>
       {% endfor %}

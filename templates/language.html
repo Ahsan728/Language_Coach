@@ -13,7 +13,7 @@
           <small class="d-block fs-4 opacity-75">{{ meta.name_bn }} শিক্ষা</small>
         </h1>
         <p class="text-white opacity-75 mb-0">
-          {{ lessons|length }} lessons &bull; Vocabulary · Grammar · Tenses
+          {{ lessons|length }} lessons &bull; A1 · A2 · B1 · B2 &bull; CEFR Framework
         </p>
       </div>
       <div class="col-auto">
@@ -29,17 +29,60 @@
 </div>
 
 <div class="container py-5">
-  <!-- Level sections -->
-  {% set level_order = ['beginner', 'intermediate', 'grammar'] %}
-  {% set level_labels = {'beginner': ('🌱 Beginner — শুরু', 'Start here with vocabulary basics'), 'intermediate': ('🌿 Intermediate — মধ্যবর্তী', 'Expand vocabulary: health, home, sports, nature, work, shopping, food, travel and more'), 'grammar': ('📚 Grammar — ব্যাকরণ', 'Articles, present, past and future tenses')} %}
+  <!-- CEFR Level sections -->
+  {% set level_order = ['A1', 'A2', 'B1', 'B2'] %}
+  {% set level_meta = {
+    'A1': {
+      'label': '🟢 A1 — Elementary',
+      'label_bn': 'প্রাথমিক',
+      'desc': 'Survival basics: greetings, numbers, family, food, daily life, nationalities, hobbies',
+      'desc_bn': 'বেঁচে থাকার মূল ভিত্তি: অভিবাদন, সংখ্যা, পরিবার, খাবার, দৈনন্দিন জীবন',
+      'badge': 'cefr-A1',
+      'exam': 'DELF A1 / DELE A1'
+    },
+    'A2': {
+      'label': '🔵 A2 — Pre-intermediate',
+      'label_bn': 'প্রি-ইন্টারমিডিয়েট',
+      'desc': 'Expand fluency: past & future tenses, health, work, shopping, emotions, travel',
+      'desc_bn': 'দক্ষতা বাড়ান: অতীত ও ভবিষ্যৎ কাল, স্বাস্থ্য, কাজ, কেনাকাটা, আবেগ, ভ্রমণ',
+      'badge': 'cefr-A2',
+      'exam': 'DELF A2 / DELE A2'
+    },
+    'B1': {
+      'label': '🟠 B1 — Intermediate',
+      'label_bn': 'মধ্যবর্তী',
+      'desc': 'Build fluency: complex vocabulary, culture, opinions and natural conversation',
+      'desc_bn': 'দক্ষতা তৈরি করুন: জটিল শব্দভান্ডার, সংস্কৃতি, মতামত ও স্বাভাবিক কথোপকথন',
+      'badge': 'cefr-B1',
+      'exam': 'DELF B1 / DELE B1'
+    },
+    'B2': {
+      'label': '🔴 B2 — Upper Intermediate',
+      'label_bn': 'উপরের মধ্যবর্তী',
+      'desc': 'Advanced expression: debate, nuance, literature and professional contexts',
+      'desc_bn': 'উন্নত প্রকাশভঙ্গি: বিতর্ক, সূক্ষ্মতা, সাহিত্য ও পেশাদার প্রেক্ষাপট',
+      'badge': 'cefr-B2',
+      'exam': 'DELF B2 / DELE B2'
+    }
+  } %}
 
   {% for lvl in level_order %}
-  {% set lvl_lessons = lessons | selectattr('level', 'equalto', lvl) | list %}
+  {% set lvl_lessons = lessons | selectattr('cefr_level', 'equalto', lvl) | list %}
   {% if lvl_lessons %}
+  {% set lm = level_meta[lvl] %}
   <div class="level-section mb-5">
-    <div class="level-header mb-4">
-      <h2 class="fw-bold">{{ level_labels[lvl][0] }}</h2>
-      <p class="text-muted">{{ level_labels[lvl][1] }}</p>
+    <div class="level-header mb-4 d-flex align-items-start gap-3 flex-wrap">
+      <div>
+        <h2 class="fw-bold mb-1">{{ lm.label }}
+          <span class="badge {{ lm.badge }} ms-2 fs-6 align-middle">{{ lvl }}</span>
+        </h2>
+        <p class="text-muted mb-1">{{ lm.desc }}</p>
+        <small class="text-muted fst-italic">{{ lm.desc_bn }}</small>
+        <div class="mt-1">
+          <span class="badge bg-light text-dark border small">{{ lm.exam }}</span>
+          <span class="badge bg-light text-muted border small ms-1">{{ lvl_lessons|length }} lessons</span>
+        </div>
+      </div>
     </div>
     <div class="row g-3">
       {% for lesson in lvl_lessons %}
@@ -56,10 +99,13 @@
                 {% endif %}
               </div>
               <div class="flex-grow-1 min-w-0">
-                <div class="lesson-num text-muted small mb-1">Lesson {{ lesson.id }}</div>
+                <div class="d-flex align-items-center gap-1 mb-1">
+                  <span class="lesson-num text-muted small">Lesson {{ lesson.id }}</span>
+                  <span class="badge {{ lm.badge }} ms-1" style="font-size:0.6rem; padding:2px 5px;">{{ lvl }}</span>
+                </div>
                 <h5 class="card-title mb-1 fw-semibold">{{ lesson.title_en }}</h5>
                 <p class="card-subtitle text-muted small mb-2">{{ lesson.title_bn }}</p>
-                <p class="card-text small text-muted">{{ lesson.description_en[:80] }}...</p>
+                <p class="card-text small text-muted">{{ lesson.description_en[:85] }}{% if lesson.description_en|length > 85 %}…{% endif %}</p>
                 {% if is_done and prog.get('best_score', 0) > 0 %}
                 <div class="score-badge mt-2">
                   <i class="fas fa-star text-warning"></i>

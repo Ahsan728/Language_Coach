@@ -14,7 +14,18 @@
   --bg-light:      #f8f9fa;
   --radius:        14px;
   --shadow:        0 4px 20px rgba(0,0,0,0.08);
+  /* CEFR level colours */
+  --cefr-A1: #198754;
+  --cefr-A2: #0891b2;
+  --cefr-B1: #d97706;
+  --cefr-B2: #ea580c;
 }
+
+/* ---- CEFR Level Badges ---- */
+.cefr-A1 { background-color: var(--cefr-A1) !important; color: #fff !important; }
+.cefr-A2 { background-color: var(--cefr-A2) !important; color: #fff !important; }
+.cefr-B1 { background-color: var(--cefr-B1) !important; color: #fff !important; }
+.cefr-B2 { background-color: var(--cefr-B2) !important; color: #fff !important; }
 
 /* ---- Base ---- */
 body { font-family: 'Poppins', sans-serif; color: var(--text-dark); background: #fff; }

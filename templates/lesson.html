@@ -160,9 +160,11 @@
               <span class="fw-semibold">{{ meta.flag }} {{ meta.name }}</span>
             </div>
             <div class="info-row">
-              <span class="text-muted small">Level</span>
-              <span class="badge bg-{{ 'success' if lesson.level == 'beginner' else ('warning text-dark' if lesson.level == 'intermediate' else 'primary') }}">
-                {{ lesson.level | capitalize }}
+              <span class="text-muted small">CEFR Level</span>
+              {% set cl = lesson.cefr_level | default('A1') %}
+              {% set cefr_labels = {'A1': 'Elementary', 'A2': 'Pre-intermediate', 'B1': 'Intermediate', 'B2': 'Upper Intermediate'} %}
+              <span class="badge cefr-{{ cl }}" title="{{ cl }} — {{ cefr_labels.get(cl, '') }}">
+                {{ cl }} — {{ cefr_labels.get(cl, '') }}
               </span>
             </div>
             <div class="info-row">

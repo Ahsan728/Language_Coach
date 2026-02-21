@@ -8595,6 +8595,774 @@
         "example_en": "mouse.",
         "example_bn": "মাউস।"
       }
+    ],
+    "nationalities": [
+      {
+        "word": "argentin(e)",
+        "english": "Argentine",
+        "bengali": "আর্জেন্টিনীয়",
+        "category": "nationalities",
+        "pronunciation": "ar-zhon-TAN",
+        "example": "Mon ami est argentin.",
+        "example_en": "My friend is Argentine.",
+        "example_bn": "আমার বন্ধু আর্জেন্টিনীয়।"
+      },
+      {
+        "word": "chinois(e)",
+        "english": "Chinese",
+        "bengali": "চীনা",
+        "category": "nationalities",
+        "pronunciation": "shi-NWAH",
+        "example": "Elle est chinoise.",
+        "example_en": "She is Chinese.",
+        "example_bn": "সে চীনা।"
+      },
+      {
+        "word": "espagnol(e)",
+        "english": "Spanish",
+        "bengali": "স্প্যানিশ",
+        "category": "nationalities",
+        "pronunciation": "es-pan-YOL",
+        "example": "Il est espagnol.",
+        "example_en": "He is Spanish.",
+        "example_bn": "সে স্প্যানিশ।"
+      },
+      {
+        "word": "français(e)",
+        "english": "French",
+        "bengali": "ফরাসি",
+        "category": "nationalities",
+        "pronunciation": "frahn-SEH",
+        "example": "Je suis française.",
+        "example_en": "I am French.",
+        "example_bn": "আমি ফরাসি।"
+      },
+      {
+        "word": "anglais(e)",
+        "english": "English/British",
+        "bengali": "ইংরেজ",
+        "category": "nationalities",
+        "pronunciation": "ahn-GLEH",
+        "example": "Mon professeur est anglais.",
+        "example_en": "My teacher is English.",
+        "example_bn": "আমার শিক্ষক ইংরেজ।"
+      },
+      {
+        "word": "américain(e)",
+        "english": "American",
+        "bengali": "আমেরিকান",
+        "category": "nationalities",
+        "pronunciation": "a-meh-ri-KAN",
+        "example": "J'ai un ami américain.",
+        "example_en": "I have an American friend.",
+        "example_bn": "আমার একজন আমেরিকান বন্ধু আছে।"
+      },
+      {
+        "word": "bangladais(e)",
+        "english": "Bangladeshi",
+        "bengali": "বাংলাদেশি",
+        "category": "nationalities",
+        "pronunciation": "ban-gla-DEH",
+        "example": "Je suis bangladais(e).",
+        "example_en": "I am Bangladeshi.",
+        "example_bn": "আমি বাংলাদেশি।"
+      },
+      {
+        "word": "indien(ne)",
+        "english": "Indian",
+        "bengali": "ভারতীয়",
+        "category": "nationalities",
+        "pronunciation": "an-DYAN",
+        "example": "Ma voisine est indienne.",
+        "example_en": "My neighbour is Indian.",
+        "example_bn": "আমার প্রতিবেশী ভারতীয়।"
+      },
+      {
+        "word": "allemand(e)",
+        "english": "German",
+        "bengali": "জার্মান",
+        "category": "nationalities",
+        "pronunciation": "al-MAHN",
+        "example": "Mon chef est allemand.",
+        "example_en": "My boss is German.",
+        "example_bn": "আমার বস জার্মান।"
+      },
+      {
+        "word": "japonais(e)",
+        "english": "Japanese",
+        "bengali": "জাপানি",
+        "category": "nationalities",
+        "pronunciation": "zha-po-NEH",
+        "example": "Cette voiture est japonaise.",
+        "example_en": "This car is Japanese.",
+        "example_bn": "এই গাড়ি জাপানি।"
+      },
+      {
+        "word": "coréen(ne)",
+        "english": "Korean",
+        "bengali": "কোরিয়ান",
+        "category": "nationalities",
+        "pronunciation": "ko-reh-AN",
+        "example": "J'aime la musique coréenne.",
+        "example_en": "I like Korean music.",
+        "example_bn": "আমি কোরিয়ান সংগীত পছন্দ করি।"
+      },
+      {
+        "word": "brésilien(ne)",
+        "english": "Brazilian",
+        "bengali": "ব্রাজিলিয়ান",
+        "category": "nationalities",
+        "pronunciation": "breh-zi-LYAN",
+        "example": "Neymar est brésilien.",
+        "example_en": "Neymar is Brazilian.",
+        "example_bn": "নেইমার ব্রাজিলিয়ান।"
+      },
+      {
+        "word": "mexicain(e)",
+        "english": "Mexican",
+        "bengali": "মেক্সিকান",
+        "category": "nationalities",
+        "pronunciation": "mek-si-KAN",
+        "example": "La cuisine mexicaine est délicieuse.",
+        "example_en": "Mexican cuisine is delicious.",
+        "example_bn": "মেক্সিকান রান্না সুস্বাদু।"
+      },
+      {
+        "word": "portugais(e)",
+        "english": "Portuguese",
+        "bengali": "পর্তুগিজ",
+        "category": "nationalities",
+        "pronunciation": "por-tu-GEH",
+        "example": "Le fado est de la musique portugaise.",
+        "example_en": "Fado is Portuguese music.",
+        "example_bn": "ফাদো পর্তুগিজ সংগীত।"
+      },
+      {
+        "word": "russe",
+        "english": "Russian",
+        "bengali": "রাশিয়ান",
+        "category": "nationalities",
+        "pronunciation": "ROOS",
+        "example": "Elle parle russe.",
+        "example_en": "She speaks Russian.",
+        "example_bn": "সে রাশিয়ান বলে।"
+      },
+      {
+        "word": "australien(ne)",
+        "english": "Australian",
+        "bengali": "অস্ট্রেলিয়ান",
+        "category": "nationalities",
+        "pronunciation": "os-tra-LYAN",
+        "example": "Mon collègue est australien.",
+        "example_en": "My colleague is Australian.",
+        "example_bn": "আমার সহকর্মী অস্ট্রেলিয়ান।"
+      },
+      {
+        "word": "marocain(e)",
+        "english": "Moroccan",
+        "bengali": "মরোক্কান",
+        "category": "nationalities",
+        "pronunciation": "ma-ro-KAN",
+        "example": "L'architecture marocaine est magnifique.",
+        "example_en": "Moroccan architecture is magnificent.",
+        "example_bn": "মরোক্কান স্থাপত্য দুর্দান্ত।"
+      },
+      {
+        "word": "italien(ne)",
+        "english": "Italian",
+        "bengali": "ইতালিয়ান",
+        "category": "nationalities",
+        "pronunciation": "i-ta-LYAN",
+        "example": "La pizza italienne est la meilleure.",
+        "example_en": "Italian pizza is the best.",
+        "example_bn": "ইতালিয়ান পিজ্জা সেরা।"
+      },
+      {
+        "word": "thaïlandais(e)",
+        "english": "Thai",
+        "bengali": "থাই",
+        "category": "nationalities",
+        "pronunciation": "ta-i-lahn-DEH",
+        "example": "La cuisine thaïlandaise est épicée.",
+        "example_en": "Thai food is spicy.",
+        "example_bn": "থাই খাবার ঝাল।"
+      },
+      {
+        "word": "pakistanais(e)",
+        "english": "Pakistani",
+        "bengali": "পাকিস্তানি",
+        "category": "nationalities",
+        "pronunciation": "pa-kis-ta-NEH",
+        "example": "Mon ami pakistanais parle ourdou.",
+        "example_en": "My Pakistani friend speaks Urdu.",
+        "example_bn": "আমার পাকিস্তানি বন্ধু উর্দু বলে।"
+      }
+    ],
+    "daily_activities": [
+      {
+        "word": "regarder la télé",
+        "english": "watch TV",
+        "bengali": "টিভি দেখা",
+        "category": "daily_activities",
+        "pronunciation": "ruh-gar-DEH la teh-LEH",
+        "example": "Je regarde la télé le soir.",
+        "example_en": "I watch TV in the evening.",
+        "example_bn": "সন্ধ্যায় আমি টিভি দেখি।"
+      },
+      {
+        "word": "écouter de la musique",
+        "english": "listen to music",
+        "bengali": "সংগীত শোনা",
+        "category": "daily_activities",
+        "pronunciation": "eh-koo-TEH duh la moo-ZEEK",
+        "example": "J'écoute de la musique pour me détendre.",
+        "example_en": "I listen to music to relax.",
+        "example_bn": "আমি বিশ্রামের জন্য সংগীত শুনি।"
+      },
+      {
+        "word": "travailler",
+        "english": "work",
+        "bengali": "কাজ করা",
+        "category": "daily_activities",
+        "pronunciation": "tra-va-YEH",
+        "example": "Je travaille de chez moi le lundi.",
+        "example_en": "I work from home on Mondays.",
+        "example_bn": "সোমবার আমি বাসা থেকে কাজ করি।"
+      },
+      {
+        "word": "prendre un café",
+        "english": "have a coffee",
+        "bengali": "কফি পান করা",
+        "category": "daily_activities",
+        "pronunciation": "prahn-druh un ka-FEH",
+        "example": "Je prends un café chaque matin.",
+        "example_en": "I have a coffee every morning.",
+        "example_bn": "প্রতি সকালে আমি কফি পান করি।"
+      },
+      {
+        "word": "aller au restaurant",
+        "english": "go to a restaurant",
+        "bengali": "রেস্তোরাঁয় যাওয়া",
+        "category": "daily_activities",
+        "pronunciation": "a-LEH oh res-toh-RAHN",
+        "example": "On va au restaurant le vendredi.",
+        "example_en": "We go to the restaurant on Friday.",
+        "example_bn": "শুক্রবার আমরা রেস্তোরাঁয় যাই।"
+      },
+      {
+        "word": "faire les courses",
+        "english": "do the shopping",
+        "bengali": "কেনাকাটা করা",
+        "category": "daily_activities",
+        "pronunciation": "fair leh KOORS",
+        "example": "Je fais les courses le samedi.",
+        "example_en": "I do the shopping on Saturday.",
+        "example_bn": "শনিবার আমি কেনাকাটা করি।"
+      },
+      {
+        "word": "lire un livre",
+        "english": "read a book",
+        "bengali": "বই পড়া",
+        "category": "daily_activities",
+        "pronunciation": "leer un LEE-vruh",
+        "example": "Je lis un livre avant de dormir.",
+        "example_en": "I read a book before sleeping.",
+        "example_bn": "ঘুমানোর আগে আমি বই পড়ি।"
+      },
+      {
+        "word": "cuisiner",
+        "english": "cook",
+        "bengali": "রান্না করা",
+        "category": "daily_activities",
+        "pronunciation": "kwee-zi-NEH",
+        "example": "J'adore cuisiner de nouveaux plats.",
+        "example_en": "I love cooking new dishes.",
+        "example_bn": "নতুন খাবার রান্না করতে আমার খুব ভালো লাগে।"
+      },
+      {
+        "word": "se promener",
+        "english": "go for a walk",
+        "bengali": "হাঁটতে যাওয়া",
+        "category": "daily_activities",
+        "pronunciation": "suh prom-NEH",
+        "example": "Je me promène dans le parc chaque matin.",
+        "example_en": "I walk in the park every morning.",
+        "example_bn": "প্রতি সকালে আমি পার্কে হাঁটি।"
+      },
+      {
+        "word": "faire du yoga",
+        "english": "do yoga",
+        "bengali": "যোগব্যায়াম করা",
+        "category": "daily_activities",
+        "pronunciation": "fair doo YO-ga",
+        "example": "Je fais du yoga trois fois par semaine.",
+        "example_en": "I do yoga three times a week.",
+        "example_bn": "সপ্তাহে তিনবার আমি যোগব্যায়াম করি।"
+      },
+      {
+        "word": "courir",
+        "english": "run / jog",
+        "bengali": "দৌড়ানো",
+        "category": "daily_activities",
+        "pronunciation": "koo-REER",
+        "example": "Je cours 5 km chaque matin.",
+        "example_en": "I run 5 km every morning.",
+        "example_bn": "প্রতি সকালে আমি ৫ কিমি দৌড়াই।"
+      },
+      {
+        "word": "nager",
+        "english": "swim",
+        "bengali": "সাঁতার কাটা",
+        "category": "daily_activities",
+        "pronunciation": "na-ZHEH",
+        "example": "Je nage à la piscine le mardi.",
+        "example_en": "I swim in the pool on Tuesdays.",
+        "example_bn": "মঙ্গলবার আমি সুইমিং পুলে সাঁতার কাটি।"
+      },
+      {
+        "word": "danser",
+        "english": "dance",
+        "bengali": "নাচা",
+        "category": "daily_activities",
+        "pronunciation": "dahn-SEH",
+        "example": "Je danse la salsa le week-end.",
+        "example_en": "I dance salsa on weekends.",
+        "example_bn": "সপ্তাহান্তে আমি সালসা নাচি।"
+      },
+      {
+        "word": "faire de la randonnée",
+        "english": "go hiking",
+        "bengali": "হাইকিং করা",
+        "category": "daily_activities",
+        "pronunciation": "fair duh la rahn-do-NEH",
+        "example": "Nous faisons de la randonnée en montagne.",
+        "example_en": "We go hiking in the mountains.",
+        "example_bn": "আমরা পাহাড়ে হাইকিং করি।"
+      },
+      {
+        "word": "rendre visite à la famille",
+        "english": "visit family",
+        "bengali": "পরিবার দেখতে যাওয়া",
+        "category": "daily_activities",
+        "pronunciation": "rahn-druh vee-ZEET",
+        "example": "Je rends visite à ma famille le dimanche.",
+        "example_en": "I visit my family on Sundays.",
+        "example_bn": "রবিবার আমি পরিবার দেখতে যাই।"
+      },
+      {
+        "word": "faire la lessive",
+        "english": "do the laundry",
+        "bengali": "কাপড় ধোওয়া",
+        "category": "daily_activities",
+        "pronunciation": "fair la le-SEEV",
+        "example": "Je fais la lessive le mercredi.",
+        "example_en": "I do the laundry on Wednesdays.",
+        "example_bn": "বুধবার আমি কাপড় ধুই।"
+      },
+      {
+        "word": "aller au cinéma",
+        "english": "go to the cinema",
+        "bengali": "সিনেমায় যাওয়া",
+        "category": "daily_activities",
+        "pronunciation": "a-LEH oh see-neh-MA",
+        "example": "Je vais au cinéma une fois par mois.",
+        "example_en": "I go to the cinema once a month.",
+        "example_bn": "মাসে একবার আমি সিনেমায় যাই।"
+      },
+      {
+        "word": "se lever",
+        "english": "get up",
+        "bengali": "উঠা",
+        "category": "daily_activities",
+        "pronunciation": "suh luh-VEH",
+        "example": "Je me lève à sept heures.",
+        "example_en": "I get up at seven.",
+        "example_bn": "আমি সাতটায় ওঠি।"
+      },
+      {
+        "word": "se doucher",
+        "english": "take a shower",
+        "bengali": "গোসল করা",
+        "category": "daily_activities",
+        "pronunciation": "suh doo-SHEH",
+        "example": "Je me douche le matin.",
+        "example_en": "I take a shower in the morning.",
+        "example_bn": "সকালে আমি গোসল করি।"
+      },
+      {
+        "word": "prendre le petit-déjeuner",
+        "english": "have breakfast",
+        "bengali": "নাস্তা করা",
+        "category": "daily_activities",
+        "pronunciation": "prahn-druh luh puh-tee deh-zhuh-NEH",
+        "example": "Je prends le petit-déjeuner à huit heures.",
+        "example_en": "I have breakfast at eight.",
+        "example_bn": "আমি আটটায় নাস্তা করি।"
+      }
+    ],
+    "hobbies": [
+      {
+        "word": "faire du ski",
+        "english": "skiing",
+        "bengali": "স্কি করা",
+        "category": "hobbies",
+        "pronunciation": "fair doo SKEE",
+        "example": "J'adore faire du ski en hiver.",
+        "example_en": "I love skiing in winter.",
+        "example_bn": "শীতকালে স্কি করতে আমার খুব ভালো লাগে।"
+      },
+      {
+        "word": "faire du snowboard",
+        "english": "snowboarding",
+        "bengali": "স্নোবোর্ড করা",
+        "category": "hobbies",
+        "pronunciation": "fair doo SNOW-bord",
+        "example": "Mon frère fait du snowboard.",
+        "example_en": "My brother does snowboarding.",
+        "example_bn": "আমার ভাই স্নোবোর্ড করে।"
+      },
+      {
+        "word": "aller à la salle de sport",
+        "english": "go to the gym",
+        "bengali": "জিমে যাওয়া",
+        "category": "hobbies",
+        "pronunciation": "a-LEH a la sal duh SPOR",
+        "example": "Je vais à la salle de sport quatre fois par semaine.",
+        "example_en": "I go to the gym four times a week.",
+        "example_bn": "সপ্তাহে চারবার আমি জিমে যাই।"
+      },
+      {
+        "word": "visiter des musées",
+        "english": "visit museums",
+        "bengali": "জাদুঘর পরিদর্শন করা",
+        "category": "hobbies",
+        "pronunciation": "vi-zi-TEH deh moo-ZEH",
+        "example": "J'aime visiter des musées d'art.",
+        "example_en": "I like visiting art museums.",
+        "example_bn": "আমি শিল্প জাদুঘর পরিদর্শন করতে পছন্দ করি।"
+      },
+      {
+        "word": "la musique",
+        "english": "music",
+        "bengali": "সংগীত",
+        "category": "hobbies",
+        "pronunciation": "la moo-ZEEK",
+        "example": "La musique est ma passion.",
+        "example_en": "Music is my passion.",
+        "example_bn": "সংগীত আমার আবেগ।"
+      },
+      {
+        "word": "la randonnée",
+        "english": "hiking",
+        "bengali": "হাইকিং",
+        "category": "hobbies",
+        "pronunciation": "la rahn-do-NEH",
+        "example": "La randonnée est parfaite pour se déconnecter.",
+        "example_en": "Hiking is perfect for disconnecting.",
+        "example_bn": "হাইকিং বিশ্রামের জন্য আদর্শ।"
+      },
+      {
+        "word": "la photographie",
+        "english": "photography",
+        "bengali": "ফটোগ্রাফি",
+        "category": "hobbies",
+        "pronunciation": "la fo-to-gra-FEE",
+        "example": "La photographie est mon hobby préféré.",
+        "example_en": "Photography is my favourite hobby.",
+        "example_bn": "ফটোগ্রাফি আমার প্রিয় শখ।"
+      },
+      {
+        "word": "le dessin",
+        "english": "drawing",
+        "bengali": "আঁকা",
+        "category": "hobbies",
+        "pronunciation": "luh deh-SAN",
+        "example": "Enfant, j'adorais le dessin.",
+        "example_en": "As a child I loved drawing.",
+        "example_bn": "ছোটবেলায় আমি আঁকতে ভালোবাসতাম।"
+      },
+      {
+        "word": "la lecture",
+        "english": "reading",
+        "bengali": "পড়া",
+        "category": "hobbies",
+        "pronunciation": "la lek-TOOR",
+        "example": "La lecture est essentielle pour moi.",
+        "example_en": "Reading is essential for me.",
+        "example_bn": "পড়া আমার জন্য অপরিহার্য।"
+      },
+      {
+        "word": "les échecs",
+        "english": "chess",
+        "bengali": "দাবা",
+        "category": "hobbies",
+        "pronunciation": "leh zeh-SHEK",
+        "example": "Je joue aux échecs en ligne.",
+        "example_en": "I play chess online.",
+        "example_bn": "আমি অনলাইনে দাবা খেলি।"
+      },
+      {
+        "word": "voyager",
+        "english": "travel",
+        "bengali": "ভ্রমণ করা",
+        "category": "hobbies",
+        "pronunciation": "vwa-ya-ZHEH",
+        "example": "Voyager est ma plus grande passion.",
+        "example_en": "Travelling is my greatest passion.",
+        "example_bn": "ভ্রমণ আমার সবচেয়ে বড় আবেগ।"
+      },
+      {
+        "word": "jouer de la guitare",
+        "english": "play guitar",
+        "bengali": "গিটার বাজানো",
+        "category": "hobbies",
+        "pronunciation": "zhoo-EH duh la gee-TAR",
+        "example": "Je joue de la guitare depuis mes dix ans.",
+        "example_en": "I have played guitar since I was ten.",
+        "example_bn": "দশ বছর বয়স থেকে আমি গিটার বাজাই।"
+      },
+      {
+        "word": "regarder des films",
+        "english": "watch films",
+        "bengali": "সিনেমা দেখা",
+        "category": "hobbies",
+        "pronunciation": "ruh-gar-DEH deh FEELM",
+        "example": "Le dimanche, je regarde des films chez moi.",
+        "example_en": "On Sundays I watch films at home.",
+        "example_bn": "রবিবার আমি বাসায় সিনেমা দেখি।"
+      },
+      {
+        "word": "jouer aux jeux vidéo",
+        "english": "play video games",
+        "bengali": "ভিডিও গেম খেলা",
+        "category": "hobbies",
+        "pronunciation": "zhoo-EH oh zhuh vi-deh-OH",
+        "example": "Mon fils joue aux jeux vidéo chaque après-midi.",
+        "example_en": "My son plays video games every afternoon.",
+        "example_bn": "আমার ছেলে প্রতি বিকেলে ভিডিও গেম খেলে।"
+      },
+      {
+        "word": "la peinture",
+        "english": "painting",
+        "bengali": "চিত্রকলা",
+        "category": "hobbies",
+        "pronunciation": "la pan-TOOR",
+        "example": "La peinture m'aide à me détendre.",
+        "example_en": "Painting helps me relax.",
+        "example_bn": "চিত্রকলা আমাকে শিথিল হতে সাহায্য করে।"
+      },
+      {
+        "word": "le théâtre",
+        "english": "theatre",
+        "bengali": "থিয়েটার",
+        "category": "hobbies",
+        "pronunciation": "luh teh-AH-truh",
+        "example": "Je vais au théâtre une fois par mois.",
+        "example_en": "I go to the theatre once a month.",
+        "example_bn": "মাসে একবার আমি থিয়েটারে যাই।"
+      },
+      {
+        "word": "le jardinage",
+        "english": "gardening",
+        "bengali": "বাগান করা",
+        "category": "hobbies",
+        "pronunciation": "luh zhar-di-NAHZH",
+        "example": "Le jardinage est très relaxant.",
+        "example_en": "Gardening is very relaxing.",
+        "example_bn": "বাগান করা খুব শান্তিদায়ক।"
+      },
+      {
+        "word": "faire du bénévolat",
+        "english": "volunteer / volunteering",
+        "bengali": "স্বেচ্ছাসেবী কাজ",
+        "category": "hobbies",
+        "pronunciation": "fair doo beh-neh-vo-LA",
+        "example": "Je fais du bénévolat le week-end.",
+        "example_en": "I volunteer on weekends.",
+        "example_bn": "সপ্তাহান্তে আমি স্বেচ্ছাসেবী কাজ করি।"
+      }
+    ],
+    "emotions": [
+      {
+        "word": "j'aime",
+        "english": "I like",
+        "bengali": "আমার পছন্দ",
+        "category": "emotions",
+        "pronunciation": "ZHEM",
+        "example": "J'aime le café au lait.",
+        "example_en": "I like coffee with milk.",
+        "example_bn": "দুধ কফি আমার পছন্দ।"
+      },
+      {
+        "word": "j'adore",
+        "english": "I love / I adore",
+        "bengali": "আমি ভালোবাসি",
+        "category": "emotions",
+        "pronunciation": "zha-DOR",
+        "example": "J'adore voyager en France.",
+        "example_en": "I love travelling in France.",
+        "example_bn": "ফ্রান্সে ভ্রমণ করতে আমি ভালোবাসি।"
+      },
+      {
+        "word": "ça me fascine",
+        "english": "it fascinates me",
+        "bengali": "আমাকে মুগ্ধ করে",
+        "category": "emotions",
+        "pronunciation": "sa muh fa-SEEN",
+        "example": "La culture japonaise me fascine.",
+        "example_en": "Japanese culture fascinates me.",
+        "example_bn": "জাপানি সংস্কৃতি আমাকে মুগ্ধ করে।"
+      },
+      {
+        "word": "ça me surprend",
+        "english": "it surprises me",
+        "bengali": "আমাকে অবাক করে",
+        "category": "emotions",
+        "pronunciation": "sa muh soor-PRAHN",
+        "example": "Son intelligence me surprend.",
+        "example_en": "Their intelligence surprises me.",
+        "example_bn": "তাদের বুদ্ধিমত্তা আমাকে অবাক করে।"
+      },
+      {
+        "word": "ça me rend triste",
+        "english": "it makes me sad",
+        "bengali": "আমাকে দুঃখী করে",
+        "category": "emotions",
+        "pronunciation": "sa muh rahn TREEST",
+        "example": "Voir tant de pauvreté me rend triste.",
+        "example_en": "Seeing so much poverty makes me sad.",
+        "example_bn": "এত দারিদ্র্য দেখে আমার মন খারাপ হয়।"
+      },
+      {
+        "word": "ça m'énerve",
+        "english": "it annoys / angers me",
+        "bengali": "আমাকে বিরক্ত করে",
+        "category": "emotions",
+        "pronunciation": "sa meh-NERV",
+        "example": "L'injustice m'énerve vraiment.",
+        "example_en": "Injustice really angers me.",
+        "example_bn": "অবিচার সত্যিই আমাকে রাগান্বিত করে।"
+      },
+      {
+        "word": "ça me rend heureux/se",
+        "english": "it makes me happy",
+        "bengali": "আমাকে খুশি করে",
+        "category": "emotions",
+        "pronunciation": "sa muh rahn uh-RUH",
+        "example": "Voir mes amis me rend heureux.",
+        "example_en": "Seeing my friends makes me happy.",
+        "example_bn": "বন্ধুদের দেখলে আমি খুশি হই।"
+      },
+      {
+        "word": "ça m'inquiète",
+        "english": "it worries me",
+        "bengali": "আমাকে চিন্তিত করে",
+        "category": "emotions",
+        "pronunciation": "sa mah-KYET",
+        "example": "Le changement climatique m'inquiète.",
+        "example_en": "Climate change worries me.",
+        "example_bn": "জলবায়ু পরিবর্তন আমাকে চিন্তিত করে।"
+      },
+      {
+        "word": "ça m'ennuie",
+        "english": "it bores me",
+        "bengali": "আমাকে বিরক্ত করে",
+        "category": "emotions",
+        "pronunciation": "sa mah-NWEE",
+        "example": "La bureaucratie m'ennuie.",
+        "example_en": "Bureaucracy bores me.",
+        "example_bn": "আমলাতন্ত্র আমাকে বিরক্ত করে।"
+      },
+      {
+        "word": "ça me dérange",
+        "english": "it bothers me",
+        "bengali": "আমাকে বিরক্ত করে",
+        "category": "emotions",
+        "pronunciation": "sa muh deh-RANZH",
+        "example": "Le bruit la nuit me dérange.",
+        "example_en": "Noise at night bothers me.",
+        "example_bn": "রাতে শব্দ আমাকে বিরক্ত করে।"
+      },
+      {
+        "word": "être content(e)",
+        "english": "to be happy",
+        "bengali": "খুশি থাকা",
+        "category": "emotions",
+        "pronunciation": "etr kon-TAHN",
+        "example": "Je suis content(e) de mes résultats.",
+        "example_en": "I am happy with my results.",
+        "example_bn": "আমার ফলাফলে আমি খুশি।"
+      },
+      {
+        "word": "être triste",
+        "english": "to be sad",
+        "bengali": "দুঃখী থাকা",
+        "category": "emotions",
+        "pronunciation": "etr TREEST",
+        "example": "Je suis triste parce qu'il pleut.",
+        "example_en": "I am sad because it is raining.",
+        "example_bn": "বৃষ্টি হচ্ছে বলে আমি দুঃখী।"
+      },
+      {
+        "word": "être nerveux/se",
+        "english": "to be nervous",
+        "bengali": "নার্ভাস থাকা",
+        "category": "emotions",
+        "pronunciation": "etr ner-VUH",
+        "example": "Je suis nerveux/se avant l'examen.",
+        "example_en": "I am nervous before the exam.",
+        "example_bn": "পরীক্ষার আগে আমি নার্ভাস।"
+      },
+      {
+        "word": "être enthousiaste",
+        "english": "to be excited / enthusiastic",
+        "bengali": "উত্তেজিত থাকা",
+        "category": "emotions",
+        "pronunciation": "etr ahn-too-zYAST",
+        "example": "Je suis enthousiaste pour le voyage.",
+        "example_en": "I am excited about the trip.",
+        "example_bn": "ভ্রমণ নিয়ে আমি উত্তেজিত।"
+      },
+      {
+        "word": "être en colère",
+        "english": "to be angry",
+        "bengali": "রাগান্বিত থাকা",
+        "category": "emotions",
+        "pronunciation": "etr ahn ko-LAIR",
+        "example": "Il/Elle est en colère contre moi.",
+        "example_en": "He/She is angry with me.",
+        "example_bn": "সে আমার উপর রাগান্বিত।"
+      },
+      {
+        "word": "être fatigué(e)",
+        "english": "to be tired",
+        "bengali": "ক্লান্ত থাকা",
+        "category": "emotions",
+        "pronunciation": "etr fa-ti-GEH",
+        "example": "Je suis très fatigué(e) après le travail.",
+        "example_en": "I am very tired after work.",
+        "example_bn": "কাজের পর আমি খুব ক্লান্ত।"
+      },
+      {
+        "word": "avoir peur",
+        "english": "to be scared",
+        "bengali": "ভয় পাওয়া",
+        "category": "emotions",
+        "pronunciation": "a-VWAR PUR",
+        "example": "L'enfant a peur du noir.",
+        "example_en": "The child is scared of the dark.",
+        "example_bn": "শিশুটি অন্ধকারে ভয় পায়।"
+      },
+      {
+        "word": "être fier/fière",
+        "english": "to be proud",
+        "bengali": "গর্বিত থাকা",
+        "category": "emotions",
+        "pronunciation": "etr FYAIR",
+        "example": "Je suis très fier/fière de toi.",
+        "example_en": "I am very proud of you.",
+        "example_bn": "আমি তোমার জন্য খুব গর্বিত।"
+      }
     ]
   },
   "spanish": {
@@ -17174,6 +17942,774 @@
         "example": "el programa.",
         "example_en": "program.",
         "example_bn": "প্রোগ্রাম।"
+      }
+    ],
+    "nationalities": [
+      {
+        "word": "argentino/a",
+        "english": "Argentine",
+        "bengali": "আর্জেন্টিনীয়",
+        "category": "nationalities",
+        "pronunciation": "ar-hen-TEE-no",
+        "example": "Mi amigo es argentino.",
+        "example_en": "My friend is Argentine.",
+        "example_bn": "আমার বন্ধু আর্জেন্টিনীয়।"
+      },
+      {
+        "word": "chino/a",
+        "english": "Chinese",
+        "bengali": "চীনা",
+        "category": "nationalities",
+        "pronunciation": "CHEE-no",
+        "example": "Ella es china.",
+        "example_en": "She is Chinese.",
+        "example_bn": "সে চীনা।"
+      },
+      {
+        "word": "español/a",
+        "english": "Spanish",
+        "bengali": "স্প্যানিশ",
+        "category": "nationalities",
+        "pronunciation": "es-pan-YOL",
+        "example": "Soy española.",
+        "example_en": "I am Spanish.",
+        "example_bn": "আমি স্প্যানিশ।"
+      },
+      {
+        "word": "francés/a",
+        "english": "French",
+        "bengali": "ফরাসি",
+        "category": "nationalities",
+        "pronunciation": "fran-SES",
+        "example": "Él es francés.",
+        "example_en": "He is French.",
+        "example_bn": "সে ফরাসি।"
+      },
+      {
+        "word": "inglés/a",
+        "english": "English/British",
+        "bengali": "ইংরেজ",
+        "category": "nationalities",
+        "pronunciation": "ing-LES",
+        "example": "Mi profesora es inglesa.",
+        "example_en": "My teacher is English.",
+        "example_bn": "আমার শিক্ষক ইংরেজ।"
+      },
+      {
+        "word": "americano/a",
+        "english": "American",
+        "bengali": "আমেরিকান",
+        "category": "nationalities",
+        "pronunciation": "a-me-ri-KA-no",
+        "example": "Tengo un amigo americano.",
+        "example_en": "I have an American friend.",
+        "example_bn": "আমার একজন আমেরিকান বন্ধু আছে।"
+      },
+      {
+        "word": "bangladesí",
+        "english": "Bangladeshi",
+        "bengali": "বাংলাদেশি",
+        "category": "nationalities",
+        "pronunciation": "ban-gla-de-SI",
+        "example": "Soy bangladesí.",
+        "example_en": "I am Bangladeshi.",
+        "example_bn": "আমি বাংলাদেশি।"
+      },
+      {
+        "word": "indio/a",
+        "english": "Indian",
+        "bengali": "ভারতীয়",
+        "category": "nationalities",
+        "pronunciation": "IN-dyo",
+        "example": "Mi vecina es india.",
+        "example_en": "My neighbour is Indian.",
+        "example_bn": "আমার প্রতিবেশী ভারতীয়।"
+      },
+      {
+        "word": "alemán/a",
+        "english": "German",
+        "bengali": "জার্মান",
+        "category": "nationalities",
+        "pronunciation": "a-le-MAN",
+        "example": "Mi jefe es alemán.",
+        "example_en": "My boss is German.",
+        "example_bn": "আমার বস জার্মান।"
+      },
+      {
+        "word": "japonés/a",
+        "english": "Japanese",
+        "bengali": "জাপানি",
+        "category": "nationalities",
+        "pronunciation": "ha-po-NES",
+        "example": "Este coche es japonés.",
+        "example_en": "This car is Japanese.",
+        "example_bn": "এই গাড়ি জাপানি।"
+      },
+      {
+        "word": "coreano/a",
+        "english": "Korean",
+        "bengali": "কোরিয়ান",
+        "category": "nationalities",
+        "pronunciation": "ko-re-A-no",
+        "example": "Me gusta la música coreana.",
+        "example_en": "I like Korean music.",
+        "example_bn": "আমি কোরিয়ান সংগীত পছন্দ করি।"
+      },
+      {
+        "word": "brasileño/a",
+        "english": "Brazilian",
+        "bengali": "ব্রাজিলিয়ান",
+        "category": "nationalities",
+        "pronunciation": "bra-si-LEN-yo",
+        "example": "Neymar es brasileño.",
+        "example_en": "Neymar is Brazilian.",
+        "example_bn": "নেইমার ব্রাজিলিয়ান।"
+      },
+      {
+        "word": "mexicano/a",
+        "english": "Mexican",
+        "bengali": "মেক্সিকান",
+        "category": "nationalities",
+        "pronunciation": "me-hi-KA-no",
+        "example": "La cocina mexicana es deliciosa.",
+        "example_en": "Mexican cuisine is delicious.",
+        "example_bn": "মেক্সিকান রান্না সুস্বাদু।"
+      },
+      {
+        "word": "portugués/a",
+        "english": "Portuguese",
+        "bengali": "পর্তুগিজ",
+        "category": "nationalities",
+        "pronunciation": "por-tu-GES",
+        "example": "El fado es música portuguesa.",
+        "example_en": "Fado is Portuguese music.",
+        "example_bn": "ফাদো পর্তুগিজ সংগীত।"
+      },
+      {
+        "word": "ruso/a",
+        "english": "Russian",
+        "bengali": "রাশিয়ান",
+        "category": "nationalities",
+        "pronunciation": "ROO-so",
+        "example": "Ella habla ruso.",
+        "example_en": "She speaks Russian.",
+        "example_bn": "সে রাশিয়ান বলে।"
+      },
+      {
+        "word": "australiano/a",
+        "english": "Australian",
+        "bengali": "অস্ট্রেলিয়ান",
+        "category": "nationalities",
+        "pronunciation": "aus-tra-LYA-no",
+        "example": "Mi compañero es australiano.",
+        "example_en": "My colleague is Australian.",
+        "example_bn": "আমার সহকর্মী অস্ট্রেলিয়ান।"
+      },
+      {
+        "word": "marroquí",
+        "english": "Moroccan",
+        "bengali": "মরোক্কান",
+        "category": "nationalities",
+        "pronunciation": "ma-ro-KI",
+        "example": "La arquitectura marroquí es preciosa.",
+        "example_en": "Moroccan architecture is beautiful.",
+        "example_bn": "মরোক্কান স্থাপত্য সুন্দর।"
+      },
+      {
+        "word": "italiano/a",
+        "english": "Italian",
+        "bengali": "ইতালিয়ান",
+        "category": "nationalities",
+        "pronunciation": "i-ta-LYA-no",
+        "example": "La pizza italiana es la mejor.",
+        "example_en": "Italian pizza is the best.",
+        "example_bn": "ইতালিয়ান পিজ্জা সেরা।"
+      },
+      {
+        "word": "tailandés/a",
+        "english": "Thai",
+        "bengali": "থাই",
+        "category": "nationalities",
+        "pronunciation": "tai-lan-DES",
+        "example": "La comida tailandesa es picante.",
+        "example_en": "Thai food is spicy.",
+        "example_bn": "থাই খাবার ঝাল।"
+      },
+      {
+        "word": "pakistaní",
+        "english": "Pakistani",
+        "bengali": "পাকিস্তানি",
+        "category": "nationalities",
+        "pronunciation": "pa-kis-ta-NI",
+        "example": "Mi amigo pakistaní habla urdu.",
+        "example_en": "My Pakistani friend speaks Urdu.",
+        "example_bn": "আমার পাকিস্তানি বন্ধু উর্দু বলে।"
+      }
+    ],
+    "daily_activities": [
+      {
+        "word": "ver la tele",
+        "english": "watch TV",
+        "bengali": "টিভি দেখা",
+        "category": "daily_activities",
+        "pronunciation": "ver la TE-le",
+        "example": "Por las noches veo la tele.",
+        "example_en": "I watch TV in the evenings.",
+        "example_bn": "রাতে আমি টিভি দেখি।"
+      },
+      {
+        "word": "escuchar música",
+        "english": "listen to music",
+        "bengali": "সংগীত শোনা",
+        "category": "daily_activities",
+        "pronunciation": "es-ku-CHAR MOO-si-ka",
+        "example": "Me relajo escuchando música.",
+        "example_en": "I relax listening to music.",
+        "example_bn": "আমি সংগীত শুনে বিশ্রাম নিই।"
+      },
+      {
+        "word": "trabajar",
+        "english": "work",
+        "bengali": "কাজ করা",
+        "category": "daily_activities",
+        "pronunciation": "tra-ba-HAR",
+        "example": "Trabajo desde casa los lunes.",
+        "example_en": "I work from home on Mondays.",
+        "example_bn": "সোমবার আমি বাসা থেকে কাজ করি।"
+      },
+      {
+        "word": "tomar un café",
+        "english": "have a coffee",
+        "bengali": "কফি পান করা",
+        "category": "daily_activities",
+        "pronunciation": "to-MAR un ka-FE",
+        "example": "Siempre tomo un café por la mañana.",
+        "example_en": "I always have a coffee in the morning.",
+        "example_bn": "সকালে আমি সবসময় কফি পান করি।"
+      },
+      {
+        "word": "ir a un restaurante",
+        "english": "go to a restaurant",
+        "bengali": "রেস্তোরাঁয় যাওয়া",
+        "category": "daily_activities",
+        "pronunciation": "ir a un res-tau-RAN-te",
+        "example": "Los viernes vamos a un restaurante.",
+        "example_en": "On Fridays we go to a restaurant.",
+        "example_bn": "শুক্রবার আমরা রেস্তোরাঁয় যাই।"
+      },
+      {
+        "word": "ir al supermercado",
+        "english": "go to the supermarket",
+        "bengali": "সুপারমার্কেটে যাওয়া",
+        "category": "daily_activities",
+        "pronunciation": "ir al su-per-mer-KA-do",
+        "example": "Voy al supermercado los sábados.",
+        "example_en": "I go to the supermarket on Saturdays.",
+        "example_bn": "শনিবার আমি সুপারমার্কেটে যাই।"
+      },
+      {
+        "word": "leer un libro",
+        "english": "read a book",
+        "bengali": "বই পড়া",
+        "category": "daily_activities",
+        "pronunciation": "le-ER un LEE-bro",
+        "example": "Leo un libro antes de dormir.",
+        "example_en": "I read a book before sleeping.",
+        "example_bn": "ঘুমানোর আগে আমি বই পড়ি।"
+      },
+      {
+        "word": "ir de compras",
+        "english": "go shopping",
+        "bengali": "কেনাকাটা করা",
+        "category": "daily_activities",
+        "pronunciation": "ir de KOM-pras",
+        "example": "Me gusta ir de compras el domingo.",
+        "example_en": "I like going shopping on Sunday.",
+        "example_bn": "রবিবার কেনাকাটা করতে আমার ভালো লাগে।"
+      },
+      {
+        "word": "cocinar",
+        "english": "cook",
+        "bengali": "রান্না করা",
+        "category": "daily_activities",
+        "pronunciation": "ko-si-NAR",
+        "example": "Me encanta cocinar platos nuevos.",
+        "example_en": "I love cooking new dishes.",
+        "example_bn": "নতুন খাবার রান্না করতে আমার খুব ভালো লাগে।"
+      },
+      {
+        "word": "pasear",
+        "english": "go for a walk",
+        "bengali": "হাঁটতে যাওয়া",
+        "category": "daily_activities",
+        "pronunciation": "pa-se-AR",
+        "example": "Paseo por el parque cada mañana.",
+        "example_en": "I walk in the park every morning.",
+        "example_bn": "প্রতি সকালে আমি পার্কে হাঁটি।"
+      },
+      {
+        "word": "hacer yoga",
+        "english": "do yoga",
+        "bengali": "যোগব্যায়াম করা",
+        "category": "daily_activities",
+        "pronunciation": "a-SER YO-ga",
+        "example": "Hago yoga tres veces a la semana.",
+        "example_en": "I do yoga three times a week.",
+        "example_bn": "সপ্তাহে তিনবার আমি যোগব্যায়াম করি।"
+      },
+      {
+        "word": "correr",
+        "english": "run / jog",
+        "bengali": "দৌড়ানো",
+        "category": "daily_activities",
+        "pronunciation": "ko-RER",
+        "example": "Corro 5 km cada mañana.",
+        "example_en": "I run 5 km every morning.",
+        "example_bn": "প্রতি সকালে আমি ৫ কিমি দৌড়াই।"
+      },
+      {
+        "word": "nadar",
+        "english": "swim",
+        "bengali": "সাঁতার কাটা",
+        "category": "daily_activities",
+        "pronunciation": "na-DAR",
+        "example": "Nado en la piscina los martes.",
+        "example_en": "I swim in the pool on Tuesdays.",
+        "example_bn": "মঙ্গলবার আমি সুইমিং পুলে সাঁতার কাটি।"
+      },
+      {
+        "word": "bailar",
+        "english": "dance",
+        "bengali": "নাচা",
+        "category": "daily_activities",
+        "pronunciation": "bai-LAR",
+        "example": "Bailo salsa los fines de semana.",
+        "example_en": "I dance salsa on weekends.",
+        "example_bn": "সপ্তাহান্তে আমি সালসা নাচি।"
+      },
+      {
+        "word": "hacer senderismo",
+        "english": "go hiking",
+        "bengali": "হাইকিং করা",
+        "category": "daily_activities",
+        "pronunciation": "a-SER sen-de-RIS-mo",
+        "example": "Hacemos senderismo en la montaña.",
+        "example_en": "We go hiking in the mountains.",
+        "example_bn": "আমরা পাহাড়ে হাইকিং করি।"
+      },
+      {
+        "word": "visitar a la familia",
+        "english": "visit family",
+        "bengali": "পরিবার দেখতে যাওয়া",
+        "category": "daily_activities",
+        "pronunciation": "vi-si-TAR a la fa-MI-lya",
+        "example": "Visito a mi familia los domingos.",
+        "example_en": "I visit my family on Sundays.",
+        "example_bn": "রবিবার আমি পরিবার দেখতে যাই।"
+      },
+      {
+        "word": "lavar la ropa",
+        "english": "do the laundry",
+        "bengali": "কাপড় ধোওয়া",
+        "category": "daily_activities",
+        "pronunciation": "la-BAR la RO-pa",
+        "example": "Lavo la ropa los miércoles.",
+        "example_en": "I do laundry on Wednesdays.",
+        "example_bn": "বুধবার আমি কাপড় ধুই।"
+      },
+      {
+        "word": "ir al cine",
+        "english": "go to the cinema",
+        "bengali": "সিনেমায় যাওয়া",
+        "category": "daily_activities",
+        "pronunciation": "ir al SI-ne",
+        "example": "Voy al cine una vez al mes.",
+        "example_en": "I go to the cinema once a month.",
+        "example_bn": "মাসে একবার আমি সিনেমায় যাই।"
+      },
+      {
+        "word": "levantarse",
+        "english": "get up",
+        "bengali": "উঠা",
+        "category": "daily_activities",
+        "pronunciation": "le-van-TAR-se",
+        "example": "Me levanto a las siete.",
+        "example_en": "I get up at seven.",
+        "example_bn": "আমি সাতটায় ওঠি।"
+      },
+      {
+        "word": "ducharse",
+        "english": "take a shower",
+        "bengali": "গোসল করা",
+        "category": "daily_activities",
+        "pronunciation": "du-CHAR-se",
+        "example": "Me ducho por la mañana.",
+        "example_en": "I take a shower in the morning.",
+        "example_bn": "সকালে আমি গোসল করি।"
+      }
+    ],
+    "hobbies": [
+      {
+        "word": "esquiar",
+        "english": "skiing",
+        "bengali": "স্কি করা",
+        "category": "hobbies",
+        "pronunciation": "es-KI-ar",
+        "example": "Me encanta esquiar en invierno.",
+        "example_en": "I love skiing in winter.",
+        "example_bn": "শীতকালে স্কি করতে আমার খুব ভালো লাগে।"
+      },
+      {
+        "word": "hacer snowboard",
+        "english": "snowboarding",
+        "bengali": "স্নোবোর্ড করা",
+        "category": "hobbies",
+        "pronunciation": "a-SER SNOW-bord",
+        "example": "Mi hermano hace snowboard.",
+        "example_en": "My brother does snowboarding.",
+        "example_bn": "আমার ভাই স্নোবোর্ড করে।"
+      },
+      {
+        "word": "ir al gimnasio",
+        "english": "go to the gym",
+        "bengali": "জিমে যাওয়া",
+        "category": "hobbies",
+        "pronunciation": "ir al him-NA-syo",
+        "example": "Voy al gimnasio cuatro veces a la semana.",
+        "example_en": "I go to the gym four times a week.",
+        "example_bn": "সপ্তাহে চারবার আমি জিমে যাই।"
+      },
+      {
+        "word": "visitar museos",
+        "english": "visit museums",
+        "bengali": "জাদুঘর পরিদর্শন করা",
+        "category": "hobbies",
+        "pronunciation": "vi-si-TAR mu-SE-os",
+        "example": "Me gusta visitar museos de arte.",
+        "example_en": "I like visiting art museums.",
+        "example_bn": "আমি শিল্প জাদুঘর পরিদর্শন করতে পছন্দ করি।"
+      },
+      {
+        "word": "la música",
+        "english": "music",
+        "bengali": "সংগীত",
+        "category": "hobbies",
+        "pronunciation": "la MOO-si-ka",
+        "example": "La música es mi pasión.",
+        "example_en": "Music is my passion.",
+        "example_bn": "সংগীত আমার আবেগ।"
+      },
+      {
+        "word": "el senderismo",
+        "english": "hiking",
+        "bengali": "হাইকিং",
+        "category": "hobbies",
+        "pronunciation": "el sen-de-RIS-mo",
+        "example": "El senderismo es perfecto para desconectar.",
+        "example_en": "Hiking is perfect for disconnecting.",
+        "example_bn": "হাইকিং বিশ্রামের জন্য আদর্শ।"
+      },
+      {
+        "word": "la fotografía",
+        "english": "photography",
+        "bengali": "ফটোগ্রাফি",
+        "category": "hobbies",
+        "pronunciation": "la fo-to-gra-FI-a",
+        "example": "La fotografía es mi hobby favorito.",
+        "example_en": "Photography is my favourite hobby.",
+        "example_bn": "ফটোগ্রাফি আমার প্রিয় শখ।"
+      },
+      {
+        "word": "el dibujo",
+        "english": "drawing",
+        "bengali": "আঁকা",
+        "category": "hobbies",
+        "pronunciation": "el di-BOO-ho",
+        "example": "De niño me encantaba el dibujo.",
+        "example_en": "As a child I loved drawing.",
+        "example_bn": "ছোটবেলায় আমি আঁকতে ভালোবাসতাম।"
+      },
+      {
+        "word": "la lectura",
+        "english": "reading",
+        "bengali": "পড়া",
+        "category": "hobbies",
+        "pronunciation": "la lek-TOO-ra",
+        "example": "La lectura es esencial para mí.",
+        "example_en": "Reading is essential for me.",
+        "example_bn": "পড়া আমার জন্য অপরিহার্য।"
+      },
+      {
+        "word": "el ajedrez",
+        "english": "chess",
+        "bengali": "দাবা",
+        "category": "hobbies",
+        "pronunciation": "el a-he-DRES",
+        "example": "Juego al ajedrez en línea.",
+        "example_en": "I play chess online.",
+        "example_bn": "আমি অনলাইনে দাবা খেলি।"
+      },
+      {
+        "word": "viajar",
+        "english": "travel",
+        "bengali": "ভ্রমণ করা",
+        "category": "hobbies",
+        "pronunciation": "bya-HAR",
+        "example": "Viajar es mi mayor pasión.",
+        "example_en": "Travelling is my greatest passion.",
+        "example_bn": "ভ্রমণ আমার সবচেয়ে বড় আবেগ।"
+      },
+      {
+        "word": "tocar la guitarra",
+        "english": "play guitar",
+        "bengali": "গিটার বাজানো",
+        "category": "hobbies",
+        "pronunciation": "to-KAR la gi-TA-rra",
+        "example": "Toco la guitarra desde los diez años.",
+        "example_en": "I have played guitar since I was ten.",
+        "example_bn": "দশ বছর বয়স থেকে আমি গিটার বাজাই।"
+      },
+      {
+        "word": "ver películas",
+        "english": "watch films",
+        "bengali": "সিনেমা দেখা",
+        "category": "hobbies",
+        "pronunciation": "ver pe-LI-ku-las",
+        "example": "Los domingos veo películas en casa.",
+        "example_en": "On Sundays I watch films at home.",
+        "example_bn": "রবিবার আমি বাসায় সিনেমা দেখি।"
+      },
+      {
+        "word": "jugar videojuegos",
+        "english": "play video games",
+        "bengali": "ভিডিও গেম খেলা",
+        "category": "hobbies",
+        "pronunciation": "hu-GAR vi-de-o-HWE-gos",
+        "example": "Mi hijo juega videojuegos cada tarde.",
+        "example_en": "My son plays video games every afternoon.",
+        "example_bn": "আমার ছেলে প্রতি বিকেলে ভিডিও গেম খেলে।"
+      },
+      {
+        "word": "la pintura",
+        "english": "painting",
+        "bengali": "চিত্রকলা",
+        "category": "hobbies",
+        "pronunciation": "la pin-TOO-ra",
+        "example": "La pintura me ayuda a relajarme.",
+        "example_en": "Painting helps me relax.",
+        "example_bn": "চিত্রকলা আমাকে শিথিল হতে সাহায্য করে।"
+      },
+      {
+        "word": "el teatro",
+        "english": "theatre",
+        "bengali": "থিয়েটার",
+        "category": "hobbies",
+        "pronunciation": "el te-A-tro",
+        "example": "Voy al teatro una vez al mes.",
+        "example_en": "I go to the theatre once a month.",
+        "example_bn": "মাসে একবার আমি থিয়েটারে যাই।"
+      },
+      {
+        "word": "la jardinería",
+        "english": "gardening",
+        "bengali": "বাগান করা",
+        "category": "hobbies",
+        "pronunciation": "la har-di-ne-RI-a",
+        "example": "La jardinería es muy relajante.",
+        "example_en": "Gardening is very relaxing.",
+        "example_bn": "বাগান করা খুব শান্তিদায়ক।"
+      },
+      {
+        "word": "hacer voluntariado",
+        "english": "volunteer / volunteering",
+        "bengali": "স্বেচ্ছাসেবী কাজ",
+        "category": "hobbies",
+        "pronunciation": "a-SER vo-lun-ta-RYA-do",
+        "example": "Hago voluntariado los fines de semana.",
+        "example_en": "I volunteer on weekends.",
+        "example_bn": "সপ্তাহান্তে আমি স্বেচ্ছাসেবী কাজ করি।"
+      }
+    ],
+    "emotions": [
+      {
+        "word": "me gusta",
+        "english": "I like",
+        "bengali": "আমার পছন্দ",
+        "category": "emotions",
+        "pronunciation": "me GOOS-ta",
+        "example": "Me gusta el café con leche.",
+        "example_en": "I like coffee with milk.",
+        "example_bn": "দুধ কফি আমার পছন্দ।"
+      },
+      {
+        "word": "me encanta",
+        "english": "I love / I adore",
+        "bengali": "আমি ভালোবাসি",
+        "category": "emotions",
+        "pronunciation": "me en-KAN-ta",
+        "example": "Me encanta viajar por España.",
+        "example_en": "I love travelling around Spain.",
+        "example_bn": "স্পেনে ভ্রমণ করতে আমি ভালোবাসি।"
+      },
+      {
+        "word": "me fascina",
+        "english": "it fascinates me",
+        "bengali": "আমাকে মুগ্ধ করে",
+        "category": "emotions",
+        "pronunciation": "me fas-SI-na",
+        "example": "Me fascina la cultura japonesa.",
+        "example_en": "Japanese culture fascinates me.",
+        "example_bn": "জাপানি সংস্কৃতি আমাকে মুগ্ধ করে।"
+      },
+      {
+        "word": "me sorprende",
+        "english": "it surprises me",
+        "bengali": "আমাকে অবাক করে",
+        "category": "emotions",
+        "pronunciation": "me sor-PREN-de",
+        "example": "Me sorprende su inteligencia.",
+        "example_en": "Their intelligence surprises me.",
+        "example_bn": "তাদের বুদ্ধিমত্তা আমাকে অবাক করে।"
+      },
+      {
+        "word": "me entristece",
+        "english": "it saddens me",
+        "bengali": "আমাকে দুঃখী করে",
+        "category": "emotions",
+        "pronunciation": "me en-tris-TE-se",
+        "example": "Me entristece ver tanta pobreza.",
+        "example_en": "It saddens me to see so much poverty.",
+        "example_bn": "এত দারিদ্র্য দেখে আমার মন খারাপ হয়।"
+      },
+      {
+        "word": "me da rabia",
+        "english": "it makes me angry",
+        "bengali": "আমাকে রাগান্বিত করে",
+        "category": "emotions",
+        "pronunciation": "me da RA-bya",
+        "example": "Me da rabia la injusticia.",
+        "example_en": "Injustice makes me angry.",
+        "example_bn": "অবিচার আমাকে রাগান্বিত করে।"
+      },
+      {
+        "word": "me alegra",
+        "english": "it makes me happy",
+        "bengali": "আমাকে খুশি করে",
+        "category": "emotions",
+        "pronunciation": "me a-LE-gra",
+        "example": "Me alegra ver a mis amigos.",
+        "example_en": "Seeing my friends makes me happy.",
+        "example_bn": "বন্ধুদের দেখলে আমি খুশি হই।"
+      },
+      {
+        "word": "me preocupa",
+        "english": "it worries me",
+        "bengali": "আমাকে চিন্তিত করে",
+        "category": "emotions",
+        "pronunciation": "me pre-o-KOO-pa",
+        "example": "Me preocupa el cambio climático.",
+        "example_en": "Climate change worries me.",
+        "example_bn": "জলবায়ু পরিবর্তন আমাকে চিন্তিত করে।"
+      },
+      {
+        "word": "me aburre",
+        "english": "it bores me",
+        "bengali": "আমাকে বিরক্ত করে",
+        "category": "emotions",
+        "pronunciation": "me a-BOO-rre",
+        "example": "Me aburre la burocracia.",
+        "example_en": "Bureaucracy bores me.",
+        "example_bn": "আমলাতন্ত্র আমাকে বিরক্ত করে।"
+      },
+      {
+        "word": "me molesta",
+        "english": "it bothers me",
+        "bengali": "আমাকে বিরক্ত করে",
+        "category": "emotions",
+        "pronunciation": "me mo-LES-ta",
+        "example": "Me molesta el ruido por la noche.",
+        "example_en": "Noise at night bothers me.",
+        "example_bn": "রাতে শব্দ আমাকে বিরক্ত করে।"
+      },
+      {
+        "word": "estar contento/a",
+        "english": "to be happy",
+        "bengali": "খুশি থাকা",
+        "category": "emotions",
+        "pronunciation": "es-TAR kon-TEN-to",
+        "example": "Estoy contento con mis resultados.",
+        "example_en": "I am happy with my results.",
+        "example_bn": "আমার ফলাফলে আমি খুশি।"
+      },
+      {
+        "word": "estar triste",
+        "english": "to be sad",
+        "bengali": "দুঃখী থাকা",
+        "category": "emotions",
+        "pronunciation": "es-TAR TRIS-te",
+        "example": "Estoy triste porque llueve.",
+        "example_en": "I am sad because it is raining.",
+        "example_bn": "বৃষ্টি হচ্ছে বলে আমি দুঃখী।"
+      },
+      {
+        "word": "estar nervioso/a",
+        "english": "to be nervous",
+        "bengali": "নার্ভাস থাকা",
+        "category": "emotions",
+        "pronunciation": "es-TAR ner-BYO-so",
+        "example": "Estoy nervioso antes del examen.",
+        "example_en": "I am nervous before the exam.",
+        "example_bn": "পরীক্ষার আগে আমি নার্ভাস।"
+      },
+      {
+        "word": "estar emocionado/a",
+        "english": "to be excited",
+        "bengali": "উত্তেজিত থাকা",
+        "category": "emotions",
+        "pronunciation": "es-TAR e-mo-syo-NA-do",
+        "example": "Estoy emocionado por el viaje.",
+        "example_en": "I am excited about the trip.",
+        "example_bn": "ভ্রমণ নিয়ে আমি উত্তেজিত।"
+      },
+      {
+        "word": "estar enfadado/a",
+        "english": "to be angry",
+        "bengali": "রাগান্বিত থাকা",
+        "category": "emotions",
+        "pronunciation": "es-TAR en-fa-DA-do",
+        "example": "Está enfadado conmigo.",
+        "example_en": "He/She is angry with me.",
+        "example_bn": "সে আমার উপর রাগান্বিত।"
+      },
+      {
+        "word": "estar cansado/a",
+        "english": "to be tired",
+        "bengali": "ক্লান্ত থাকা",
+        "category": "emotions",
+        "pronunciation": "es-TAR kan-SA-do",
+        "example": "Estoy muy cansado después del trabajo.",
+        "example_en": "I am very tired after work.",
+        "example_bn": "কাজের পর আমি খুব ক্লান্ত।"
+      },
+      {
+        "word": "estar asustado/a",
+        "english": "to be scared",
+        "bengali": "ভয় পাওয়া",
+        "category": "emotions",
+        "pronunciation": "es-TAR a-sus-TA-do",
+        "example": "El niño está asustado de la oscuridad.",
+        "example_en": "The child is scared of the dark.",
+        "example_bn": "শিশুটি অন্ধকারে ভয় পায়।"
+      },
+      {
+        "word": "estar orgulloso/a",
+        "english": "to be proud",
+        "bengali": "গর্বিত থাকা",
+        "category": "emotions",
+        "pronunciation": "es-TAR or-gu-LYO-so",
+        "example": "Estoy muy orgulloso de ti.",
+        "example_en": "I am very proud of you.",
+        "example_bn": "আমি তোমার জন্য খুব গর্বিত।"
       }
     ]
   }
