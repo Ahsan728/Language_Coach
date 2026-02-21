@@ -8,6 +8,7 @@
 
 // Cache voices once they're available (Chrome loads them async)
 let _ttsVoices = [];
+let _ttsWarnedLangs = new Set();
 
 function _loadVoices() {
   const vs = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
@@ -19,13 +20,46 @@ if ('speechSynthesis' in window) {
   window.speechSynthesis.addEventListener('voiceschanged', _loadVoices);
 }
 
+function _showTtsWarning(langName) {
+  if (_ttsWarnedLangs.has(langName)) return;
+  _ttsWarnedLangs.add(langName);
+
+  // Only show once per language; remove after 12 seconds
+  const existing = document.getElementById('tts-warning-banner');
+  if (existing) existing.remove();
+
+  const banner = document.createElement('div');
+  banner.id = 'tts-warning-banner';
+  banner.style.cssText = [
+    'position:fixed', 'bottom:1rem', 'left:50%', 'transform:translateX(-50%)',
+    'z-index:9999', 'max-width:520px', 'width:calc(100% - 2rem)',
+    'background:#fff3cd', 'border:1px solid #ffc107', 'border-radius:10px',
+    'padding:.85rem 1.1rem', 'box-shadow:0 4px 20px rgba(0,0,0,.15)',
+    'font-size:.875rem', 'line-height:1.5'
+  ].join(';');
+
+  banner.innerHTML = `
+    <strong>🔇 No ${langName} voice installed</strong>
+    <button onclick="this.closest('#tts-warning-banner').remove()"
+            style="float:right;background:none;border:none;font-size:1.1rem;cursor:pointer;line-height:1">×</button>
+    <div class="mt-1">
+      Windows doesn't include French/Spanish voices by default.<br>
+      To fix: <strong>Settings → Time &amp; Language → Language &amp; Region
+      → Add a language → pick ${langName} → tick "Text-to-speech"</strong>
+      then restart the browser.
+    </div>`;
+
+  document.body.appendChild(banner);
+  setTimeout(() => { if (banner.parentNode) banner.remove(); }, 14000);
+}
+
 function speakText(text, langTag) {
   if (!text) return;
   const synth = window.speechSynthesis;
   if (!synth) return;
 
   // Chrome bug: after inactivity the engine gets stuck in "paused" state.
-  // resume() first, then cancel(), then speak() — this order is reliable.
+  // resume() → cancel() → speak() is the reliable order.
   try { synth.resume(); } catch { /* noop */ }
   synth.cancel();
 
@@ -34,17 +68,25 @@ function speakText(text, langTag) {
 
   if (langTag) {
     u.lang = langTag;
-    // Explicitly pick the best available voice so Chrome doesn't fall back
-    // to the wrong language or stay silent
+
     if (_ttsVoices.length) {
       const prefix = langTag.split('-')[0];
-      u.voice = _ttsVoices.find(v => v.lang === langTag)
-             || _ttsVoices.find(v => v.lang.startsWith(prefix))
-             || null;
+      const langVoice = _ttsVoices.find(v => v.lang === langTag)
+                     || _ttsVoices.find(v => v.lang.startsWith(prefix));
+
+      if (langVoice) {
+        u.voice = langVoice;
+      } else {
+        // No matching voice installed — warn the user once, then fall back
+        // to the first available voice so something is still audible
+        const langName = langTag.startsWith('fr') ? 'French' : langTag.startsWith('es') ? 'Spanish' : langTag;
+        _showTtsWarning(langName);
+        u.voice = _ttsVoices[0] || null;
+      }
     }
   }
 
-  // Small delay so cancel() fully clears before the next utterance starts
+  // 50 ms gap so cancel() fully clears before the next utterance queues
   setTimeout(() => {
     try { synth.speak(u); } catch { /* noop */ }
   }, 50);
