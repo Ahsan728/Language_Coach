@@ -16,6 +16,13 @@ env/
 # Database (progress is local per-user)
 data/progress.db
 
+# Dictionary PDFs (too large for GitHub)
+Dictionaries/
+
+# Build artifacts from dictionary extraction scripts
+data/_bn_cache_*.json
+data/vocabulary_extended.json
+
 # IDE
 .vscode/
 .idea/

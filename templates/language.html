@@ -31,7 +31,7 @@
 <div class="container py-5">
   <!-- Level sections -->
   {% set level_order = ['beginner', 'intermediate', 'grammar'] %}
-  {% set level_labels = {'beginner': ('🌱 Beginner — শুরু', 'Start here with vocabulary basics'), 'intermediate': ('🌿 Intermediate — মধ্যবর্তী', 'Expand with verbs, transport, phrases'), 'grammar': ('📚 Grammar — ব্যাকরণ', 'Articles, present, past and future tenses')} %}
+  {% set level_labels = {'beginner': ('🌱 Beginner — শুরু', 'Start here with vocabulary basics'), 'intermediate': ('🌿 Intermediate — মধ্যবর্তী', 'Expand vocabulary: health, home, sports, nature, work, shopping, food, travel and more'), 'grammar': ('📚 Grammar — ব্যাকরণ', 'Articles, present, past and future tenses')} %}
 
   {% for lvl in level_order %}
   {% set lvl_lessons = lessons | selectattr('level', 'equalto', lvl) | list %}
