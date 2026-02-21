@@ -1150,6 +1150,11 @@ document.addEventListener('DOMContentLoaded', () => {
   attachFlashcardShortcuts();
   attachQuizShortcuts();
 
+  // Lesson page vocab TTS buttons (data-tts / data-lang attributes)
+  document.querySelectorAll('.lesson-page .btn-listen[data-tts]').forEach(btn => {
+    btn.addEventListener('click', () => speakText(btn.dataset.tts, btn.dataset.lang || ''));
+  });
+
   // Animate progress bars on dashboard
   document.querySelectorAll('.progress-bar').forEach(bar => {
     const target = bar.style.width;

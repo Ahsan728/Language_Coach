@@ -78,7 +78,8 @@
                 </div>
                 <div class="d-flex align-items-center gap-2">
                   <button class="btn btn-sm btn-light border btn-listen" type="button"
-                          onclick="speakText({{ word.word|tojson }}, {{ ('fr-FR' if lang == 'french' else 'es-ES')|tojson }})"
+                          data-tts="{{ word.word }}"
+                          data-lang="{{ 'fr-FR' if lang == 'french' else 'es-ES' }}"
                           title="Listen">
                     <i class="fas fa-volume-up"></i>
                   </button>
