@@ -274,6 +274,11 @@ body { font-family: 'Poppins', sans-serif; color: var(--text-dark); background: 
 .stat-label { font-size: 0.75rem; color: #6c757d; }
 
 /* ====================================================
+   DICTATION PAGE
+   ==================================================== */
+.dictation-icon { font-size: 4rem; line-height: 1; }
+
+/* ====================================================
    PROGRESS PAGE
    ==================================================== */
 .big-percent { font-size: 2.5rem; font-weight: 800; }

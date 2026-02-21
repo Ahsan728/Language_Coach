@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block title %}Dictation — {{ lesson.title_en }}{% endblock %}
+{% block body_class %}lang-{{ lang }}-page dictation-page{% endblock %}
+
+{% block content %}
+<div class="lang-header lang-header-{{ lang }} py-4">
+  <div class="container">
+    <div class="d-flex align-items-center gap-3">
+      <a href="/lesson/{{ lang }}/{{ lesson.id }}" class="btn btn-sm btn-light btn-back">← Back</a>
+      <div>
+        <h2 class="text-white fw-bold mb-0">🎧 Dictation Practice</h2>
+        <p class="text-white opacity-75 mb-0">{{ meta.flag }} {{ meta.name }} &bull; {{ lesson.title_en }} &bull; Listen and type what you hear</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-6 col-md-8">
+
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <span class="text-muted small" id="dictationCounter">Word 1 of {{ items | length }}</span>
+        <span class="badge bg-success-subtle text-success border" id="dictationScore">0 / 0</span>
+      </div>
+      <div class="progress mb-4" style="height:8px">
+        <div class="progress-bar bg-{{ 'french' if lang == 'french' else 'spanish' }}"
+             id="dictationProgress" style="width:0%"></div>
+      </div>
+
+      <div class="card border-0 shadow" id="dictationCard">
+        <div class="card-body p-4 p-md-5 text-center">
+
+          <div class="dictation-icon mb-2">🎧</div>
+          <p class="text-muted mb-1 fw-semibold">Listen carefully and type what you hear</p>
+          <p class="text-muted small bengali-text mb-4">শুনুন এবং যা শুনলেন তা লিখুন</p>
+
+          <!-- Listen / Replay button -->
+          <div class="mb-4">
+            <button class="btn btn-lg btn-outline-{{ 'french' if lang == 'french' else 'spanish' }}"
+                    type="button" onclick="dictationListen()">
+              <i class="fas fa-volume-up me-2"></i>Listen / Replay
+            </button>
+            <div class="text-muted small mt-2">Press <kbd>L</kbd> to replay</div>
+          </div>
+
+          <!-- Input -->
+          <div class="input-group mb-2">
+            <input id="dictationInput" type="text"
+                   class="form-control form-control-lg text-center"
+                   placeholder="Type the word you heard…"
+                   autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+            <button class="btn btn-{{ 'french' if lang == 'french' else 'spanish' }}"
+                    type="button" id="dictationSubmitBtn" onclick="dictationSubmit()">
+              Check
+            </button>
+          </div>
+          <small class="text-muted d-block mb-3">Accents are optional — <em>e</em> = <em>é</em> = both accepted</small>
+
+          <!-- Word reveal shown after answering -->
+          <div id="dictationWordReveal" class="mt-3 p-3 rounded-3 bg-light text-start" style="display:none">
+            <div class="fw-bold fs-4 text-{{ 'french' if lang == 'french' else 'spanish' }}"
+                 id="dictationRevealWord"></div>
+            <div class="text-muted small font-monospace mt-1" id="dictationRevealPron"></div>
+            <div class="mt-2">🇬🇧 <span id="dictationRevealEn"></span></div>
+            <div class="mt-1 bengali-text">🇧🇩 <span id="dictationRevealBn"></span></div>
+          </div>
+
+          <!-- Feedback -->
+          <div class="feedback-box mt-4" id="dictationFeedback" style="display:none">
+            <div id="dictationFeedbackIcon" class="feedback-icon"></div>
+            <div id="dictationFeedbackText"></div>
+            <button class="btn btn-{{ 'french' if lang == 'french' else 'spanish' }} mt-3"
+                    type="button" onclick="dictationNext()" id="dictationNextBtn">
+              Next →
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Results card -->
+      <div class="card border-0 shadow mt-4" id="dictationResults" style="display:none">
+        <div class="card-body p-5 text-center">
+          <div class="result-emoji" id="dictationResultEmoji">🎉</div>
+          <h2 class="mt-3 fw-bold" id="dictationResultTitle">Great job!</h2>
+          <p class="text-muted bengali-text" id="dictationResultBn"></p>
+          <div class="score-display my-4" id="dictationResultScore"></div>
+          <div class="d-flex gap-2 justify-content-center mt-4 flex-wrap">
+            <a class="btn btn-outline-secondary"
+               href="{{ url_for('dictation', lang=lang, lesson_id=lesson.id) }}">↺ Try Again</a>
+            <a class="btn btn-{{ 'french' if lang == 'french' else 'spanish' }}"
+               href="{{ url_for('lesson_view', lang=lang, lesson_id=lesson.id) }}">Back to Lesson</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+const DICTATION_ITEMS = {{ items_json | safe }};
+const DICTATION_LANG = '{{ lang }}';
+</script>
+{% endblock %}

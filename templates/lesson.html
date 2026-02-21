@@ -168,6 +168,9 @@
             <a href="/flashcards/{{ lang }}/{{ lesson.id }}" class="btn btn-outline-{{ 'french' if lang == 'french' else 'spanish' }}">
               🃏 Flashcards — ফ্ল্যাশকার্ড
             </a>
+            <a href="{{ url_for('dictation', lang=lang, lesson_id=lesson.id) }}" class="btn btn-outline-{{ 'french' if lang == 'french' else 'spanish' }}">
+              🎧 Dictation — শুনুন ও লিখুন
+            </a>
             {% endif %}
             <a href="/quiz/{{ lang }}/{{ lesson.id }}" class="btn btn-{{ 'french' if lang == 'french' else 'spanish' }}">
               🧠 Take Quiz — কুইজ দিন

@@ -398,6 +398,11 @@ function renderPractice(idx) {
   document.getElementById('practiceOrderAnswer').innerHTML = '';
   document.getElementById('practiceOrderBank').innerHTML = '';
 
+  // Auto-play TTS for listening exercises
+  if (q.mode === 'listen_to_english' && practiceTtsText) {
+    setTimeout(() => speakText(practiceTtsText, practiceTtsLang), 400);
+  }
+
   if (q.kind === 'type') {
     typeWrap.style.display = 'block';
     const input = document.getElementById('practiceTypeInput');
@@ -666,6 +671,165 @@ function initPractice() {
 }
 
 /* ===============================================
+   DICTATION MODULE
+   =============================================== */
+let dictationIdx = 0;
+let dictationCorrect = 0;
+let dictationWrong = 0;
+let dictationAnswered = false;
+let currentDictationItem = null;
+
+function dictationListen() {
+  if (!currentDictationItem) return;
+  speakText(currentDictationItem.tts_text, currentDictationItem.tts_lang);
+}
+
+function renderDictation(idx) {
+  if (typeof DICTATION_ITEMS === 'undefined' || DICTATION_ITEMS.length === 0) return;
+  const item = DICTATION_ITEMS[idx];
+  if (!item) return;
+  currentDictationItem = item;
+  dictationAnswered = false;
+
+  const total = DICTATION_ITEMS.length;
+  document.getElementById('dictationCounter').textContent = `Word ${idx + 1} of ${total}`;
+  document.getElementById('dictationProgress').style.width = `${Math.round((idx / total) * 100)}%`;
+
+  document.getElementById('dictationWordReveal').style.display = 'none';
+  document.getElementById('dictationFeedback').style.display = 'none';
+
+  const input = document.getElementById('dictationInput');
+  if (input) { input.value = ''; input.disabled = false; input.focus(); }
+
+  const submitBtn = document.getElementById('dictationSubmitBtn');
+  if (submitBtn) submitBtn.disabled = false;
+
+  // Auto-play TTS after a short delay so the page has settled
+  setTimeout(() => dictationListen(), 350);
+}
+
+function dictationSubmit() {
+  if (dictationAnswered) return;
+  dictationAnswered = true;
+
+  const item = currentDictationItem || {};
+  const input = document.getElementById('dictationInput');
+  const got = normalizeAnswer(input ? input.value : '');
+  const expected = answerVariants(item.word);
+  const isCorrect = expected.includes(got);
+
+  if (isCorrect) dictationCorrect++;
+  else dictationWrong++;
+
+  if (input) input.disabled = true;
+  const submitBtn = document.getElementById('dictationSubmitBtn');
+  if (submitBtn) submitBtn.disabled = true;
+
+  // Feedback
+  const fb = document.getElementById('dictationFeedback');
+  fb.style.display = 'block';
+  fb.className = `feedback-box mt-4 ${isCorrect ? 'correct-fb' : 'wrong-fb'}`;
+  document.getElementById('dictationFeedbackIcon').textContent = isCorrect ? '✅' : '❌';
+  document.getElementById('dictationFeedbackText').innerHTML = isCorrect
+    ? `<strong>Correct!</strong> — <strong>${item.word}</strong>`
+    : `<strong>Wrong.</strong> The word was: <strong>${item.word}</strong>`;
+
+  // Reveal word details
+  document.getElementById('dictationWordReveal').style.display = 'block';
+  document.getElementById('dictationRevealWord').textContent = item.word;
+  document.getElementById('dictationRevealPron').textContent = item.pronunciation || '';
+  document.getElementById('dictationRevealEn').textContent = item.english || '';
+  document.getElementById('dictationRevealBn').textContent = item.bengali || '';
+
+  // Update score badge
+  const total = dictationCorrect + dictationWrong;
+  document.getElementById('dictationScore').textContent = `${dictationCorrect} / ${total}`;
+
+  // SRS tracking — dictation is the hardest exercise so XP is higher
+  const lang = (typeof DICTATION_LANG !== 'undefined') ? DICTATION_LANG : null;
+  if (lang && item.word) {
+    const xp = isCorrect ? 15 : 3;
+    fetch('/api/word_progress', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({language: lang, word: item.word, correct: isCorrect ? 1 : 0, source: 'dictation', xp})
+    });
+  }
+
+  const nextBtn = document.getElementById('dictationNextBtn');
+  const last = dictationIdx >= DICTATION_ITEMS.length - 1;
+  if (nextBtn) nextBtn.textContent = last ? 'See Results 🏁' : 'Next →';
+}
+
+function dictationNext() {
+  dictationIdx++;
+  if (dictationIdx >= DICTATION_ITEMS.length) {
+    showDictationResults();
+  } else {
+    renderDictation(dictationIdx);
+  }
+}
+
+function showDictationResults() {
+  document.getElementById('dictationCard').style.display = 'none';
+  const res = document.getElementById('dictationResults');
+  res.style.display = 'block';
+  res.scrollIntoView({behavior: 'smooth', block: 'start'});
+
+  const total = dictationCorrect + dictationWrong;
+  const pct = total > 0 ? Math.round((dictationCorrect / total) * 100) : 0;
+
+  let emoji, title, titleBn;
+  if (pct >= 90)      { emoji = '🏆'; title = 'Perfect Ear!';      titleBn = 'অসাধারণ! আপনার শোনার দক্ষতা দারুণ!'; }
+  else if (pct >= 70) { emoji = '🎉'; title = 'Great Listening!';  titleBn = 'চমৎকার! আরও একটু চেষ্টা করুন।'; }
+  else if (pct >= 50) { emoji = '👂'; title = 'Keep Listening!';   titleBn = 'ভালো চেষ্টা! আরও শুনুন ও অভ্যাস করুন।'; }
+  else                { emoji = '📻'; title = 'Practice More!';     titleBn = 'আরও শুনুন — কান তৈরি হবে!'; }
+
+  document.getElementById('dictationResultEmoji').textContent = emoji;
+  document.getElementById('dictationResultTitle').textContent = title;
+  document.getElementById('dictationResultBn').textContent = titleBn;
+  document.getElementById('dictationResultScore').innerHTML =
+    `<span class="${pct >= 70 ? 'text-success' : pct >= 50 ? 'text-warning' : 'text-danger'}">${pct}%</span>` +
+    `<div class="small text-muted mt-2">${dictationCorrect}/${total} correct</div>`;
+}
+
+function initDictation() {
+  if (typeof DICTATION_ITEMS === 'undefined' || DICTATION_ITEMS.length === 0) return;
+  dictationIdx = 0;
+  dictationCorrect = 0;
+  dictationWrong = 0;
+  dictationAnswered = false;
+  renderDictation(0);
+
+  document.addEventListener('keydown', (e) => {
+    const tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : '';
+    if (e.isComposing) return;
+
+    // L = replay (even inside input)
+    if (e.key.toLowerCase() === 'l' && tag !== 'input') {
+      dictationListen();
+      return;
+    }
+
+    const feedback = document.getElementById('dictationFeedback');
+    const feedbackVisible = feedback && feedback.style.display !== 'none';
+
+    // Enter on feedback → go to next word
+    if (feedbackVisible && e.key === 'Enter' && tag !== 'input') {
+      e.preventDefault();
+      dictationNext();
+      return;
+    }
+
+    // Enter inside input → submit
+    if (!dictationAnswered && tag === 'input' && e.key === 'Enter') {
+      e.preventDefault();
+      dictationSubmit();
+    }
+  });
+}
+
+/* ===============================================
    LESSON VOCAB FILTER
    =============================================== */
 function filterLessonVocab() {
@@ -908,6 +1072,8 @@ document.addEventListener('DOMContentLoaded', () => {
   if (typeof QUESTIONS !== 'undefined' && QUESTIONS.length > 0) initQuiz();
   // Practice page
   initPractice();
+  // Dictation page
+  initDictation();
   // Lesson vocab filter
   filterLessonVocab();
   // Vocabulary explorer page

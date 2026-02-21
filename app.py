@@ -612,6 +612,40 @@ def practice(lang):
                            questions=questions,
                            questions_json=json.dumps(questions, ensure_ascii=False))
 
+@app.route('/dictation/<lang>/<int:lesson_id>')
+def dictation(lang, lesson_id):
+    if lang not in LANG_META:
+        return redirect(url_for('dashboard'))
+    lesson_list = _sorted_lessons(get_lessons().get(lang, []))
+    lesson = _find_lesson(lesson_list, lesson_id)
+    if not lesson:
+        return redirect(url_for('language_home', lang=lang))
+    touch_lesson(lang, lesson_id)
+    vocab = get_lesson_vocab(lang, lesson)
+    if not vocab:
+        return redirect(url_for('lesson_view', lang=lang, lesson_id=lesson_id))
+
+    tts_lang = 'fr-FR' if lang == 'french' else 'es-ES'
+    items = []
+    for w in vocab:
+        if w.get('word'):
+            items.append({
+                'word': w['word'],
+                'english': w.get('english', ''),
+                'bengali': w.get('bengali', ''),
+                'pronunciation': w.get('pronunciation', ''),
+                'tts_text': w['word'],
+                'tts_lang': tts_lang,
+            })
+    random.shuffle(items)
+
+    return render_template('dictation.html',
+                           lang=lang, meta=LANG_META[lang],
+                           lesson=lesson,
+                           items=items,
+                           items_json=json.dumps(items, ensure_ascii=False))
+
+
 @app.route('/quiz/<lang>/<int:lesson_id>')
 def quiz(lang, lesson_id):
     if lang not in LANG_META:
