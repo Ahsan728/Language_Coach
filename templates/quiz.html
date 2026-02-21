@@ -43,8 +43,15 @@
       <div class="quiz-card card border-0 shadow" id="quizCard">
         <div class="card-body p-4 p-md-5">
           <div class="question-num text-muted small mb-3" id="qNum">Question 1</div>
-          <h4 class="question-text mb-2" id="questionEn">Loading...</h4>
-          <p class="question-bengali bengali-text text-muted mb-4" id="questionBn"></p>
+          <div class="d-flex justify-content-between align-items-start gap-3">
+            <div class="flex-grow-1">
+              <h4 class="question-text mb-2" id="questionEn">Loading...</h4>
+              <p class="question-bengali bengali-text text-muted mb-4" id="questionBn"></p>
+            </div>
+            <button class="btn btn-light btn-sm" id="quizListenBtn" type="button" onclick="quizListen()" style="display:none">
+              <i class="fas fa-volume-up"></i>
+            </button>
+          </div>
 
           <div class="choices-grid" id="choicesGrid">
             <!-- Choices injected by JS -->
@@ -95,9 +102,15 @@
               🃏 Flashcards
             </a>
             {% endif %}
-            <a href="/language/{{ lang }}" class="btn btn-{{ 'french' if lang == 'french' else 'spanish' }}">
+            {% if next_lesson %}
+            <a href="{{ url_for('lesson_view', lang=lang, lesson_id=next_lesson.id) }}" class="btn btn-{{ 'french' if lang == 'french' else 'spanish' }}">
               Next Lesson →
             </a>
+            {% else %}
+            <a href="{{ url_for('language_home', lang=lang) }}" class="btn btn-{{ 'french' if lang == 'french' else 'spanish' }}">
+              All Lessons →
+            </a>
+            {% endif %}
           </div>
         </div>
       </div>

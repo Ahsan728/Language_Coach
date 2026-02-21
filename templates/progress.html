@@ -59,9 +59,8 @@
               <div class="small bengali-text text-muted">{{ lesson.title_bn }}</div>
             </td>
             <td>
-              <span class="badge bg-{{ 'success' if lesson.level == 'beginner' else ('warning text-dark' if lesson.level == 'intermediate' else 'primary') }}">
-                {{ lesson.level }}
-              </span>
+              {% set cl = lesson.cefr_level | default(lesson.level) | default('A1') %}
+              <span class="badge cefr-{{ cl }}">{{ cl }}</span>
             </td>
             <td class="text-center">
               {% if lesson.completed %}

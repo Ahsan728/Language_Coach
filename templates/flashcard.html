@@ -6,17 +6,30 @@
 <div class="lang-header lang-header-{{ lang }} py-4">
   <div class="container">
     <div class="d-flex align-items-center gap-3">
-      <a href="/lesson/{{ lang }}/{{ lesson.id }}" class="btn btn-sm btn-light btn-back">
+      {% set fallback_back = url_for('lesson_view', lang=lang, lesson_id=lesson.id) if lesson.id else url_for('language_home', lang=lang) %}
+      <a href="{{ back_url or fallback_back }}" class="btn btn-sm btn-light btn-back">
         ← Back
       </a>
       <div>
         <h2 class="text-white fw-bold mb-0">🃏 Flashcards — ফ্ল্যাশকার্ড</h2>
-        <p class="text-white opacity-75 mb-0">{{ lesson.title_en }} &bull; {{ lesson.title_bn }}</p>
+        <p class="text-white opacity-75 mb-0">
+          {{ lesson.title_en }}{% if lesson.title_bn %} • {{ lesson.title_bn }}{% endif %}
+          {% if header_subtitle %}<br><small>{{ header_subtitle }}</small>{% endif %}
+        </p>
       </div>
     </div>
   </div>
 </div>
 
+{% if not vocabulary %}
+<div class="container py-5">
+  <div class="alert alert-warning text-center">
+    <h4 class="mb-2">⚠️ No vocabulary found</h4>
+    <p class="text-muted mb-3">This set is empty right now.</p>
+    <a href="{{ back_url or fallback_back }}" class="btn btn-secondary">← Back</a>
+  </div>
+</div>
+{% else %}
 <div class="container py-5">
   <div class="row justify-content-center">
     <div class="col-lg-6 col-md-8">
@@ -82,7 +95,10 @@
         <button class="btn btn-outline-secondary" onclick="prevCard()" id="prevBtn" disabled>
           ← Previous
         </button>
-        <div class="text-center">
+        <div class="text-center d-flex gap-2">
+          <button class="btn btn-light" type="button" onclick="listenFlashcard()">
+            <i class="fas fa-volume-up"></i> Listen
+          </button>
           <button class="btn btn-light" onclick="shuffleCards()">
             <i class="fas fa-random"></i> Shuffle
           </button>
@@ -99,15 +115,22 @@
         <p class="text-muted">Great job reviewing all {{ vocabulary | length }} flashcards!</p>
         <div class="d-flex gap-2 justify-content-center mt-3">
           <button class="btn btn-outline-secondary" onclick="restartCards()">↺ Restart</button>
-          <a href="/quiz/{{ lang }}/{{ lesson.id }}" class="btn btn-{{ 'french' if lang == 'french' else 'spanish' }}">
+          {% if show_quiz_link %}
+          <a href="{{ url_for('quiz', lang=lang, lesson_id=lesson.id) }}" class="btn btn-{{ 'french' if lang == 'french' else 'spanish' }}">
             Take Quiz 🧠
           </a>
+          {% else %}
+          <a href="{{ back_url or fallback_back }}" class="btn btn-{{ 'french' if lang == 'french' else 'spanish' }}">
+            Back to Lessons
+          </a>
+          {% endif %}
         </div>
       </div>
 
     </div>
   </div>
 </div>
+{% endif %}
 
 <script>
 const VOCAB = {{ vocab_json | safe }};

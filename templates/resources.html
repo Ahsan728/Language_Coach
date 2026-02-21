@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}Resources — Language Coach{% endblock %}
+{% block body_class %}resources-page{% endblock %}
+
+{% block content %}
+<div class="lang-header lang-header-multi py-4">
+  <div class="container">
+    <h1 class="text-white fw-bold mb-0">
+      <i class="fas fa-compass me-2"></i> Resources
+    </h1>
+    <p class="text-white opacity-75 mb-0">High-quality French & Spanish learning resources + open datasets</p>
+  </div>
+</div>
+
+<div class="container py-5">
+  <div class="row g-4">
+    <div class="col-lg-6">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body p-4">
+          <h3 class="fw-bold mb-3">🇫🇷 French (Français)</h3>
+          <ul class="list-unstyled mb-0">
+            <li class="mb-3">
+              <a href="https://apprendre.tv5monde.com/" target="_blank" rel="noopener" class="fw-semibold">
+                TV5MONDE — Apprendre le français
+              </a>
+              <div class="text-muted small">Interactive videos + exercises for multiple CEFR levels.</div>
+            </li>
+            <li class="mb-3">
+              <a href="https://www.france-education-international.fr/diplome/delf-tout-public/niveau-a1?langue=fr" target="_blank" rel="noopener" class="fw-semibold">
+                France Éducation international — DELF sample papers (A1)
+              </a>
+              <div class="text-muted small">Official-style exam practice (useful for CEFR-aligned lessons).</div>
+            </li>
+            <li class="mb-0">
+              <a href="https://francaisfacile.rfi.fr/fr/" target="_blank" rel="noopener" class="fw-semibold">
+                RFI — Le français facile
+              </a>
+              <div class="text-muted small">News + listening practice in easier French.</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-6">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body p-4">
+          <h3 class="fw-bold mb-3">🇪🇸 Spanish (Español)</h3>
+          <ul class="list-unstyled mb-0">
+            <li class="mb-3">
+              <a href="https://cervantes.org/es/aprender-ensenar/cursos/cursos-espanol-online" target="_blank" rel="noopener" class="fw-semibold">
+                Instituto Cervantes — Online Spanish courses
+              </a>
+              <div class="text-muted small">Official courses from the Instituto Cervantes.</div>
+            </li>
+            <li class="mb-0">
+              <a href="https://cvc.cervantes.es/" target="_blank" rel="noopener" class="fw-semibold">
+                Centro Virtual Cervantes (CVC)
+              </a>
+              <div class="text-muted small">Grammar, reading, and reference materials.</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+          <h3 class="fw-bold mb-3">📦 Open Content (for adding lessons)</h3>
+          <ul class="list-unstyled mb-0">
+            <li class="mb-2">
+              <a href="https://tatoeba.org/en/downloads" target="_blank" rel="noopener" class="fw-semibold">
+                Tatoeba — Sentence downloads
+              </a>
+              <div class="text-muted small">Large multilingual sentence dataset (good for sentence exercises). Check licensing on their site.</div>
+            </li>
+            <li class="mb-0">
+              <a href="https://tatoeba.org/en/terms_of_use" target="_blank" rel="noopener" class="fw-semibold">
+                Tatoeba — Terms / licensing
+              </a>
+              <div class="text-muted small">Important if you plan to redistribute content.</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

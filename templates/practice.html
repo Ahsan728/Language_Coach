@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block title %}Practice — {{ meta.name }}{% endblock %}
+{% block body_class %}lang-{{ lang }}-page practice-page{% endblock %}
+
+{% block content %}
+<div class="lang-header lang-header-{{ lang }} py-4">
+  <div class="container">
+    <div class="d-flex align-items-center gap-3">
+      <a href="{{ url_for('language_home', lang=lang) }}" class="btn btn-sm btn-light btn-back">← Back</a>
+      <div>
+        <h2 class="text-white fw-bold mb-0">⚡ Daily Practice</h2>
+        <p class="text-white opacity-75 mb-0">{{ meta.flag }} {{ meta.name }} • Mix of listening, choices & typing</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-7 col-md-9">
+
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <span class="text-muted small" id="practiceCounter">Question 1</span>
+        <div class="d-flex gap-2 align-items-center">
+          <span class="badge bg-danger-subtle text-danger border" id="practiceHearts">♥♥♥</span>
+          <span class="badge bg-warning-subtle text-warning-emphasis border" id="practiceXp">XP: 0</span>
+        </div>
+      </div>
+      <div class="progress mb-4" style="height:8px">
+        <div class="progress-bar bg-{{ 'french' if lang == 'french' else 'spanish' }}" id="practiceProgress" style="width:0%"></div>
+      </div>
+
+      <div class="card border-0 shadow" id="practiceCard">
+        <div class="card-body p-4 p-md-5">
+          <div class="d-flex justify-content-between align-items-start gap-3">
+            <div class="flex-grow-1">
+              <div class="text-muted small mb-2" id="practiceMode"></div>
+              <h4 class="mb-2" id="practicePromptEn">Loading…</h4>
+              <p class="bengali-text text-muted mb-4" id="practicePromptBn"></p>
+            </div>
+            <button class="btn btn-light btn-sm" id="practiceListenBtn" type="button" onclick="practiceListen()" style="display:none">
+              <i class="fas fa-volume-up"></i>
+            </button>
+          </div>
+
+          <div id="practiceChoices" class="choices-grid"></div>
+
+          <div id="practiceTypeWrap" style="display:none">
+            <div class="input-group mt-3">
+              <input id="practiceTypeInput" type="text" class="form-control" placeholder="Type your answer…">
+              <button class="btn btn-{{ 'french' if lang == 'french' else 'spanish' }}" type="button" onclick="practiceSubmitType()">
+                Check
+              </button>
+            </div>
+            <small class="text-muted d-block mt-2" id="practiceHintBn"></small>
+          </div>
+
+          <div id="practiceOrderWrap" style="display:none">
+            <div class="order-answer border rounded-3 p-3 bg-light mb-3" id="practiceOrderAnswer"></div>
+            <div class="order-bank d-flex flex-wrap gap-2" id="practiceOrderBank"></div>
+            <div class="d-flex gap-2 mt-3 flex-wrap">
+              <button class="btn btn-outline-secondary" type="button" onclick="practiceOrderClear()">Clear</button>
+              <button class="btn btn-{{ 'french' if lang == 'french' else 'spanish' }}" type="button" onclick="practiceSubmitOrder()">Check</button>
+            </div>
+            <small class="text-muted d-block mt-2">Tip: click words to build the sentence.</small>
+          </div>
+
+          <div class="feedback-box mt-4" id="practiceFeedback" style="display:none">
+            <div id="practiceFeedbackIcon" class="feedback-icon"></div>
+            <div id="practiceFeedbackText"></div>
+            <button class="btn btn-{{ 'french' if lang == 'french' else 'spanish' }} mt-3" type="button" onclick="practiceNext()" id="practiceNextBtn">
+              Next →
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card border-0 shadow mt-4" id="practiceResults" style="display:none">
+        <div class="card-body p-5 text-center">
+          <div class="result-emoji" id="practiceResultEmoji">🎉</div>
+          <h2 class="mt-3 fw-bold" id="practiceResultTitle">Great job!</h2>
+          <p class="text-muted bengali-text" id="practiceResultBn"></p>
+          <div class="score-display my-4" id="practiceResultScore"></div>
+          <div class="d-flex gap-2 justify-content-center mt-4 flex-wrap">
+            <a class="btn btn-outline-secondary" href="{{ url_for('practice', lang=lang) }}">↺ Practice Again</a>
+            <a class="btn btn-{{ 'french' if lang == 'french' else 'spanish' }}" href="{{ url_for('review_flashcards', lang=lang) }}">Review Due Words</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+const PRACTICE_QUESTIONS = {{ questions_json | safe }};
+const PRACTICE_LANG = '{{ lang }}';
+</script>
+{% endblock %}

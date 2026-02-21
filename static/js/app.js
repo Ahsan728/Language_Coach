@@ -3,6 +3,31 @@
    ============================================= */
 
 /* ===============================================
+   PRONUNCIATION (TTS)
+   =============================================== */
+function speakText(text, langTag) {
+  if (!text) return;
+  if (!('speechSynthesis' in window)) return;
+
+  const u = new SpeechSynthesisUtterance(String(text));
+  if (langTag) u.lang = langTag;
+  u.rate = 0.95;
+
+  try {
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(u);
+  } catch {
+    // no-op
+  }
+}
+
+function langToTtsTag(lang) {
+  if (lang === 'french') return 'fr-FR';
+  if (lang === 'spanish') return 'es-ES';
+  return '';
+}
+
+/* ===============================================
    FLASHCARD MODULE
    =============================================== */
 let cards = [];
@@ -67,6 +92,12 @@ function flipCard() {
   document.getElementById('flashActions').style.display = isFlipped ? 'flex' : 'none';
 }
 
+function listenFlashcard() {
+  if (!cards || !cards[currentIdx]) return;
+  const tag = (typeof LANG !== 'undefined') ? langToTtsTag(LANG) : '';
+  speakText(cards[currentIdx].word, tag);
+}
+
 function markCard(known) {
   if (results[currentIdx] === null) {
     if (known) knownCount++;
@@ -82,10 +113,11 @@ function markCard(known) {
 
   // Track word progress
   if (typeof LANG !== 'undefined') {
+    const xp = known ? 5 : 2;
     fetch('/api/word_progress', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({language: LANG, word: cards[currentIdx].word, correct: known ? 1 : 0})
+      body: JSON.stringify({language: LANG, word: cards[currentIdx].word, correct: known ? 1 : 0, source: 'flashcards', xp})
     });
   }
 
@@ -136,6 +168,13 @@ function restartCards() {
 let quizIdx = 0;
 let correctTotal = 0;
 let wrongTotal = 0;
+let currentQuizQuestion = null;
+let quizTtsText = null;
+let quizTtsLang = null;
+
+function quizListen() {
+  speakText(quizTtsText, quizTtsLang);
+}
 
 function initQuiz() {
   if (typeof QUESTIONS === 'undefined' || QUESTIONS.length === 0) return;
@@ -148,6 +187,12 @@ function initQuiz() {
 function showQuestion(idx) {
   const q = QUESTIONS[idx];
   if (!q) return;
+  currentQuizQuestion = q;
+
+  quizTtsText = q.tts_text || null;
+  quizTtsLang = q.tts_lang || (typeof LANG !== 'undefined' ? langToTtsTag(LANG) : null);
+  const listenBtn = document.getElementById('quizListenBtn');
+  if (listenBtn) listenBtn.style.display = quizTtsText ? '' : 'none';
 
   document.getElementById('quizCard').style.display = '';
   document.getElementById('resultsCard').style.display = 'none';
@@ -175,6 +220,7 @@ function selectAnswer(chosen, correct, btn) {
   // Disable all buttons
   document.querySelectorAll('.choice-btn').forEach(b => { b.disabled = true; });
 
+  const q = currentQuizQuestion || {};
   const isCorrect = chosen === correct;
   const fb = document.getElementById('feedbackBox');
   fb.style.display = 'block';
@@ -198,6 +244,16 @@ function selectAnswer(chosen, correct, btn) {
   }
 
   document.getElementById('scoreDisplay').textContent = `Score: ${correctTotal}`;
+
+  // Track word progress for vocab questions
+  if (q.kind === 'vocab' && q.word && typeof LANG !== 'undefined') {
+    const xp = isCorrect ? 8 : 1;
+    fetch('/api/word_progress', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({language: LANG, word: q.word, correct: isCorrect ? 1 : 0, source: 'quiz', xp})
+    });
+  }
 
   // Show next button
   const nextBtn = document.getElementById('nextQBtn');
@@ -262,6 +318,587 @@ function restartQuiz() {
 }
 
 /* ===============================================
+   PRACTICE MODULE (Duolingo-like)
+   =============================================== */
+let practiceIdx = 0;
+let practiceHearts = 3;
+let practiceXp = 0;
+let practiceCorrect = 0;
+let practiceWrong = 0;
+let currentPracticeQuestion = null;
+let practiceTtsText = null;
+let practiceTtsLang = null;
+let practiceAnswered = false;
+let practiceOrderAnswer = [];
+
+function practiceListen() {
+  speakText(practiceTtsText, practiceTtsLang);
+}
+
+function normalizeAnswer(str) {
+  return String(str || '')
+    .toLowerCase()
+    .trim()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function answerVariants(answer) {
+  const a = String(answer || '').trim();
+  const out = new Set([a]);
+
+  // Handle gender variants like "argentino/a" -> ["argentino", "argentina"]
+  const m = a.match(/^(.+?)([oa])\/([oa])$/i);
+  if (m) {
+    out.add(m[1] + m[2]);
+    out.add(m[1] + m[3]);
+  }
+
+  return Array.from(out).map(normalizeAnswer).filter(Boolean);
+}
+
+function renderPractice(idx) {
+  if (typeof PRACTICE_QUESTIONS === 'undefined' || PRACTICE_QUESTIONS.length === 0) return;
+  const q = PRACTICE_QUESTIONS[idx];
+  if (!q) return;
+  currentPracticeQuestion = q;
+  practiceAnswered = false;
+  practiceOrderAnswer = [];
+
+  const total = PRACTICE_QUESTIONS.length;
+  document.getElementById('practiceCounter').textContent = `Question ${idx + 1} of ${total}`;
+  document.getElementById('practiceProgress').style.width = `${Math.round((idx / total) * 100)}%`;
+
+  const heartsEl = document.getElementById('practiceHearts');
+  heartsEl.textContent = '♥'.repeat(Math.max(0, practiceHearts));
+
+  document.getElementById('practiceXp').textContent = `XP: ${practiceXp}`;
+  document.getElementById('practiceMode').textContent = q.mode_label || q.mode || '';
+  document.getElementById('practicePromptEn').textContent = q.prompt_en || '';
+  document.getElementById('practicePromptBn').textContent = q.prompt_bn || '';
+
+  practiceTtsText = q.tts_text || null;
+  const lang = (typeof PRACTICE_LANG !== 'undefined') ? PRACTICE_LANG : null;
+  practiceTtsLang = q.tts_lang || (lang ? langToTtsTag(lang) : null);
+  const listenBtn = document.getElementById('practiceListenBtn');
+  if (listenBtn) listenBtn.style.display = practiceTtsText ? '' : 'none';
+
+  // Reset UI
+  document.getElementById('practiceFeedback').style.display = 'none';
+  const choices = document.getElementById('practiceChoices');
+  choices.innerHTML = '';
+  const typeWrap = document.getElementById('practiceTypeWrap');
+  typeWrap.style.display = 'none';
+  document.getElementById('practiceHintBn').textContent = '';
+  const orderWrap = document.getElementById('practiceOrderWrap');
+  orderWrap.style.display = 'none';
+  document.getElementById('practiceOrderAnswer').innerHTML = '';
+  document.getElementById('practiceOrderBank').innerHTML = '';
+
+  if (q.kind === 'type') {
+    typeWrap.style.display = 'block';
+    const input = document.getElementById('practiceTypeInput');
+    input.value = '';
+    input.focus();
+    if (q.hint_bn) document.getElementById('practiceHintBn').textContent = `Hint (বাংলা): ${q.hint_bn}`;
+    return;
+  }
+
+  if (q.kind === 'order') {
+    orderWrap.style.display = 'block';
+
+    const answerEl = document.getElementById('practiceOrderAnswer');
+    const bankEl = document.getElementById('practiceOrderBank');
+    answerEl.innerHTML = `<span class="text-muted small">Tap words to build the sentence…</span>`;
+
+    (q.tokens || []).forEach((tok, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'btn btn-sm btn-light border';
+      btn.type = 'button';
+      btn.textContent = tok;
+      btn.dataset.tokenIndex = String(i);
+      btn.onclick = () => {
+        if (practiceAnswered) return;
+        btn.disabled = true;
+        practiceOrderAnswer.push({i, tok});
+        renderPracticeOrderAnswer();
+      };
+      bankEl.appendChild(btn);
+    });
+
+    return;
+  }
+
+  // MCQ choices
+  (q.choices || []).forEach((choice) => {
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn';
+    btn.textContent = choice;
+    btn.onclick = () => practiceSelect(choice, btn);
+    choices.appendChild(btn);
+  });
+}
+
+function practiceShowFeedback(isCorrect, correctAnswer) {
+  const fb = document.getElementById('practiceFeedback');
+  fb.style.display = 'block';
+  fb.className = `feedback-box ${isCorrect ? 'correct-fb' : 'wrong-fb'}`;
+
+  document.getElementById('practiceFeedbackIcon').textContent = isCorrect ? '✅' : '❌';
+  const extra = currentPracticeQuestion && currentPracticeQuestion.hint_bn ? `<br><small class="bengali-text text-muted">বাংলা: ${currentPracticeQuestion.hint_bn}</small>` : '';
+  document.getElementById('practiceFeedbackText').innerHTML =
+    isCorrect
+      ? `<strong>Correct!</strong>${extra}`
+      : `<strong>Wrong.</strong><br><span class="small">Correct answer: <strong>${correctAnswer}</strong></span>${extra}`;
+
+  const nextBtn = document.getElementById('practiceNextBtn');
+  const last = practiceIdx >= PRACTICE_QUESTIONS.length - 1;
+  nextBtn.textContent = last ? 'See Results 🏁' : 'Next →';
+}
+
+function practiceRecord(isCorrect) {
+  const q = currentPracticeQuestion || {};
+  const lang = (typeof PRACTICE_LANG !== 'undefined') ? PRACTICE_LANG : null;
+  const xpCorrect = Number.isFinite(q.xp_correct) ? q.xp_correct : 10;
+  const xpWrong = Number.isFinite(q.xp_wrong) ? q.xp_wrong : 2;
+  const xpDelta = isCorrect ? xpCorrect : xpWrong;
+
+  if (isCorrect) {
+    practiceCorrect++;
+    practiceXp += xpDelta;
+  } else {
+    practiceWrong++;
+    practiceHearts = Math.max(0, practiceHearts - 1);
+    practiceXp += xpDelta;
+  }
+
+  document.getElementById('practiceXp').textContent = `XP: ${practiceXp}`;
+  document.getElementById('practiceHearts').textContent = '♥'.repeat(Math.max(0, practiceHearts));
+
+  if (lang && q.word) {
+    fetch('/api/word_progress', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({language: lang, word: q.word, correct: isCorrect ? 1 : 0, source: 'practice', xp: xpDelta})
+    });
+  }
+}
+
+function practiceSelect(choice, btn) {
+  if (practiceAnswered) return;
+  practiceAnswered = true;
+
+  const q = currentPracticeQuestion || {};
+  const isCorrect = choice === q.answer;
+
+  // Disable all buttons + color
+  document.querySelectorAll('#practiceChoices .choice-btn').forEach(b => { b.disabled = true; });
+  btn.classList.add(isCorrect ? 'correct' : 'wrong');
+  document.querySelectorAll('#practiceChoices .choice-btn').forEach(b => {
+    if (b.textContent === q.answer) b.classList.add('revealed');
+  });
+
+  practiceRecord(isCorrect);
+  practiceShowFeedback(isCorrect, q.answer);
+}
+
+function practiceSubmitType() {
+  if (practiceAnswered) return;
+  practiceAnswered = true;
+
+  const q = currentPracticeQuestion || {};
+  const input = document.getElementById('practiceTypeInput');
+  const got = normalizeAnswer(input.value);
+  const expected = answerVariants(q.answer);
+  const isCorrect = expected.includes(got);
+
+  practiceRecord(isCorrect);
+  practiceShowFeedback(isCorrect, q.answer);
+}
+
+function renderPracticeOrderAnswer() {
+  const answerEl = document.getElementById('practiceOrderAnswer');
+  if (!answerEl) return;
+  if (practiceOrderAnswer.length === 0) {
+    answerEl.innerHTML = `<span class="text-muted small">Tap words to build the sentence…</span>`;
+    return;
+  }
+  answerEl.innerHTML = '';
+  practiceOrderAnswer.forEach(({i, tok}) => {
+    const chip = document.createElement('button');
+    chip.type = 'button';
+    chip.className = 'btn btn-sm btn-light border';
+    chip.textContent = tok;
+    chip.onclick = () => {
+      if (practiceAnswered) return;
+      // remove this token and re-enable in bank
+      practiceOrderAnswer = practiceOrderAnswer.filter(x => x.i !== i);
+      const bankBtn = document.querySelector(`#practiceOrderBank button[data-token-index="${i}"]`);
+      if (bankBtn) bankBtn.disabled = false;
+      renderPracticeOrderAnswer();
+    };
+    answerEl.appendChild(chip);
+  });
+}
+
+function practiceOrderClear() {
+  if (practiceAnswered) return;
+  practiceOrderAnswer = [];
+  document.querySelectorAll('#practiceOrderBank button').forEach(b => { b.disabled = false; });
+  renderPracticeOrderAnswer();
+}
+
+function practiceSubmitOrder() {
+  if (practiceAnswered) return;
+  practiceAnswered = true;
+
+  const q = currentPracticeQuestion || {};
+  const got = practiceOrderAnswer.map(x => x.tok).join(' ');
+  const gotNorm = normalizeAnswer(got);
+  const expectedNorm = normalizeAnswer(q.answer || q.sentence || '');
+  const isCorrect = gotNorm === expectedNorm;
+
+  // Disable bank
+  document.querySelectorAll('#practiceOrderBank button').forEach(b => { b.disabled = true; });
+
+  practiceRecord(isCorrect);
+  practiceShowFeedback(isCorrect, q.answer || q.sentence || '');
+}
+
+function practiceNext() {
+  if (practiceHearts <= 0) {
+    showPracticeResults();
+    return;
+  }
+
+  practiceIdx++;
+  if (practiceIdx >= PRACTICE_QUESTIONS.length) {
+    showPracticeResults();
+  } else {
+    renderPractice(practiceIdx);
+  }
+}
+
+function showPracticeResults() {
+  document.getElementById('practiceCard').style.display = 'none';
+  const res = document.getElementById('practiceResults');
+  res.style.display = 'block';
+  res.scrollIntoView({behavior: 'smooth', block: 'start'});
+
+  const total = practiceCorrect + practiceWrong;
+  const pct = total > 0 ? Math.round((practiceCorrect / total) * 100) : 0;
+
+  let emoji = '🎉';
+  let title = 'Great job!';
+  let titleBn = 'দারুণ! প্রতিদিন একটু করে প্র্যাকটিস করুন।';
+  if (practiceHearts <= 0) {
+    emoji = '❤️';
+    title = 'Out of hearts';
+    titleBn = 'হার্ট শেষ — তবে আপনি ভালোই চেষ্টা করেছেন!';
+  } else if (pct >= 90) {
+    emoji = '🏆';
+    title = 'Excellent!';
+    titleBn = 'অসাধারণ!';
+  } else if (pct >= 70) {
+    emoji = '🎉';
+    title = 'Great!';
+    titleBn = 'চমৎকার!';
+  }
+
+  document.getElementById('practiceResultEmoji').textContent = emoji;
+  document.getElementById('practiceResultTitle').textContent = title;
+  document.getElementById('practiceResultBn').textContent = titleBn;
+  document.getElementById('practiceResultScore').innerHTML =
+    `<span class="${pct >= 70 ? 'text-success' : pct >= 50 ? 'text-warning' : 'text-danger'}">${pct}%</span><div class="small text-muted mt-2">${practiceCorrect}/${total} correct • XP ${practiceXp}</div>`;
+}
+
+function initPractice() {
+  if (typeof PRACTICE_QUESTIONS === 'undefined' || PRACTICE_QUESTIONS.length === 0) return;
+  practiceIdx = 0;
+  practiceHearts = 3;
+  practiceXp = 0;
+  practiceCorrect = 0;
+  practiceWrong = 0;
+  currentPracticeQuestion = null;
+  renderPractice(0);
+
+  document.addEventListener('keydown', (e) => {
+    const tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : '';
+    if (tag === 'input' || tag === 'textarea' || e.isComposing) return;
+
+    if (e.key.toLowerCase() === 'l') {
+      practiceListen();
+      return;
+    }
+
+    const feedback = document.getElementById('practiceFeedback');
+    const feedbackVisible = feedback && feedback.style.display !== 'none';
+    if (feedbackVisible && e.key === 'Enter') {
+      e.preventDefault();
+      practiceNext();
+      return;
+    }
+
+    const q = currentPracticeQuestion || {};
+    if (q.kind === 'type' && e.key === 'Enter') {
+      e.preventDefault();
+      practiceSubmitType();
+      return;
+    }
+    if (q.kind === 'order' && e.key === 'Enter') {
+      e.preventDefault();
+      practiceSubmitOrder();
+      return;
+    }
+
+    const n = parseInt(e.key, 10);
+    if (!Number.isFinite(n) || n < 1 || n > 4) return;
+    const buttons = Array.from(document.querySelectorAll('#practiceChoices .choice-btn'));
+    const btn = buttons[n - 1];
+    if (btn && !btn.disabled) {
+      e.preventDefault();
+      btn.click();
+    }
+  });
+}
+
+/* ===============================================
+   LESSON VOCAB FILTER
+   =============================================== */
+function filterLessonVocab() {
+  const input = document.getElementById('vocabSearchInput');
+  if (!input) return;
+
+  const q = (input.value || '').trim().toLowerCase();
+  const items = document.querySelectorAll('[data-vocab-item]');
+  let visible = 0;
+
+  items.forEach(item => {
+    const hay = (item.getAttribute('data-vocab-search') || item.textContent || '').toLowerCase();
+    const match = !q || hay.includes(q);
+    item.style.display = match ? '' : 'none';
+    if (match) visible++;
+  });
+
+  const countEl = document.getElementById('vocabSearchCount');
+  if (countEl) {
+    countEl.textContent = q ? `${visible} matching` : `${items.length} words`;
+  }
+}
+
+/* ===============================================
+   VOCABULARY EXPLORER
+   =============================================== */
+let vocabExplorerShowAll = false;
+
+function escapeHtml(str) {
+  return String(str || '').replace(/[&<>"']/g, m => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  }[m]));
+}
+
+function updatePracticeLink() {
+  const select = document.getElementById('vocabCategory');
+  const link = document.getElementById('practiceLink');
+  if (!select || !link) return;
+
+  const cat = select.value;
+  if (!cat || cat === 'all') {
+    link.classList.add('disabled');
+    link.setAttribute('aria-disabled', 'true');
+    link.href = '#';
+    link.title = 'Select a category to practice';
+    return;
+  }
+
+  link.classList.remove('disabled');
+  link.removeAttribute('aria-disabled');
+  link.title = '';
+
+  if (typeof PRACTICE_URL_TEMPLATE !== 'undefined') {
+    link.href = PRACTICE_URL_TEMPLATE.replace('__CAT__', encodeURIComponent(cat));
+  } else if (typeof LANG !== 'undefined') {
+    link.href = `/flashcards/category/${encodeURIComponent(LANG)}/${encodeURIComponent(cat)}`;
+  }
+}
+
+function renderVocabExplorer() {
+  if (typeof VOCAB_ALL === 'undefined') return;
+
+  const listEl = document.getElementById('vocabList');
+  const emptyEl = document.getElementById('vocabEmpty');
+  const countEl = document.getElementById('vocabCount');
+  const showAllWrap = document.getElementById('vocabShowAllWrap');
+  const showAllBtn = document.getElementById('vocabShowAllBtn');
+  const searchEl = document.getElementById('vocabSearch');
+  const catEl = document.getElementById('vocabCategory');
+
+  if (!listEl || !searchEl || !catEl) return;
+
+  const q = (searchEl.value || '').trim().toLowerCase();
+  const cat = catEl.value || 'all';
+  const langClass = (typeof LANG !== 'undefined' && LANG === 'french') ? 'text-french' : 'text-spanish';
+
+  let filtered = Array.isArray(VOCAB_ALL) ? VOCAB_ALL : [];
+  if (cat !== 'all') filtered = filtered.filter(w => w.category === cat);
+  if (q) {
+    filtered = filtered.filter(w => {
+      const hay = `${w.word || ''} ${w.english || ''} ${w.bengali || ''} ${w.pronunciation || ''}`.toLowerCase();
+      return hay.includes(q);
+    });
+  }
+
+  const total = filtered.length;
+  const limit = vocabExplorerShowAll ? total : Math.min(total, 200);
+  const shown = filtered.slice(0, limit);
+
+  listEl.innerHTML = shown.map(w => {
+    const word = escapeHtml(w.word);
+    const english = escapeHtml(w.english);
+    const bengali = escapeHtml(w.bengali);
+    const pron = escapeHtml(w.pronunciation);
+    const catLabel = escapeHtml((w.category || '').replace(/_/g, ' '));
+
+    return `
+      <div class="col-md-6 col-lg-4">
+        <div class="vocab-card card border-0 shadow-sm h-100">
+          <div class="card-body p-3">
+            <div class="d-flex justify-content-between align-items-start">
+              <div class="vocab-word fw-bold fs-5 ${langClass}">${word}</div>
+              <div class="d-flex gap-2 align-items-start">
+                <button class="btn btn-sm btn-light border btn-listen vocab-listen" type="button" title="Listen" aria-label="Listen"
+                        data-tts="${word}">
+                  <i class="fas fa-volume-up"></i>
+                </button>
+                ${pron ? `<span class="pron-badge">${pron}</span>` : `<span></span>`}
+              </div>
+            </div>
+            <div class="vocab-english mt-1">🇬🇧 ${english}</div>
+            <div class="vocab-bengali bengali-text mt-1">🇧🇩 ${bengali}</div>
+            ${catLabel ? `<div class="mt-2"><span class="badge text-bg-light border">${catLabel}</span></div>` : ``}
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  // Attach listen buttons (re-render replaces elements, so this stays cheap)
+  const tag = (typeof LANG !== 'undefined') ? langToTtsTag(LANG) : '';
+  listEl.querySelectorAll('.vocab-listen').forEach(btn => {
+    btn.onclick = () => speakText(btn.dataset.tts, tag);
+  });
+
+  if (emptyEl) emptyEl.style.display = total === 0 ? 'block' : 'none';
+
+  if (showAllWrap) {
+    showAllWrap.style.display = (!vocabExplorerShowAll && total > limit) ? 'block' : 'none';
+  }
+  if (showAllBtn) {
+    showAllBtn.textContent = `Show all results (${total})`;
+  }
+
+  if (countEl) {
+    if (!q && cat === 'all') countEl.textContent = `${VOCAB_ALL.length} total words`;
+    else if (total === 0) countEl.textContent = 'No matches';
+    else if (!vocabExplorerShowAll && total > limit) countEl.textContent = `Showing ${limit} of ${total}`;
+    else countEl.textContent = `Showing ${total}`;
+  }
+}
+
+function initVocabExplorer() {
+  if (typeof VOCAB_ALL === 'undefined') return;
+  const searchEl = document.getElementById('vocabSearch');
+  const catEl = document.getElementById('vocabCategory');
+  const showAllBtn = document.getElementById('vocabShowAllBtn');
+
+  if (!searchEl || !catEl) return;
+
+  vocabExplorerShowAll = false;
+  updatePracticeLink();
+  renderVocabExplorer();
+
+  searchEl.addEventListener('input', () => {
+    vocabExplorerShowAll = false;
+    renderVocabExplorer();
+  });
+  catEl.addEventListener('change', () => {
+    vocabExplorerShowAll = false;
+    updatePracticeLink();
+    renderVocabExplorer();
+  });
+  if (showAllBtn) {
+    showAllBtn.addEventListener('click', () => {
+      vocabExplorerShowAll = true;
+      renderVocabExplorer();
+    });
+  }
+}
+
+/* ===============================================
+   KEYBOARD SHORTCUTS
+   =============================================== */
+function attachFlashcardShortcuts() {
+  if (!document.getElementById('flashcard')) return;
+
+  document.addEventListener('keydown', (e) => {
+    const tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : '';
+    if (tag === 'input' || tag === 'textarea' || e.isComposing) return;
+
+    if (e.key === ' ' || e.key === 'Enter') {
+      e.preventDefault();
+      flipCard();
+    } else if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      nextCard();
+    } else if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      prevCard();
+    } else if (e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      markCard(true);
+    } else if (e.key.toLowerCase() === 'j') {
+      e.preventDefault();
+      markCard(false);
+    }
+  });
+}
+
+function attachQuizShortcuts() {
+  if (!document.getElementById('choicesGrid')) return;
+
+  document.addEventListener('keydown', (e) => {
+    const tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : '';
+    if (tag === 'input' || tag === 'textarea' || e.isComposing) return;
+
+    const feedback = document.getElementById('feedbackBox');
+    const feedbackVisible = feedback && feedback.style.display !== 'none';
+
+    if (feedbackVisible && e.key === 'Enter') {
+      e.preventDefault();
+      nextQuestion();
+      return;
+    }
+
+    const n = parseInt(e.key, 10);
+    if (!Number.isFinite(n) || n < 1 || n > 4) return;
+
+    const buttons = Array.from(document.querySelectorAll('.choice-btn'));
+    const btn = buttons[n - 1];
+    if (btn && !btn.disabled) {
+      e.preventDefault();
+      btn.click();
+    }
+  });
+}
+
+/* ===============================================
    INIT on page load
    =============================================== */
 document.addEventListener('DOMContentLoaded', () => {
@@ -269,6 +906,15 @@ document.addEventListener('DOMContentLoaded', () => {
   if (typeof VOCAB !== 'undefined') initFlashcards();
   // Quiz page
   if (typeof QUESTIONS !== 'undefined' && QUESTIONS.length > 0) initQuiz();
+  // Practice page
+  initPractice();
+  // Lesson vocab filter
+  filterLessonVocab();
+  // Vocabulary explorer page
+  initVocabExplorer();
+  // Keyboard shortcuts (only activate on relevant pages)
+  attachFlashcardShortcuts();
+  attachQuizShortcuts();
 
   // Animate progress bars on dashboard
   document.querySelectorAll('.progress-bar').forEach(bar => {

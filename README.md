@@ -12,12 +12,16 @@ A fully local language learning web application built in Python (Flask). Designe
 | Feature | Details |
 |---------|---------|
 | 🇧🇩 Teaching language | Bengali + English |
-| 🇫🇷 Target 1 | French (Français) — 15 lessons |
-| 🇪🇸 Target 2 | Spanish (Español) — 15 lessons |
-| 📖 Vocabulary | 150 French + 148 Spanish words |
+| 🇫🇷 Target 1 | French (Français) — 28+ lessons (CEFR-aligned) |
+| 🇪🇸 Target 2 | Spanish (Español) — 28+ lessons (CEFR-aligned) |
+| 📖 Vocabulary | 900+ words per language (Bengali + English + pronunciation + examples) |
 | 📚 Grammar | Articles, Tenses, SER vs ESTAR |
 | 🃏 Flashcards | Interactive flip cards |
 | 🧠 Quizzes | Multiple-choice with instant feedback |
+| ⚡ Daily Practice | Duolingo-like mix: listening, MCQ, typing, sentence ordering |
+| 🧠 Spaced Repetition | “Due words” review (Leitner boxes) |
+| 🔊 Pronunciation | Browser Text-to-Speech (no server API required) |
+| 🔥 Streak + XP | Daily activity tracking |
 | 📊 Progress | Saved locally in SQLite |
 
 ---
@@ -51,8 +55,8 @@ Language Coach/
 │
 ├── data/
 │   ├── vocabulary.json     # All words: French + Spanish with Bengali & English
-│   ├── lessons.json        # 30 lessons (15 French + 15 Spanish) with grammar
-│   └── progress.db         # SQLite database (auto-created on first run)
+│   ├── lessons.json        # Lessons (CEFR-aligned) with grammar + quiz questions
+│   └── progress.db         # SQLite database (auto-created on first run; per-user)
 │
 ├── templates/              # Jinja2 HTML templates
 │   ├── base.html           # Navbar, layout, footer
@@ -61,11 +65,17 @@ Language Coach/
 │   ├── lesson.html         # Lesson content: vocabulary cards + grammar tables
 │   ├── flashcard.html      # Interactive flip-card practice
 │   ├── quiz.html           # Multiple-choice quiz with scoring
+│   ├── practice.html       # Daily Practice (Duolingo-like)
+│   ├── vocabulary.html     # Vocabulary explorer (search + categories)
+│   ├── resources.html      # Curated external learning resources
 │   └── progress.html       # Full progress table for both languages
 │
 ├── static/
 │   ├── css/style.css       # Custom styles (French blue / Spanish red themes)
-│   └── js/app.js           # Flashcard and quiz JavaScript logic
+│   └── js/app.js           # Flashcards + quiz + daily practice + TTS
+│
+├── scripts/
+│   └── validate_content.py # Content validation for lessons/vocab JSON
 │
 └── Dictionaries/           # Reference PDFs (not used in runtime)
     ├── French-English_Bilingual_Visual_Dictionary.pdf
@@ -76,34 +86,12 @@ Language Coach/
 
 ## 📚 Lesson Plan
 
-Both French and Spanish follow the same 15-lesson structure:
+Lessons are organized by **CEFR level (A1 → A2 → B1)** and stored in `data/lessons.json`.
+Each lesson references one or more vocabulary categories from `data/vocabulary.json`.
 
-### 🌱 Beginner (Lessons 1–7)
-| # | Topic | বাংলা |
-|---|-------|-------|
-| 1 | Greetings & Basic Phrases | অভিবাদন ও মূল বাক্যাংশ |
-| 2 | Numbers 1–1000 | সংখ্যা |
-| 3 | Colors & Descriptions | রঙ ও বর্ণনা |
-| 4 | Days, Time & Seasons | দিন, সময় ও ঋতু |
-| 5 | Family & Relationships | পরিবার ও সম্পর্ক |
-| 6 | Body Parts | শরীরের অঙ্গ |
-| 7 | Food & Drinks | খাবার ও পানীয় |
-
-### 🌿 Intermediate (Lessons 8–10, 15)
-| # | Topic | বাংলা |
-|---|-------|-------|
-| 8 | Transport & Travel | যানবাহন ও ভ্রমণ |
-| 9 | Essential Verbs | গুরুত্বপূর্ণ ক্রিয়া |
-| 10 | Adjectives & Descriptions | বিশেষণ ও বর্ণনা |
-| 15 | Everyday Phrases | দৈনন্দিন বাক্যাংশ |
-
-### 📚 Grammar (Lessons 11–14)
-| # | French | Spanish |
-|---|--------|---------|
-| 11 | Articles & Gender (le/la/les/un/une) | SER vs ESTAR |
-| 12 | Present Tense (être, avoir, -er/-ir/-re) | Present Tense (-ar/-er/-ir) |
-| 13 | Past Tense — Passé Composé | Past Tense — Pretérito Indefinido |
-| 14 | Future Tense (futur proche + simple) | Future Tense (ir a + futuro simple) |
+This project is designed to evolve day by day:
+- Edit `data/lessons.json` / `data/vocabulary.json` while the server is running — the app auto-reloads JSON when files change.
+- Validate your edits with: `python scripts/validate_content.py`
 
 ---
 
@@ -111,10 +99,19 @@ Both French and Spanish follow the same 15-lesson structure:
 
 ### 1. Start a Lesson
 - Go to **🇫🇷 Français** or **🇪🇸 Español** from the navigation bar
-- Lessons are organized by level: Beginner → Intermediate → Grammar
+- Lessons are organized by CEFR level: A1 → A2 → B1 (more coming)
 - Click any lesson card to open it
 
-### 2. Study Vocabulary
+### 2. Daily Practice ⚡ (Duolingo-like)
+- Click **Practice → Daily Practice**
+- Mixed exercises: 🔊 listening, ✅ choices, ⌨️ typing, 🧩 sentence ordering
+- Earn **XP** and keep your **streak**
+
+### 3. Review Due Words 🧠
+- Click **Practice → Review**
+- Uses spaced repetition (Leitner boxes) to bring back words you’re due to review
+
+### 4. Study Vocabulary
 - Each lesson shows **vocabulary cards** with:
   - The word in French/Spanish
   - Pronunciation guide (e.g. `bohn-ZHOOR`)
@@ -122,13 +119,13 @@ Both French and Spanish follow the same 15-lesson structure:
   - 🇧🇩 Bengali translation
   - Example sentence in all 3 languages
 
-### 3. Practice with Flashcards 🃏
+### 5. Practice with Flashcards 🃏
 - Click **Flashcards** from any vocabulary lesson
 - Click the card to flip and see the translation
 - Mark each card as **"I Know It!"** ✓ or **"Need Review"** ✗
 - Use **Shuffle** to randomize the order
 
-### 4. Test Yourself with Quiz 🧠
+### 6. Test Yourself with Quiz 🧠
 - Click **Take Quiz** from any lesson
 - Answer multiple-choice questions:
   - Word → English meaning
@@ -138,7 +135,11 @@ Both French and Spanish follow the same 15-lesson structure:
 - See your score percentage at the end
 - Results are saved automatically
 
-### 5. Track Your Progress 📊
+### 7. Vocabulary Explorer 📖
+- Click **Practice → Vocabulary**
+- Search across French/Spanish, English, and বাংলা
+
+### 8. Track Your Progress 📊
 - Click **Progress** in the navbar
 - See completed lessons, best scores, and attempt counts
 - Progress bars show overall completion per language
@@ -179,10 +180,11 @@ pypdf>=4.0.0
 ## 🔧 Configuration
 
 The app runs on `http://localhost:5000` by default.
-To change the port, edit the last line of `app.py`:
-```python
-app.run(debug=False, host='127.0.0.1', port=5000)
-```
+
+- Change port (recommended): set the `PORT` environment variable.
+  - PowerShell: `$env:PORT=8000`
+  - cmd.exe: `set PORT=8000`
+- Or edit the `port` value in `app.py`.
 
 ---
 

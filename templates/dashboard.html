@@ -13,6 +13,19 @@
         <p class="hero-desc text-muted">
           ফরাসি ও স্প্যানিশ শিখুন বাংলা ও ইংরেজির মাধ্যমে — ধাপে ধাপে, ইন্টারেক্টিভ পদ্ধতিতে।
         </p>
+        {% if activity %}
+        <div class="d-flex gap-2 flex-wrap mt-3">
+          <span class="badge rounded-pill bg-light text-dark">
+            🔥 Streak: {{ activity.streak_days }} day{% if activity.streak_days != 1 %}s{% endif %}
+          </span>
+          <span class="badge rounded-pill bg-light text-dark">
+            ⭐ XP Today: {{ activity.xp_today }}
+          </span>
+          <span class="badge rounded-pill bg-light text-dark">
+            🃏 Reviews Today: {{ activity.reviews_today }}
+          </span>
+        </div>
+        {% endif %}
         <div class="d-flex gap-3 flex-wrap mt-4">
           <a href="/language/french" class="btn btn-french btn-lg">🇫🇷 Start French</a>
           <a href="/language/spanish" class="btn btn-spanish btn-lg">🇪🇸 Start Spanish</a>
@@ -59,9 +72,24 @@
               {{ s.completed }} lessons completed out of {{ s.total }} total
               <br>{{ s.completed }} টি পাঠ সম্পন্ন, মোট {{ s.total }} টি
             </p>
-            <a href="/language/{{ lang }}" class="btn btn-{{ 'french' if lang == 'french' else 'spanish' }} w-100">
-              {{ '▶ Continue French' if lang == 'french' else '▶ Continue Spanish' }}
-            </a>
+            {% if s.next_lesson %}
+            <div class="small text-muted mb-3">
+              Next: Lesson {{ s.next_lesson.id }} — {{ s.next_lesson.title_en }}
+            </div>
+            {% endif %}
+            <div class="d-grid gap-2">
+              <a href="{{ s.continue_url }}" class="btn btn-{{ 'french' if lang == 'french' else 'spanish' }} w-100">
+                {% if s.next_lesson %}▶ Continue Lesson {{ s.next_lesson.id }}{% else %}▶ View Lessons{% endif %}
+              </a>
+              <div class="d-flex gap-2">
+                <a href="{{ url_for('practice', lang=lang) }}" class="btn btn-outline-{{ 'french' if lang == 'french' else 'spanish' }} btn-sm w-100">
+                  ⚡ Practice
+                </a>
+                <a href="{{ url_for('review_flashcards', lang=lang) }}" class="btn btn-outline-secondary btn-sm w-100">
+                  🃏 Review
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </div>

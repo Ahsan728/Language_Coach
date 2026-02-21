@@ -23,6 +23,22 @@
           <div class="circle-num text-white fw-bold display-5">{{ completed_count }}</div>
           <div class="text-white opacity-75 small">of {{ total }} done</div>
         </div>
+        <div class="mt-3 d-grid gap-2">
+          {% if resume_lesson %}
+          <a href="{{ url_for('lesson_view', lang=lang, lesson_id=resume_lesson.id) }}" class="btn btn-light btn-sm">
+            ▶ Resume Lesson {{ resume_lesson.id }}
+          </a>
+          {% endif %}
+          <a href="{{ url_for('practice', lang=lang) }}" class="btn btn-light btn-sm">
+            ⚡ Daily Practice
+          </a>
+          <a href="{{ url_for('review_flashcards', lang=lang) }}" class="btn btn-outline-light btn-sm">
+            <i class="fas fa-repeat me-1"></i> Review
+          </a>
+          <a href="{{ url_for('vocabulary_view', lang=lang) }}" class="btn btn-outline-light btn-sm">
+            <i class="fas fa-book me-1"></i> Vocabulary
+          </a>
+        </div>
       </div>
     </div>
   </div>
@@ -67,7 +83,7 @@
   } %}
 
   {% for lvl in level_order %}
-  {% set lvl_lessons = lessons | selectattr('cefr_level', 'equalto', lvl) | list %}
+  {% set lvl_lessons = lessons | selectattr('cefr_level', 'equalto', lvl) | list | sort(attribute='id') %}
   {% if lvl_lessons %}
   {% set lm = level_meta[lvl] %}
   <div class="level-section mb-5">

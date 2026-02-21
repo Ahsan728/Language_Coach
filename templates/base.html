@@ -26,24 +26,61 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navMenu">
+      {% set current_lang = request.view_args.get('lang') if request.view_args else None %}
       <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
         <li class="nav-item">
-          <a class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}" href="/">
+          <a class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}" href="{{ url_for('dashboard') }}">
             <i class="fas fa-home me-1"></i> Home
           </a>
         </li>
+
+        {% for code, m in lang_meta.items() %}
         <li class="nav-item">
-          <a class="nav-link flag-link {% if request.endpoint == 'language_home' and lang == 'french' %}active{% endif %}" href="/language/french">
-            🇫🇷 <span>Français</span>
+          <a class="nav-link flag-link {% if current_lang == code and request.endpoint in ['language_home','lesson_view','flashcards','quiz','vocabulary_view','review_flashcards','flashcards_category','practice'] %}active{% endif %}"
+             href="{{ url_for('language_home', lang=code) }}">
+            {{ m.flag }} <span>{{ m.name_native or m.name }}</span>
           </a>
         </li>
+        {% endfor %}
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle {% if request.endpoint in ['vocabulary_view', 'review_flashcards', 'flashcards_category', 'practice'] %}active{% endif %}"
+             href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-dumbbell me-1"></i> Practice
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end">
+            {% for code, m in lang_meta.items() %}
+            <li><h6 class="dropdown-header">{{ m.flag }} {{ m.name }}</h6></li>
+            <li>
+              <a class="dropdown-item" href="{{ url_for('practice', lang=code) }}">
+                <i class="fas fa-bolt me-2"></i> Daily Practice
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="{{ url_for('vocabulary_view', lang=code) }}">
+                <i class="fas fa-book me-2"></i> Vocabulary
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="{{ url_for('review_flashcards', lang=code) }}">
+                <i class="fas fa-repeat me-2"></i> Review
+              </a>
+            </li>
+            {% if not loop.last %}
+            <li><hr class="dropdown-divider"></li>
+            {% endif %}
+            {% endfor %}
+          </ul>
+        </li>
+
         <li class="nav-item">
-          <a class="nav-link flag-link {% if request.endpoint == 'language_home' and lang == 'spanish' %}active{% endif %}" href="/language/spanish">
-            🇪🇸 <span>Español</span>
+          <a class="nav-link {% if request.endpoint == 'resources_view' %}active{% endif %}" href="{{ url_for('resources_view') }}">
+            <i class="fas fa-compass me-1"></i> Resources
           </a>
         </li>
+
         <li class="nav-item">
-          <a class="nav-link {% if request.endpoint == 'progress_view' %}active{% endif %}" href="/progress">
+          <a class="nav-link {% if request.endpoint == 'progress_view' %}active{% endif %}" href="{{ url_for('progress_view') }}">
             <i class="fas fa-chart-bar me-1"></i> Progress
           </a>
         </li>

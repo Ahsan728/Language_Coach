@@ -1,4 +1,5 @@
 @echo off
+chcp 65001 >nul
 title Language Coach — ভাষা শিক্ষক
 color 0A
 echo.
