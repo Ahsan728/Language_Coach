@@ -62,6 +62,12 @@ function speakText(text, langTag) {
   try { synth.resume(); } catch { /* noop */ }
   synth.cancel();
 
+  // Refresh voice cache right now — getVoices() is synchronous and cheap.
+  // This fixes the race where voices hadn't loaded yet when _loadVoices()
+  // was first called but ARE available by the time the user clicks.
+  const fresh = synth.getVoices();
+  if (fresh.length) _ttsVoices = fresh;
+
   const u = new SpeechSynthesisUtterance(String(text));
   u.rate = 0.9;
 
@@ -75,17 +81,13 @@ function speakText(text, langTag) {
       if (voice) {
         u.voice = voice;
       } else {
-        // No matching voice installed — warn once
         const name = langTag.startsWith('fr') ? 'French'
                    : langTag.startsWith('es') ? 'Spanish' : langTag;
         _showTtsWarning(name);
       }
     }
-    // If _ttsVoices is still empty (race), lang alone guides Chrome
   }
 
-  // speak() must be called synchronously here — setTimeout would break
-  // Chrome's user-activation requirement and silently block the audio.
   try { synth.speak(u); } catch(e) { console.warn('TTS:', e); }
 }
 
