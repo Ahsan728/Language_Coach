@@ -1,11 +1,16 @@
+import hashlib
 import os
 import json
 import random
 import re
 import sqlite3
 import threading
+import unicodedata
+import uuid
 from datetime import datetime, date, timedelta
-from flask import Flask, render_template, jsonify, request, redirect, url_for
+from typing import Optional
+from urllib.parse import urlparse
+from flask import Flask, render_template, jsonify, request, redirect, url_for, send_file, send_from_directory, abort
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'language_coach_dev')
@@ -13,10 +18,22 @@ app.secret_key = os.environ.get('SECRET_KEY', 'language_coach_dev')
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(BASE_DIR, 'data')
 DB_PATH  = os.path.join(DATA_DIR, 'progress.db')
+TTS_CACHE_DIR = os.path.join(DATA_DIR, 'tts_cache')
+
+_TTS_PROVIDER = (os.environ.get('TTS_PROVIDER') or 'browser').strip().lower()
+if _TTS_PROVIDER not in {'browser', 'gtts'}:
+    _TTS_PROVIDER = 'browser'
+app.config['TTS_PROVIDER'] = _TTS_PROVIDER
+app.config['TTS_CACHE_DIR'] = TTS_CACHE_DIR
 
 # ---------- Content loading (auto-reload when JSON changes) ----------
 VOCAB_PATH = os.path.join(DATA_DIR, 'vocabulary.json')
 LESSONS_PATH = os.path.join(DATA_DIR, 'lessons.json')
+RESOURCE_SENTENCES_PATH = os.path.join(DATA_DIR, 'resource_sentences.json')
+RESOURCE_DIRS = {
+    'french': os.path.join(BASE_DIR, 'French Resources'),
+    'spanish': os.path.join(BASE_DIR, 'Spanish Resources'),
+}
 
 _DATA_LOCK = threading.Lock()
 _DATA_CACHE = {}
@@ -63,6 +80,135 @@ def get_vocab():
 
 def get_lessons():
     return _cached_json('lessons', LESSONS_PATH, default={})
+
+
+def get_resource_sentences():
+    """Optional: extracted sentences from local PDFs (see scripts/build_resource_sentences.py)."""
+    return _cached_json('resource_sentences', RESOURCE_SENTENCES_PATH, default={})
+
+
+_CEFR_RE = re.compile(r'\b(A0|A1|A2|B1|B2|C1|C2)\b', re.I)
+_URL_RE = re.compile(r'https?://\S+', re.I)
+
+
+def _infer_cefr_from_filename(name: str) -> Optional[str]:
+    m = _CEFR_RE.search(name.replace('_', ' ').replace('-', ' '))
+    return m.group(1).upper() if m else None
+
+
+def _title_from_filename(filename: str) -> str:
+    base = os.path.splitext(os.path.basename(filename))[0]
+    base = re.sub(r'^\s*\d+\s*[\.\)\-_\s]+', '', base)
+    base = base.replace('_', ' ').replace('-', ' ')
+    base = re.sub(r'\s+', ' ', base).strip()
+    return base or filename
+
+
+def _list_local_pdfs(lang: str):
+    base = RESOURCE_DIRS.get(lang)
+    if not base or not os.path.isdir(base):
+        return []
+
+    out = []
+    for root, _, files in os.walk(base):
+        for name in sorted(files):
+            if not name.lower().endswith('.pdf'):
+                continue
+            full = os.path.join(root, name)
+            rel = os.path.relpath(full, base).replace('\\', '/')
+            try:
+                size_mb = round(os.path.getsize(full) / (1024 * 1024), 1)
+            except OSError:
+                size_mb = None
+
+            out.append({
+                'filename': rel,
+                'title': _title_from_filename(name),
+                'cefr': _infer_cefr_from_filename(name),
+                'size_mb': size_mb,
+            })
+
+    return sorted(out, key=lambda r: (r.get('cefr') or 'Z', (r.get('title') or '').lower()))
+
+
+def _list_local_links(lang: str):
+    base = RESOURCE_DIRS.get(lang)
+    if not base or not os.path.isdir(base):
+        return []
+
+    links = []
+    seen = set()
+    for root, _, files in os.walk(base):
+        for name in files:
+            if not name.lower().endswith('.txt'):
+                continue
+            path = os.path.join(root, name)
+            try:
+                with open(path, encoding='utf-8', errors='replace') as f:
+                    lines = f.readlines()
+            except OSError:
+                continue
+
+            for line in lines:
+                line = line.strip()
+                if not line or line.startswith('#'):
+                    continue
+                m = _URL_RE.search(line)
+                if not m:
+                    continue
+                url = m.group(0).rstrip(').,;')
+                if url in seen:
+                    continue
+                seen.add(url)
+                host = urlparse(url).netloc or url
+                links.append({'url': url, 'label': host})
+
+    return links
+
+
+def _strip_accents(text: str) -> str:
+    return ''.join(c for c in unicodedata.normalize('NFD', text) if unicodedata.category(c) != 'Mn')
+
+
+def _norm_match(text: str) -> str:
+    s = _strip_accents((text or '').lower().strip())
+    s = s.replace("'", ' ')
+    s = re.sub(r'[^a-z0-9]+', ' ', s)
+    return re.sub(r'\s+', ' ', s).strip()
+
+
+def _word_match_variants(word: str):
+    w = (word or '').strip()
+    if not w:
+        return []
+
+    variants = {w}
+    # Handle "argentino/a" -> ["argentino", "argentina"]
+    m = re.match(r'^(.+?)([oa])\/([oa])$', w, flags=re.I)
+    if m:
+        variants.add(m.group(1) + m.group(2))
+        variants.add(m.group(1) + m.group(3))
+
+    return sorted({_norm_match(v) for v in variants if v.strip()})
+
+
+_SENT_TOKEN_RE = re.compile(r"[A-Za-zÀ-ÿ]+(?:'[A-Za-zÀ-ÿ]+)?")
+
+
+def _blank_first_token(sentence: str, word: str) -> Optional[str]:
+    """Return sentence with first matching token replaced by ____ (accent/case tolerant)."""
+    if not sentence or not word:
+        return None
+    variants = set(_word_match_variants(word))
+    if not variants:
+        return None
+
+    for m in _SENT_TOKEN_RE.finditer(sentence):
+        tok = m.group(0)
+        tok_norm = _norm_match(tok)
+        if tok_norm in variants:
+            return sentence[:m.start()] + '____' + sentence[m.end():]
+    return None
 
 # ---------- Database helpers ----------
 def get_db():
@@ -250,7 +396,7 @@ LANGS = list(LANG_META.keys())
 
 @app.context_processor
 def inject_globals():
-    return {'lang_meta': LANG_META}
+    return {'lang_meta': LANG_META, 'tts_provider': app.config.get('TTS_PROVIDER', 'browser')}
 
 # ---------- Routes ----------
 @app.route('/')
@@ -272,7 +418,24 @@ def dashboard():
 
 @app.route('/resources')
 def resources_view():
-    return render_template('resources.html')
+    local_resources = {
+        lang: {
+            'pdfs': _list_local_pdfs(lang),
+            'links': _list_local_links(lang),
+        }
+        for lang in LANGS
+    }
+    return render_template('resources.html', local_resources=local_resources)
+
+
+@app.route('/resources/local/<lang>/<path:filename>')
+def local_resource_file(lang, filename):
+    if lang not in RESOURCE_DIRS:
+        abort(404)
+    base = RESOURCE_DIRS.get(lang)
+    if not base or not os.path.isdir(base):
+        abort(404)
+    return send_from_directory(base, filename, as_attachment=False)
 
 @app.route('/language/<lang>')
 def language_home(lang):
@@ -504,6 +667,7 @@ def practice(lang):
     all_for_wrong = vocab_all[:]
     random.shuffle(all_for_wrong)
     tts_lang = 'fr-FR' if lang == 'french' else 'es-ES'
+    resource_sentences = get_resource_sentences().get(lang, []) or []
 
     questions = []
     for idx, entry in enumerate(selected[:total_q]):
@@ -519,6 +683,38 @@ def practice(lang):
             tokens = re.sub(r'[\\.,;:!?]', '', example).split()
             if 3 <= len(tokens) <= 10:
                 qtype_choices.append('order_sentence')
+
+        ctx = None
+        if resource_sentences and ' ' not in word and len(word) >= 2:
+            variants = _word_match_variants(word)
+            if variants:
+                sample_n = min(80, len(resource_sentences))
+                candidates = random.sample(resource_sentences, sample_n) if sample_n else []
+                for s in candidates:
+                    sent = (s.get('text') or '').strip()
+                    if not sent:
+                        continue
+                    sent_norm = _norm_match(sent)
+                    if any(f' {v} ' in f' {sent_norm} ' for v in variants):
+                        blanked = _blank_first_token(sent, word)
+                        if blanked:
+                            ctx = {**s, 'blanked': blanked}
+                            break
+
+                if not ctx:
+                    for s in resource_sentences:
+                        sent = (s.get('text') or '').strip()
+                        if not sent:
+                            continue
+                        sent_norm = _norm_match(sent)
+                        if any(f' {v} ' in f' {sent_norm} ' for v in variants):
+                            blanked = _blank_first_token(sent, word)
+                            if blanked:
+                                ctx = {**s, 'blanked': blanked}
+                                break
+
+        if ctx:
+            qtype_choices.extend(['context_cloze', 'context_cloze'])
 
         qtype = random.choice(qtype_choices)
 
@@ -539,6 +735,31 @@ def practice(lang):
                 'word': word,
                 'xp_correct': 10,
                 'xp_wrong': 2,
+            }
+        elif qtype == 'context_cloze' and ctx:
+            source = (ctx.get('source') or '').strip()
+            page = ctx.get('page')
+            src_label = source + (f" \u2022 p.{page}" if page else '') if source else ''
+
+            hint = f"Hint: {english}"
+            if bengali:
+                hint += f" \u2022 বাংলা: {bengali}"
+            if src_label:
+                hint += f" \u2022 {src_label}"
+
+            q = {
+                'kind': 'mcq',
+                'mode': 'context_cloze',
+                'mode_label': 'Context',
+                'prompt_en': f"Fill in the blank: {ctx.get('blanked', '')}",
+                'prompt_bn': hint,
+                'tts_text': (ctx.get('text') or word),
+                'tts_lang': tts_lang,
+                'choices': [word] + [w.get('word', '') for w in wrong],
+                'answer': word,
+                'word': word,
+                'xp_correct': 14,
+                'xp_wrong': 3,
             }
         elif qtype == 'order_sentence':
             tokens = re.sub(r'[\\.,;:!?]', '', example).split()
@@ -742,6 +963,56 @@ def progress_view():
     return render_template('progress.html', progress=all_prog)
 
 # ---------- API ----------
+@app.route('/api/tts')
+def api_tts():
+    provider = (app.config.get('TTS_PROVIDER') or 'browser').strip().lower()
+    if provider != 'gtts':
+        return ('TTS disabled (set TTS_PROVIDER=gtts on the server)', 501)
+
+    text = (request.args.get('text') or '').strip()
+    lang_tag = (request.args.get('lang') or '').strip().lower().replace('_', '-')
+
+    if not text:
+        return ('Missing "text"', 400)
+    if len(text) > 400:
+        return ('Text too long (max 400 chars)', 400)
+
+    if lang_tag.startswith('fr'):
+        tts_lang = 'fr'
+    elif lang_tag.startswith('es'):
+        tts_lang = 'es'
+    else:
+        return ('Unsupported language (use fr-FR or es-ES)', 400)
+
+    # Normalize whitespace to improve cache hit rate and avoid odd linebreak reads.
+    norm_text = ' '.join(text.split())
+    cache_key = hashlib.sha256(f'{provider}|{tts_lang}|{norm_text}'.encode('utf-8')).hexdigest()
+
+    cache_dir = app.config.get('TTS_CACHE_DIR') or TTS_CACHE_DIR
+    os.makedirs(cache_dir, exist_ok=True)
+    final_path = os.path.join(cache_dir, f'{cache_key}.mp3')
+
+    if not os.path.exists(final_path):
+        try:
+            from gtts import gTTS
+        except Exception as exc:  # pragma: no cover
+            return (f'TTS server dependency missing: {exc}', 500)
+
+        tmp_path = os.path.join(cache_dir, f'.{cache_key}.{uuid.uuid4().hex}.tmp.mp3')
+        try:
+            gTTS(text=norm_text, lang=tts_lang, slow=False).save(tmp_path)
+            os.replace(tmp_path, final_path)
+        finally:
+            try:
+                if os.path.exists(tmp_path):
+                    os.remove(tmp_path)
+            except OSError:
+                pass
+
+    resp = send_file(final_path, mimetype='audio/mpeg', conditional=True)
+    resp.headers['Cache-Control'] = 'public, max-age=31536000, immutable'
+    return resp
+
 @app.route('/api/complete', methods=['POST'])
 def api_complete():
     data      = request.json or {}

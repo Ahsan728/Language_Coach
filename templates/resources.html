@@ -8,84 +8,449 @@
     <h1 class="text-white fw-bold mb-0">
       <i class="fas fa-compass me-2"></i> Resources
     </h1>
-    <p class="text-white opacity-75 mb-0">High-quality French & Spanish learning resources + open datasets</p>
+    <p class="text-white opacity-75 mb-0">
+      Local PDFs + curated links to practise French &amp; Spanish beyond this app
+    </p>
   </div>
 </div>
 
 <div class="container py-5">
-  <div class="row g-4">
-    <div class="col-lg-6">
-      <div class="card border-0 shadow-sm h-100">
-        <div class="card-body p-4">
-          <h3 class="fw-bold mb-3">🇫🇷 French (Français)</h3>
-          <ul class="list-unstyled mb-0">
+
+  {% if local_resources %}
+  <!-- ===== LOCAL (PDFs + Links) ===== -->
+  <div class="card border-0 shadow-sm mb-5">
+    <div class="card-body p-4">
+      <h2 class="fw-bold mb-1">
+        <i class="fas fa-folder-open me-2"></i> Local Resources
+      </h2>
+      <p class="text-muted mb-4">
+        Auto-detected PDFs and links from your <strong>French Resources</strong> and <strong>Spanish Resources</strong> folders.
+      </p>
+
+      <div class="row g-4">
+        {% for code, m in lang_meta.items() %}
+        <div class="col-md-6">
+          <h5 class="fw-bold mb-3">{{ m.flag }} {{ m.name }}</h5>
+
+          {% set pdfs = local_resources.get(code, {}).get('pdfs', []) %}
+          {% if pdfs %}
+          <ul class="list-unstyled small mb-0">
+            {% for r in pdfs %}
             <li class="mb-3">
-              <a href="https://apprendre.tv5monde.com/" target="_blank" rel="noopener" class="fw-semibold">
-                TV5MONDE — Apprendre le français
+              <a class="fw-semibold text-decoration-none" target="_blank" rel="noopener"
+                 href="{{ url_for('local_resource_file', lang=code, filename=r.filename) }}">
+                {{ r.title }}
               </a>
-              <div class="text-muted small">Interactive videos + exercises for multiple CEFR levels.</div>
+              <div class="text-muted">
+                {% if r.cefr %}<span class="badge bg-secondary-subtle text-secondary border me-1">{{ r.cefr }}</span>{% endif %}
+                {% if r.size_mb %}<span class="badge bg-light text-muted border me-1">{{ r.size_mb }} MB</span>{% endif %}
+                <span class="small">{{ r.filename }}</span>
+              </div>
             </li>
-            <li class="mb-3">
-              <a href="https://www.france-education-international.fr/diplome/delf-tout-public/niveau-a1?langue=fr" target="_blank" rel="noopener" class="fw-semibold">
-                France Éducation international — DELF sample papers (A1)
-              </a>
-              <div class="text-muted small">Official-style exam practice (useful for CEFR-aligned lessons).</div>
-            </li>
-            <li class="mb-0">
-              <a href="https://francaisfacile.rfi.fr/fr/" target="_blank" rel="noopener" class="fw-semibold">
-                RFI — Le français facile
-              </a>
-              <div class="text-muted small">News + listening practice in easier French.</div>
-            </li>
+            {% endfor %}
           </ul>
+          {% else %}
+          <div class="text-muted small">No PDFs found.</div>
+          {% endif %}
+
+          {% set links = local_resources.get(code, {}).get('links', []) %}
+          {% if links %}
+          <div class="mt-3">
+            <div class="fw-semibold small mb-2">Links</div>
+            <ul class="list-unstyled small mb-0">
+              {% for l in links %}
+              <li class="mb-1">
+                <a href="{{ l.url }}" target="_blank" rel="noopener">{{ l.label }}</a>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+          {% endif %}
+
         </div>
+        {% endfor %}
+      </div>
+
+      <hr class="my-4">
+      <div class="text-muted small">
+        Tip: to enable <strong>Context</strong> questions in Daily Practice, run
+        <code>python scripts/build_resource_sentences.py</code>.
       </div>
     </div>
+  </div>
+  {% endif %}
 
-    <div class="col-lg-6">
-      <div class="card border-0 shadow-sm h-100">
-        <div class="card-body p-4">
-          <h3 class="fw-bold mb-3">🇪🇸 Spanish (Español)</h3>
-          <ul class="list-unstyled mb-0">
-            <li class="mb-3">
-              <a href="https://cervantes.org/es/aprender-ensenar/cursos/cursos-espanol-online" target="_blank" rel="noopener" class="fw-semibold">
-                Instituto Cervantes — Online Spanish courses
-              </a>
-              <div class="text-muted small">Official courses from the Instituto Cervantes.</div>
-            </li>
-            <li class="mb-0">
-              <a href="https://cvc.cervantes.es/" target="_blank" rel="noopener" class="fw-semibold">
-                Centro Virtual Cervantes (CVC)
-              </a>
-              <div class="text-muted small">Grammar, reading, and reference materials.</div>
-            </li>
-          </ul>
-        </div>
+  <!-- ===== FRENCH ===== -->
+  <h2 class="fw-bold mb-4">🇫🇷 French — Français</h2>
+
+  <!-- TV5Monde -->
+  <div class="card border-0 shadow-sm mb-4">
+    <div class="card-header fw-semibold d-flex align-items-center gap-2 py-3">
+      <span style="font-size:1.3rem">📺</span>
+      <div>
+        <a href="https://apprendre.tv5monde.com/fr" target="_blank" rel="noopener" class="text-decoration-none fw-bold">
+          TV5Monde — Apprendre le français
+        </a>
+        <span class="badge bg-success ms-2">Free</span>
+        <div class="text-muted small fw-normal">4 000+ self-correcting exercises from authentic French TV · A1 → B2</div>
       </div>
     </div>
+    <div class="card-body p-4">
+      <div class="row g-4">
 
-    <div class="col-12">
-      <div class="card border-0 shadow-sm">
-        <div class="card-body p-4">
-          <h3 class="fw-bold mb-3">📦 Open Content (for adding lessons)</h3>
-          <ul class="list-unstyled mb-0">
+        <div class="col-md-6">
+          <h6 class="fw-semibold text-success mb-2">🟢 A1 — Elementary</h6>
+          <ul class="list-unstyled mb-0 small">
             <li class="mb-2">
-              <a href="https://tatoeba.org/en/downloads" target="_blank" rel="noopener" class="fw-semibold">
-                Tatoeba — Sentence downloads
+              <a href="https://apprendre.tv5monde.com/fr/parcours/premiere-classe" target="_blank" rel="noopener" class="fw-semibold">
+                Première Classe — Full A1 Course
               </a>
-              <div class="text-muted small">Large multilingual sentence dataset (good for sentence exercises). Check licensing on their site.</div>
+              <div class="text-muted">500 exercises across 6 themes: greetings, leisure, meals, housing, work, health. Perfect if you're starting out.</div>
             </li>
             <li class="mb-0">
-              <a href="https://tatoeba.org/en/terms_of_use" target="_blank" rel="noopener" class="fw-semibold">
-                Tatoeba — Terms / licensing
+              <a href="https://apprendre.tv5monde.com/fr/exercices" target="_blank" rel="noopener" class="fw-semibold">
+                All A1 Exercises (filter by level)
               </a>
-              <div class="text-muted small">Important if you plan to redistribute content.</div>
+              <div class="text-muted">Browse video-based MCQs, fill-in-the-blank, crosswords, and dictation — all drawn from real French broadcasts.</div>
             </li>
+          </ul>
+        </div>
+
+        <div class="col-md-6">
+          <h6 class="fw-semibold text-info mb-2">🔵 A2 — Pre-intermediate</h6>
+          <ul class="list-unstyled mb-0 small">
+            <li class="mb-2">
+              <a href="https://apprendre.tv5monde.com/fr/exercices" target="_blank" rel="noopener" class="fw-semibold">
+                A2 Grammar Path — 60 exercises
+              </a>
+              <div class="text-muted">Focused grammar practice in context (articles, past tense, adjective agreement…)</div>
+            </li>
+            <li class="mb-0">
+              <a href="https://apprendre.tv5monde.com/fr/memos" target="_blank" rel="noopener" class="fw-semibold">
+                Grammar Memos (Mémos)
+              </a>
+              <div class="text-muted">Quick-reference cards for grammar rules, vocabulary, pronunciation, and French culture.</div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="col-md-6">
+          <h6 class="fw-semibold text-warning mb-2">🟠 B1 — Intermediate</h6>
+          <ul class="list-unstyled mb-0 small">
+            <li class="mb-2">
+              <a href="https://apprendre.tv5monde.com/fr/exercices" target="_blank" rel="noopener" class="fw-semibold">
+                B1 Path — 120 exercises
+              </a>
+              <div class="text-muted">Communication in intercultural contexts — opinions, discourse markers, debate.</div>
+            </li>
+            <li class="mb-0">
+              <a href="https://apprendre.tv5monde.com/fr/vocabulaire" target="_blank" rel="noopener" class="fw-semibold">
+                Vocabulary Explorer
+              </a>
+              <div class="text-muted">Build your own word notebook — save, review, and practice words from exercises.</div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="col-md-6">
+          <h6 class="fw-semibold mb-2">🎮 Interactive &amp; Fun</h6>
+          <ul class="list-unstyled mb-0 small">
+            <li class="mb-2">
+              <a href="https://apprendre.tv5monde.com/fr/jeux" target="_blank" rel="noopener" class="fw-semibold">
+                Word Games &amp; Dictation Challenges
+              </a>
+              <div class="text-muted">Crosswords, dictation, vocabulary quizzes — great for listening and spelling practice.</div>
+            </li>
+            <li class="mb-2">
+              <a href="https://apprendre.tv5monde.com/fr/podcasts" target="_blank" rel="noopener" class="fw-semibold">
+                TCF Test Preparation
+              </a>
+              <div class="text-muted">Simulate the official Test de Connaissance du Français under timed, real-exam conditions.</div>
+            </li>
+            <li class="mb-0">
+              <a href="https://apprendre.tv5monde.com/fr/exercices" target="_blank" rel="noopener" class="fw-semibold">
+                800+ Authentic Videos with Exercises
+              </a>
+              <div class="text-muted">News clips, film excerpts, music videos — all with transcripts and French subtitles.</div>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- RFI + DELF -->
+  <div class="row g-4 mb-5">
+    <div class="col-md-6">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body p-4">
+          <h5 class="fw-bold mb-1">
+            <a href="https://francaisfacile.rfi.fr/fr/" target="_blank" rel="noopener" class="text-decoration-none">
+              🎙️ RFI — Le français facile
+            </a>
+            <span class="badge bg-success ms-2 small">Free</span>
+          </h5>
+          <div class="text-muted small mb-3">News + listening in simplified French (A2–B1)</div>
+          <ul class="list-unstyled small mb-0">
+            <li class="mb-1">📰 News articles in easy French with audio</li>
+            <li class="mb-1">🎧 Listening comprehension exercises</li>
+            <li class="mb-0">📖 Transcripts + vocabulary explanations</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body p-4">
+          <h5 class="fw-bold mb-1">
+            <a href="https://www.france-education-international.fr/diplome/delf-tout-public" target="_blank" rel="noopener" class="text-decoration-none">
+              📄 DELF — Official Sample Papers
+            </a>
+            <span class="badge bg-success ms-2 small">Free</span>
+          </h5>
+          <div class="text-muted small mb-3">Official DELF exam samples — France Éducation international (A1 → B2)</div>
+          <ul class="list-unstyled small mb-0">
+            <li class="mb-1"><a href="https://www.france-education-international.fr/diplome/delf-tout-public/niveau-a1?langue=fr" target="_blank" rel="noopener">DELF A1 sample papers</a></li>
+            <li class="mb-1"><a href="https://www.france-education-international.fr/diplome/delf-tout-public/niveau-a2?langue=fr" target="_blank" rel="noopener">DELF A2 sample papers</a></li>
+            <li class="mb-1"><a href="https://www.france-education-international.fr/diplome/delf-tout-public/niveau-b1?langue=fr" target="_blank" rel="noopener">DELF B1 sample papers</a></li>
+            <li class="mb-0"><a href="https://www.france-education-international.fr/diplome/delf-tout-public/niveau-b2?langue=fr" target="_blank" rel="noopener">DELF B2 sample papers</a></li>
           </ul>
         </div>
       </div>
     </div>
   </div>
+
+  <hr class="my-5">
+
+  <!-- ===== SPANISH ===== -->
+  <h2 class="fw-bold mb-4">🇪🇸 Spanish — Español</h2>
+
+  <!-- ProfeDeELE -->
+  <div class="card border-0 shadow-sm mb-4">
+    <div class="card-header fw-semibold d-flex align-items-center gap-2 py-3">
+      <span style="font-size:1.3rem">📖</span>
+      <div>
+        <a href="https://www.profedeele.es/" target="_blank" rel="noopener" class="text-decoration-none fw-bold">
+          ProfeDeELE.es — Spanish for Foreigners
+        </a>
+        <span class="badge bg-success ms-2">Free</span>
+        <div class="text-muted small fw-normal">Graded readings, grammar, vocabulary, DELE prep &amp; podcast · A1 → C1</div>
+      </div>
+    </div>
+    <div class="card-body p-4">
+      <div class="row g-4">
+
+        <!-- Lecturas by level -->
+        <div class="col-md-6">
+          <h6 class="fw-semibold mb-2">📚 Lecturas — Graded Readings</h6>
+          <ul class="list-unstyled small mb-0">
+            <li class="mb-2">
+              <a href="https://www.profedeele.es/lecturas/nivel-a1/" target="_blank" rel="noopener" class="fw-semibold">
+                A1 Readings
+              </a>
+              <div class="text-muted">Short simple texts: daily life, DELE-style comprehension, vocabulary in context.</div>
+            </li>
+            <li class="mb-2">
+              <a href="https://www.profedeele.es/lecturas/nivel-a2/" target="_blank" rel="noopener" class="fw-semibold">
+                A2 Readings
+              </a>
+              <div class="text-muted">Slightly longer texts: routines, food, city life — with comprehension questions.</div>
+            </li>
+            <li class="mb-2">
+              <a href="https://www.profedeele.es/lecturas/nivel-b1/" target="_blank" rel="noopener" class="fw-semibold">
+                B1 Readings
+              </a>
+              <div class="text-muted">Authentic-style articles: travel, culture, history — DELE B1 level.</div>
+            </li>
+            <li class="mb-0">
+              <a href="https://www.profedeele.es/lecturas/nivel-b2/" target="_blank" rel="noopener" class="fw-semibold">
+                B2 Readings
+              </a>
+              <div class="text-muted">Complex texts: society, art, science — from Punto y Coma magazine and more.</div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Grammar + Vocab -->
+        <div class="col-md-6">
+          <h6 class="fw-semibold mb-2">🔧 Grammar &amp; Vocabulary</h6>
+          <ul class="list-unstyled small mb-0">
+            <li class="mb-2">
+              <a href="https://www.profedeele.es/gramatica/" target="_blank" rel="noopener" class="fw-semibold">
+                Grammar Exercises (all levels)
+              </a>
+              <div class="text-muted">SER vs ESTAR, subjunctive, past tenses, discourse markers — interactive, self-correcting.</div>
+            </li>
+            <li class="mb-2">
+              <a href="https://www.profedeele.es/vocabulario/" target="_blank" rel="noopener" class="fw-semibold">
+                Vocabulary Activities
+              </a>
+              <div class="text-muted">Illustrated vocabulary, word-search games, infographics — by theme (house, food, school…)</div>
+            </li>
+            <li class="mb-0">
+              <a href="https://www.profedeele.es/actividades/" target="_blank" rel="noopener" class="fw-semibold">
+                All Activities
+              </a>
+              <div class="text-muted">Full archive: MCQs, fill-in-the-blank, Escape Rooms, Kahoots, songs, listening tasks.</div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- By CEFR level -->
+        <div class="col-md-6">
+          <h6 class="fw-semibold mb-2">📊 Browse by CEFR Level</h6>
+          <div class="d-flex flex-wrap gap-2">
+            <a href="https://www.profedeele.es/a1/" target="_blank" rel="noopener" class="btn btn-sm btn-outline-success">🟢 A1</a>
+            <a href="https://www.profedeele.es/a2/" target="_blank" rel="noopener" class="btn btn-sm btn-outline-info">🔵 A2</a>
+            <a href="https://www.profedeele.es/b1/" target="_blank" rel="noopener" class="btn btn-sm btn-outline-warning">🟠 B1</a>
+            <a href="https://www.profedeele.es/b2/" target="_blank" rel="noopener" class="btn btn-sm btn-outline-danger">🔴 B2</a>
+            <a href="https://www.profedeele.es/c1/" target="_blank" rel="noopener" class="btn btn-sm btn-outline-dark">⚫ C1</a>
+          </div>
+          <div class="text-muted small mt-2">Each level page aggregates all grammar, vocabulary, and reading content for that level.</div>
+        </div>
+
+        <!-- Podcast + Exam -->
+        <div class="col-md-6">
+          <h6 class="fw-semibold mb-2">🎧 Podcast &amp; Exam Prep</h6>
+          <ul class="list-unstyled small mb-0">
+            <li class="mb-2">
+              <a href="https://www.profedeele.es/podcast/" target="_blank" rel="noopener" class="fw-semibold">
+                ProfeDeELE Podcast (B1/B2)
+              </a>
+              <div class="text-muted">Monthly episodes with transcript + pre/post-listening tasks. Also on Spotify &amp; Apple Podcasts.</div>
+            </li>
+            <li class="mb-0">
+              <a href="https://www.profedeele.es/examenes/dele/" target="_blank" rel="noopener" class="fw-semibold">
+                DELE Exam Preparation (A1 → C1)
+              </a>
+              <div class="text-muted">Model exams with answer keys and exam strategies for DELE, DELE Escolar, and SIELE.</div>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Instituto Cervantes -->
+  <div class="row g-4 mb-5">
+    <div class="col-md-6">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body p-4">
+          <h5 class="fw-bold mb-1">
+            <a href="https://cvc.cervantes.es/" target="_blank" rel="noopener" class="text-decoration-none">
+              📚 Centro Virtual Cervantes
+            </a>
+            <span class="badge bg-success ms-2 small">Free</span>
+          </h5>
+          <div class="text-muted small mb-3">Official reference from Instituto Cervantes — grammar, culture, dictionary</div>
+          <ul class="list-unstyled small mb-0">
+            <li class="mb-1"><a href="https://cvc.cervantes.es/ensenanza/biblioteca_ele/" target="_blank" rel="noopener">📖 ELE Library — teaching units</a></li>
+            <li class="mb-1"><a href="https://cvc.cervantes.es/lengua/diccionarios.htm" target="_blank" rel="noopener">📘 Spanish dictionaries &amp; grammar reference</a></li>
+            <li class="mb-0"><a href="https://cvc.cervantes.es/lengua/refranero/" target="_blank" rel="noopener">🗣️ Spanish proverbs &amp; idioms</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body p-4">
+          <h5 class="fw-bold mb-1">
+            <a href="https://examenes.cervantes.es/es/dele/que-es" target="_blank" rel="noopener" class="text-decoration-none">
+              📄 DELE — Official Sample Exams
+            </a>
+            <span class="badge bg-success ms-2 small">Free</span>
+          </h5>
+          <div class="text-muted small mb-3">Official DELE samples from Instituto Cervantes — all levels</div>
+          <ul class="list-unstyled small mb-0">
+            <li class="mb-1"><a href="https://examenes.cervantes.es/es/dele/preparar" target="_blank" rel="noopener">DELE A1–C2 preparation materials</a></li>
+            <li class="mb-1"><a href="https://examenes.cervantes.es/es/dele/que-es" target="_blank" rel="noopener">About DELE (useful for PhD in Spain!)</a></li>
+            <li class="mb-0">Use together with ProfeDeELE exam practice above ↑</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="my-5">
+
+  <!-- ===== BOTH LANGUAGES ===== -->
+  <h2 class="fw-bold mb-4">🌐 Both Languages</h2>
+  <div class="row g-4 mb-5">
+    <div class="col-md-6">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body p-4">
+          <h5 class="fw-bold mb-1">
+            <a href="https://tatoeba.org/" target="_blank" rel="noopener" class="text-decoration-none">
+              🗣️ Tatoeba — Example Sentences
+            </a>
+            <span class="badge bg-success ms-2 small">Free &amp; Open</span>
+          </h5>
+          <div class="text-muted small mb-3">Multilingual sentence database — millions of sentences in French, Spanish, Bengali, English</div>
+          <ul class="list-unstyled small mb-0">
+            <li class="mb-1"><a href="https://tatoeba.org/en/sentences/search?query=&from=fra&to=ben" target="_blank" rel="noopener">French → Bengali sentences</a></li>
+            <li class="mb-1"><a href="https://tatoeba.org/en/sentences/search?query=&from=spa&to=ben" target="_blank" rel="noopener">Spanish → Bengali sentences</a></li>
+            <li class="mb-0"><a href="https://tatoeba.org/en/downloads" target="_blank" rel="noopener">Download full dataset (CC-BY 2.0 licence)</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body p-4">
+          <h5 class="fw-bold mb-1">
+            <a href="https://www.wordreference.com/" target="_blank" rel="noopener" class="text-decoration-none">
+              📘 WordReference — Dictionary
+            </a>
+            <span class="badge bg-success ms-2 small">Free</span>
+          </h5>
+          <div class="text-muted small mb-3">Best online bilingual dictionary — pronunciation, conjugation, forum discussions</div>
+          <ul class="list-unstyled small mb-0">
+            <li class="mb-1"><a href="https://www.wordreference.com/fren/" target="_blank" rel="noopener">French ↔ English</a></li>
+            <li class="mb-1"><a href="https://www.wordreference.com/es/en/translation.asp" target="_blank" rel="noopener">Spanish ↔ English</a></li>
+            <li class="mb-0">Click any word for example sentences and forum usage notes</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body p-4">
+          <h5 class="fw-bold mb-1">
+            <a href="https://conjuguemos.com/" target="_blank" rel="noopener" class="text-decoration-none">
+              🔢 Conjuguemos — Verb Drills
+            </a>
+            <span class="badge bg-success ms-2 small">Free</span>
+          </h5>
+          <div class="text-muted small mb-3">Fast verb conjugation practice — French &amp; Spanish, all tenses</div>
+          <ul class="list-unstyled small mb-0">
+            <li class="mb-1"><a href="https://conjuguemos.com/grammar/french" target="_blank" rel="noopener">French verb drills</a></li>
+            <li class="mb-1"><a href="https://conjuguemos.com/grammar/spanish" target="_blank" rel="noopener">Spanish verb drills</a></li>
+            <li class="mb-0">Great supplement to Lessons 9 (Verbs) and grammar lessons</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body p-4">
+          <h5 class="fw-bold mb-1">
+            <a href="https://forvo.com/" target="_blank" rel="noopener" class="text-decoration-none">
+              🔊 Forvo — Native Pronunciation
+            </a>
+            <span class="badge bg-success ms-2 small">Free</span>
+          </h5>
+          <div class="text-muted small mb-3">Words pronounced by native speakers from France, Spain, and Latin America</div>
+          <ul class="list-unstyled small mb-0">
+            <li class="mb-1"><a href="https://forvo.com/languages/fr/" target="_blank" rel="noopener">French pronunciations</a></li>
+            <li class="mb-1"><a href="https://forvo.com/languages/es/" target="_blank" rel="noopener">Spanish pronunciations</a></li>
+            <li class="mb-0">Look up any word to hear multiple native speakers say it</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
 {% endblock %}
-

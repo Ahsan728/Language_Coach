@@ -45,6 +45,27 @@ Then open your browser at **http://localhost:5000**
 
 ---
 
+## Local Resources (PDFs + Links)
+
+- Add your learning PDFs/links into `French Resources/` and `Spanish Resources/`.
+- Open **Resources** in the navbar to browse them (auto-detected).
+- To enable **Context** questions in **Daily Practice**, build the sentence index:
+  - `python scripts/build_resource_sentences.py`
+  - This creates `data/resource_sentences.json` (optional; safe to re-run after adding new PDFs).
+
+## Auto-push to GitHub (Optional)
+
+Automatically commit + push whenever files change locally:
+
+- Check what will be committed: `git status`
+- Watch mode: `powershell -ExecutionPolicy Bypass -File scripts/auto_push.ps1`
+- One-time sync: `powershell -ExecutionPolicy Bypass -File scripts/auto_push_once.ps1`
+- Stop watch mode with `Ctrl+C`
+
+Notes:
+- Requires your GitHub auth to be set up for `git push` (HTTPS token or SSH).
+- Resource folders and generated caches are ignored by default (see `.gitignore`).
+
 ## 🗂️ Project Structure
 
 ```
@@ -53,10 +74,14 @@ Language Coach/
 ├── app.py                  # Flask backend — routes, quiz/practice logic, SRS API
 ├── requirements.txt        # Python dependencies (flask, pypdf)
 ├── start.bat               # One-click Windows launcher
+├── Dictionaries/           # Source PDF dictionaries (vocab extraction)
+├── French Resources/       # Your French PDFs/links (local)
+├── Spanish Resources/      # Your Spanish PDFs/links (local)
 │
 ├── data/
 │   ├── vocabulary.json     # ~946 words per language: Bengali + English + pronunciation + examples
 │   ├── lessons.json        # 28 lessons per language with CEFR levels, grammar + quiz questions
+│   ├── resource_sentences.json # (Optional) extracted sentences for Context practice
 │   └── progress.db         # SQLite database (auto-created on first run; local per user)
 │
 ├── templates/              # Jinja2 HTML templates
@@ -77,7 +102,8 @@ Language Coach/
 │   └── js/app.js           # All JS: flashcards, quiz, practice, dictation, TTS, vocab explorer
 │
 └── scripts/
-    └── validate_content.py # Content validation for lessons/vocab JSON
+    ├── build_resource_sentences.py # Build Context sentence index from PDFs
+    └── validate_content.py         # Content validation for lessons/vocab JSON
 ```
 
 ---
@@ -177,9 +203,12 @@ The app **auto-reloads JSON** when files change — edit content while the serve
 
 ### Python packages
 ```
-flask>=3.0.0
-pypdf>=4.0.0
-```
+ flask>=3.0.0
+ pypdf>=4.0.0
+ cryptography>=3.1
+ gunicorn>=21.0.0
+ gTTS>=2.5.0
+ ```
 
 ---
 
@@ -187,11 +216,16 @@ pypdf>=4.0.0
 
 The app runs on `http://localhost:5000` by default.
 
-- Change port: set the `PORT` environment variable.
-  - PowerShell: `$env:PORT=8000`
-  - cmd.exe: `set PORT=8000`
+ - Change port: set the `PORT` environment variable.
+   - PowerShell: `$env:PORT=8000`
+   - cmd.exe: `set PORT=8000`
 
----
+ - Server-side TTS (same pronunciation for everyone): set `TTS_PROVIDER=gtts`.
+   - PowerShell: `$env:TTS_PROVIDER='gtts'`
+   - cmd.exe: `set TTS_PROVIDER=gtts`
+   - Audio is cached under `data/tts_cache/` (first play generates; next plays are instant).
+
+ ---
 
 ## ☁️ Deployment — Share with Friends
 

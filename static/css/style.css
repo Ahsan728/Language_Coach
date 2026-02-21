@@ -164,6 +164,7 @@ body { font-family: 'Poppins', sans-serif; color: var(--text-dark); background: 
 }
 .vocab-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
 .vocab-word { letter-spacing: 0.01em; }
+.vocab-article { font-weight: 400 !important; font-size: 0.72em; opacity: 0.55; letter-spacing: 0.03em; }
 .vocab-english { font-size: 0.9rem; color: #495057; }
 .vocab-bengali { font-size: 0.95rem; color: #495057; }
 .pron-badge {

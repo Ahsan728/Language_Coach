@@ -9,6 +9,14 @@
 // Cache voices once they're available (Chrome loads them async)
 let _ttsVoices = [];
 let _ttsWarnedLangs = new Set();
+let _ttsAutoplayWarned = false;
+
+function _normalizeLangTag(tag) {
+  return String(tag || '')
+    .trim()
+    .replace(/_/g, '-')
+    .toLowerCase();
+}
 
 function _loadVoices() {
   const vs = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
@@ -24,7 +32,7 @@ function _showTtsWarning(langName) {
   if (_ttsWarnedLangs.has(langName)) return;
   _ttsWarnedLangs.add(langName);
 
-  // Only show once per language; remove after 12 seconds
+  // Only show once per language (per page load)
   const existing = document.getElementById('tts-warning-banner');
   if (existing) existing.remove();
 
@@ -43,17 +51,101 @@ function _showTtsWarning(langName) {
     <button onclick="this.closest('#tts-warning-banner').remove()"
             style="float:right;background:none;border:none;font-size:1.1rem;cursor:pointer;line-height:1">×</button>
     <div class="mt-1">
-      Windows doesn't include French/Spanish voices by default.<br>
+      Windows doesn't include French/Spanish voices by default, so your browser may fall back to English.<br>
       To fix: <strong>Settings → Time &amp; Language → Language &amp; Region
       → Add a language → pick ${langName} → tick "Text-to-speech"</strong>
       then restart the browser.
     </div>`;
 
   document.body.appendChild(banner);
-  setTimeout(() => { if (banner.parentNode) banner.remove(); }, 14000);
 }
 
-function speakText(text, langTag) {
+function _showAutoplayWarning() {
+  if (_ttsAutoplayWarned) return;
+  _ttsAutoplayWarned = true;
+
+  const existing = document.getElementById('tts-autoplay-banner');
+  if (existing) existing.remove();
+
+  const banner = document.createElement('div');
+  banner.id = 'tts-autoplay-banner';
+  banner.style.cssText = [
+    'position:fixed', 'bottom:1rem', 'left:50%', 'transform:translateX(-50%)',
+    'z-index:9999', 'max-width:520px', 'width:calc(100% - 2rem)',
+    'background:#e7f1ff', 'border:1px solid #0d6efd', 'border-radius:10px',
+    'padding:.85rem 1.1rem', 'box-shadow:0 4px 20px rgba(0,0,0,.15)',
+    'font-size:.875rem', 'line-height:1.5'
+  ].join(';');
+
+  banner.innerHTML = `
+    <strong>Audio autoplay blocked</strong>
+    <button onclick="this.closest('#tts-autoplay-banner').remove()"
+            style="float:right;background:none;border:none;font-size:1.1rem;cursor:pointer;line-height:1">Ã—</button>
+    <div class="mt-1">
+      Your browser blocked automatic audio playback. Click a <strong>ðŸ”Š Listen</strong> button (or press <strong>L</strong>) to play.
+    </div>`;
+
+  document.body.appendChild(banner);
+}
+
+let _ttsAudio = null;
+let _ttsAudioObjectUrl = null;
+let _serverTtsBackoffUntil = 0;
+
+function _getTtsProvider() {
+  try {
+    const p = String((window && window.TTS_PROVIDER) ? window.TTS_PROVIDER : 'browser').trim().toLowerCase();
+    return p || 'browser';
+  } catch {
+    return 'browser';
+  }
+}
+
+async function _speakTextServer(text, langTag) {
+  const url = `/api/tts?lang=${encodeURIComponent(langTag || '')}&text=${encodeURIComponent(text || '')}`;
+  const res = await fetch(url, {cache: 'force-cache'});
+  if (!res.ok) throw new Error(`TTS HTTP ${res.status}`);
+
+  const blob = await res.blob();
+
+  if (_ttsAudioObjectUrl) {
+    try { URL.revokeObjectURL(_ttsAudioObjectUrl); } catch { /* noop */ }
+    _ttsAudioObjectUrl = null;
+  }
+  _ttsAudioObjectUrl = URL.createObjectURL(blob);
+
+  if (!_ttsAudio) _ttsAudio = new Audio();
+  try { _ttsAudio.pause(); _ttsAudio.currentTime = 0; } catch { /* noop */ }
+  _ttsAudio.src = _ttsAudioObjectUrl;
+  await _ttsAudio.play();
+}
+
+async function speakText(text, langTag, retryOnce = true) {
+  if (!text) return;
+
+  const provider = _getTtsProvider();
+  const now = Date.now();
+  if (provider !== 'browser' && now >= _serverTtsBackoffUntil) {
+    try {
+      // Stop any in-progress browser speech to avoid overlap.
+      if (window.speechSynthesis) window.speechSynthesis.cancel();
+      await _speakTextServer(text, langTag);
+      return;
+    } catch (e) {
+      const name = (e && e.name) ? String(e.name) : '';
+      if (name === 'NotAllowedError') {
+        _showAutoplayWarning();
+        return;
+      }
+      console.warn('Server TTS failed; falling back to browser TTS:', e);
+      _serverTtsBackoffUntil = now + 30000;
+    }
+  }
+
+  _speakTextBrowser(text, langTag, retryOnce);
+}
+
+function _speakTextBrowser(text, langTag, retryOnce = true) {
   if (!text) return;
   const synth = window.speechSynthesis;
   if (!synth) return;
@@ -68,21 +160,33 @@ function speakText(text, langTag) {
   const fresh = synth.getVoices();
   if (fresh.length) _ttsVoices = fresh;
 
+  const want = langTag ? _normalizeLangTag(langTag) : '';
+  const wantPrefix = want.split('-')[0];
+
+  // If voices haven't loaded yet, retry once shortly to avoid falling back to English.
+  if (langTag && wantPrefix && !_ttsVoices.length && retryOnce) {
+    setTimeout(() => _speakTextBrowser(text, langTag, false), 250);
+    return;
+  }
+
   const u = new SpeechSynthesisUtterance(String(text));
   u.rate = 0.9;
 
   if (langTag) {
     u.lang = langTag;
 
-    if (_ttsVoices.length) {
-      const prefix = langTag.split('-')[0];
-      const voice = _ttsVoices.find(v => v.lang === langTag)
-                 || _ttsVoices.find(v => v.lang.startsWith(prefix));
+    if (wantPrefix && _ttsVoices.length) {
+      const candidates = _ttsVoices.filter(v => _normalizeLangTag(v.lang).startsWith(wantPrefix));
+      const voice = candidates.find(v => _normalizeLangTag(v.lang) === want)
+                 || candidates.find(v => v.default)
+                 || candidates[0];
       if (voice) {
         u.voice = voice;
+        // Some browsers behave better when utterance.lang matches the selected voice.
+        if (voice.lang) u.lang = voice.lang;
       } else {
-        const name = langTag.startsWith('fr') ? 'French'
-                   : langTag.startsWith('es') ? 'Spanish' : langTag;
+        const name = wantPrefix === 'fr' ? 'French'
+                   : wantPrefix === 'es' ? 'Spanish' : langTag;
         _showTtsWarning(name);
       }
     }
@@ -994,21 +1098,27 @@ function renderVocabExplorer() {
   const shown = filtered.slice(0, limit);
 
   listEl.innerHTML = shown.map(w => {
+    const article = w.article || '';
+    const sep = (article && article.endsWith("'")) ? '' : ' ';
     const word = escapeHtml(w.word);
     const english = escapeHtml(w.english);
     const bengali = escapeHtml(w.bengali);
     const pron = escapeHtml(w.pronunciation);
     const catLabel = escapeHtml((w.category || '').replace(/_/g, ' '));
+    const displayWord = article
+      ? `<span class="vocab-article">${escapeHtml(article)}</span>${sep}${word}`
+      : word;
+    const ttsWord = article ? (article + sep + w.word) : w.word;
 
     return `
       <div class="col-md-6 col-lg-4">
         <div class="vocab-card card border-0 shadow-sm h-100">
           <div class="card-body p-3">
             <div class="d-flex justify-content-between align-items-start">
-              <div class="vocab-word fw-bold fs-5 ${langClass}">${word}</div>
+              <div class="vocab-word fw-bold fs-5 ${langClass}">${displayWord}</div>
               <div class="d-flex gap-2 align-items-start">
                 <button class="btn btn-sm btn-light border btn-listen vocab-listen" type="button" title="Listen" aria-label="Listen"
-                        data-tts="${word}">
+                        data-tts="${escapeHtml(ttsWord)}">
                   <i class="fas fa-volume-up"></i>
                 </button>
                 ${pron ? `<span class="pron-badge">${pron}</span>` : `<span></span>`}
