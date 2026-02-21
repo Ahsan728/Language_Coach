@@ -17,7 +17,7 @@ function _loadVoices() {
 
 if ('speechSynthesis' in window) {
   _loadVoices();
-  window.speechSynthesis.addEventListener('voiceschanged', _loadVoices);
+  window.speechSynthesis.onvoiceschanged = _loadVoices;
 }
 
 function _showTtsWarning(langName) {
@@ -58,8 +58,7 @@ function speakText(text, langTag) {
   const synth = window.speechSynthesis;
   if (!synth) return;
 
-  // Chrome bug: after inactivity the engine gets stuck in "paused" state.
-  // resume() → cancel() → speak() is the reliable order.
+  // Chrome gets stuck in "paused" after inactivity — resume first
   try { synth.resume(); } catch { /* noop */ }
   synth.cancel();
 
@@ -71,25 +70,23 @@ function speakText(text, langTag) {
 
     if (_ttsVoices.length) {
       const prefix = langTag.split('-')[0];
-      const langVoice = _ttsVoices.find(v => v.lang === langTag)
-                     || _ttsVoices.find(v => v.lang.startsWith(prefix));
-
-      if (langVoice) {
-        u.voice = langVoice;
+      const voice = _ttsVoices.find(v => v.lang === langTag)
+                 || _ttsVoices.find(v => v.lang.startsWith(prefix));
+      if (voice) {
+        u.voice = voice;
       } else {
-        // No matching voice installed — warn the user once, then fall back
-        // to the first available voice so something is still audible
-        const langName = langTag.startsWith('fr') ? 'French' : langTag.startsWith('es') ? 'Spanish' : langTag;
-        _showTtsWarning(langName);
-        u.voice = _ttsVoices[0] || null;
+        // No matching voice installed — warn once
+        const name = langTag.startsWith('fr') ? 'French'
+                   : langTag.startsWith('es') ? 'Spanish' : langTag;
+        _showTtsWarning(name);
       }
     }
+    // If _ttsVoices is still empty (race), lang alone guides Chrome
   }
 
-  // 50 ms gap so cancel() fully clears before the next utterance queues
-  setTimeout(() => {
-    try { synth.speak(u); } catch { /* noop */ }
-  }, 50);
+  // speak() must be called synchronously here — setTimeout would break
+  // Chrome's user-activation requirement and silently block the audio.
+  try { synth.speak(u); } catch(e) { console.warn('TTS:', e); }
 }
 
 function langToTtsTag(lang) {
