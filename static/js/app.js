@@ -5,20 +5,49 @@
 /* ===============================================
    PRONUNCIATION (TTS)
    =============================================== */
+
+// Cache voices once they're available (Chrome loads them async)
+let _ttsVoices = [];
+
+function _loadVoices() {
+  const vs = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
+  if (vs.length) _ttsVoices = vs;
+}
+
+if ('speechSynthesis' in window) {
+  _loadVoices();
+  window.speechSynthesis.addEventListener('voiceschanged', _loadVoices);
+}
+
 function speakText(text, langTag) {
   if (!text) return;
-  if (!('speechSynthesis' in window)) return;
+  const synth = window.speechSynthesis;
+  if (!synth) return;
+
+  // Chrome bug: after inactivity the engine gets stuck in "paused" state.
+  // resume() first, then cancel(), then speak() — this order is reliable.
+  try { synth.resume(); } catch { /* noop */ }
+  synth.cancel();
 
   const u = new SpeechSynthesisUtterance(String(text));
-  if (langTag) u.lang = langTag;
-  u.rate = 0.95;
+  u.rate = 0.9;
 
-  try {
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(u);
-  } catch {
-    // no-op
+  if (langTag) {
+    u.lang = langTag;
+    // Explicitly pick the best available voice so Chrome doesn't fall back
+    // to the wrong language or stay silent
+    if (_ttsVoices.length) {
+      const prefix = langTag.split('-')[0];
+      u.voice = _ttsVoices.find(v => v.lang === langTag)
+             || _ttsVoices.find(v => v.lang.startsWith(prefix))
+             || null;
+    }
   }
+
+  // Small delay so cancel() fully clears before the next utterance starts
+  setTimeout(() => {
+    try { synth.speak(u); } catch { /* noop */ }
+  }, 50);
 }
 
 function langToTtsTag(lang) {
