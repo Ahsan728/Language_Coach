@@ -9,6 +9,11 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
+# PowerShell 7+: avoid treating stderr from native commands as errors
+if (Get-Variable -Name PSNativeCommandUseErrorActionPreference -ErrorAction SilentlyContinue) {
+  $PSNativeCommandUseErrorActionPreference = $false
+}
+
 function Invoke-Git {
   param(
     [Parameter(Mandatory = $true)][string[]]$Args,
@@ -27,7 +32,14 @@ function Invoke-Git {
     }
   }
 
-  $out = & git @Args 2>&1
+  $prevEap = $ErrorActionPreference
+  try {
+    $ErrorActionPreference = 'Continue'
+    $out = & git @Args 2>&1
+  }
+  finally {
+    $ErrorActionPreference = $prevEap
+  }
   if ($LASTEXITCODE -ne 0 -and -not $AllowFailure) {
     throw ("git " + ($Args -join ' ') + "`n" + ($out -join "`n"))
   }
@@ -93,7 +105,7 @@ function Invoke-AutoSync {
     }
 
     $stat = Invoke-Git -Args @('diff', '--cached', '--stat')
-    $subject = "$MessagePrefix: $ts ($fileCount file(s))"
+    $subject = "${MessagePrefix}: $ts ($fileCount file(s))"
     $bodyLines = @('Files:') + ($fileLines | ForEach-Object { " - $($_)" }) + @('', 'Stat:', $stat)
     $body = $bodyLines -join "`n"
 
