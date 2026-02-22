@@ -86,7 +86,7 @@ img.brand-icon {
   display: block;
   border-radius: 999px;
   object-fit: cover;
-  border: 2px solid var(--lc-outline-strong);
+  border: 1px solid var(--lc-outline);
   background: rgba(255,255,255,0.8);
 }
 .brand-title { font-size: 1.1rem; font-weight: 700; line-height: 1.2; }
