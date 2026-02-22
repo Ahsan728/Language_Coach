@@ -858,10 +858,7 @@ def _static_asset_version():
 
 @app.context_processor
 def inject_globals():
-    allowed_themes = {'purple', 'lime'}
-    ui_theme = (os.environ.get('LC_THEME') or 'lime').strip().lower()
-    if ui_theme not in allowed_themes:
-        ui_theme = 'lime'
+    ui_theme = 'lime'
     return {
         'lang_meta': LANG_META,
         'tts_provider': app.config.get('TTS_PROVIDER', 'auto'),
