@@ -1127,6 +1127,21 @@ def logout():
     return redirect(url_for('dashboard'))
 
 
+@app.route('/favicon.png')
+def favicon_png():
+    path = os.path.join(BASE_DIR, 'logo', 'AhsanSuny_Logo.png')
+    if not os.path.exists(path):
+        return ('Missing favicon', 404)
+    resp = send_file(path, mimetype='image/png', conditional=True)
+    resp.headers['Cache-Control'] = 'public, max-age=86400'
+    return resp
+
+
+@app.route('/favicon.ico')
+def favicon_ico():
+    return favicon_png()
+
+
 @app.route('/language/<lang>')
 def language_home(lang):
     if lang not in LANG_META:
