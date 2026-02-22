@@ -1104,6 +1104,755 @@
       ],
       "tip_en": "French feelings: 'J'aime / J'adore + infinitive'. For states: 'Je suis content(e) / triste / fatigué(e).' Adjectives agree with gender: content → contente!",
       "tip_bn": "ফরাসিতে অনুভূতি: 'J'aime / J'adore + ক্রিয়া'। অবস্থার জন্য: 'Je suis content(e) / triste / fatigué(e).' বিশেষণ লিঙ্গের সাথে মিলে: content → contente!"
+    },
+    {
+      "id": 29,
+      "level": "B1",
+      "cefr_level": "B1",
+      "icon": "💼",
+      "title_en": "Workplace Communication",
+      "title_bn": "কর্মক্ষেত্রে যোগাযোগ",
+      "title_lang": "Communication au Travail",
+      "description_en": "B1-level work vocabulary for meetings, emails, roles and professional conversations.",
+      "description_bn": "B1 স্তরে মিটিং, ইমেইল, দায়িত্ব ও কর্মক্ষেত্রের কথোপকথনের জন্য কাজ-সংক্রান্ত শব্দভান্ডার শিখুন।",
+      "vocabulary_categories": [
+        "work"
+      ],
+      "vocabulary_slices": {
+        "work": {
+          "offset": 60,
+          "limit": 60
+        }
+      },
+      "tip_en": "Polite at work: 'Je voudrais...' (I'd like...), 'Pourriez-vous... ?' (Could you...?).",
+      "tip_bn": "কর্মক্ষেত্রে ভদ্রভাবে বলুন: 'Je voudrais...' (আমি চাই...), 'Pourriez-vous... ?' (আপনি কি পারবেন...?)।"
+    },
+    {
+      "id": 30,
+      "level": "B1",
+      "cefr_level": "B1",
+      "icon": "🏠",
+      "title_en": "Home & Housing (Advanced)",
+      "title_bn": "বাড়ি ও বাসস্থান (উন্নত)",
+      "title_lang": "Le Logement (Avancé)",
+      "description_en": "Go beyond basics: renting, repairs, furniture and everyday home life in French.",
+      "description_bn": "ভাড়া, মেরামত, আসবাবপত্র ও ঘরের দৈনন্দিন জীবনের উন্নত শব্দভান্ডার শিখুন।",
+      "vocabulary_categories": [
+        "home"
+      ],
+      "vocabulary_slices": {
+        "home": {
+          "offset": 60,
+          "limit": 60
+        }
+      },
+      "tip_en": "Renting: 'Je cherche un appartement' (I'm looking for an apartment). A lease is 'un bail', and a deposit is 'une caution'.",
+      "tip_bn": "ভাড়া: 'Je cherche un appartement' (আমি একটি ফ্ল্যাট খুঁজছি)। চুক্তি = 'un bail', জামানত/ডিপোজিট = 'une caution'।"
+    },
+    {
+      "id": 31,
+      "level": "B1",
+      "cefr_level": "B1",
+      "icon": "🏅",
+      "title_en": "Sports & Leisure (Advanced)",
+      "title_bn": "খেলাধুলা ও অবসর (উন্নত)",
+      "title_lang": "Sports et Loisirs (Avancé)",
+      "description_en": "Advanced sports vocabulary — training, competitions, equipment and talking about routines.",
+      "description_bn": "ট্রেনিং, প্রতিযোগিতা, সরঞ্জাম ও রুটিন নিয়ে কথা বলার জন্য উন্নত খেলাধুলার শব্দভান্ডার।",
+      "vocabulary_categories": [
+        "sports"
+      ],
+      "vocabulary_slices": {
+        "sports": {
+          "offset": 60,
+          "limit": 60
+        }
+      },
+      "tip_en": "Sports verbs: 'faire du' (je fais du tennis) and 'jouer à' (je joue au foot). Talk about habits with 'je m'entraîne'.",
+      "tip_bn": "খেলাধুলার ক্রিয়া: 'faire du' (je fais du tennis) এবং 'jouer à' (je joue au foot)। অভ্যাস/রুটিন: 'je m'entraîne' (আমি অনুশীলন করি)।"
+    },
+    {
+      "id": 32,
+      "level": "B1",
+      "cefr_level": "B1",
+      "icon": "🌿",
+      "title_en": "Nature & Environment (Advanced)",
+      "title_bn": "প্রকৃতি ও পরিবেশ (উন্নত)",
+      "title_lang": "Nature et Environnement (Avancé)",
+      "description_en": "Advanced nature vocabulary — landscapes, climate, pollution and protecting the environment.",
+      "description_bn": "ভূদৃশ্য, জলবায়ু, দূষণ ও পরিবেশ রক্ষার উন্নত শব্দভান্ডার শিখুন।",
+      "vocabulary_categories": [
+        "nature"
+      ],
+      "vocabulary_slices": {
+        "nature": {
+          "offset": 60,
+          "limit": 60
+        }
+      },
+      "tip_en": "Useful phrase: 'protéger l'environnement' (to protect the environment). For opinions: 'Je suis pour / contre...' (I'm for/against).",
+      "tip_bn": "দরকারি বাক্য: 'protéger l'environnement' (পরিবেশ রক্ষা করা)। মতামত: 'Je suis pour / contre...' (আমি পক্ষে/বিপক্ষে)।"
+    },
+    {
+      "id": 33,
+      "level": "B1",
+      "cefr_level": "B1",
+      "icon": "🚆",
+      "title_en": "Travel & Transport (B1)",
+      "title_bn": "ভ্রমণ ও যাতায়াত (B1)",
+      "title_lang": "Voyages et Transports (B1)",
+      "description_en": "B1 travel vocabulary — tickets, delays, connections, accommodation and getting around.",
+      "description_bn": "টিকিট, দেরি, কানেকশন, থাকার ব্যবস্থা ও যাতায়াতের B1 স্তরের শব্দভান্ডার।",
+      "vocabulary_categories": [
+        "transport_advanced"
+      ],
+      "vocabulary_slices": {
+        "transport_advanced": {
+          "offset": 60,
+          "limit": 60
+        }
+      },
+      "tip_en": "Train travel: 'un billet aller-retour' (return ticket), 'une correspondance' (connection), 'en retard' (late).",
+      "tip_bn": "ট্রেন ভ্রমণ: 'un billet aller-retour' (রিটার্ন টিকিট), 'une correspondance' (কানেকশন), 'en retard' (দেরি)।"
+    },
+    {
+      "id": 34,
+      "level": "B1",
+      "cefr_level": "B1",
+      "icon": "👥",
+      "title_en": "People & Society (B1)",
+      "title_bn": "মানুষ ও সমাজ (B1)",
+      "title_lang": "Les Gens et la Société (B1)",
+      "description_en": "Talk about society and daily life: communities, roles, relationships and social topics.",
+      "description_bn": "কমিউনিটি, ভূমিকা, সম্পর্ক ও সামাজিক বিষয় নিয়ে কথা বলার জন্য B1 স্তরের শব্দভান্ডার।",
+      "vocabulary_categories": [
+        "people"
+      ],
+      "vocabulary_slices": {
+        "people": {
+          "offset": 60,
+          "limit": 60
+        }
+      },
+      "tip_en": "Opinion starters: 'À mon avis...' (in my opinion), 'Je pense que...' (I think that), 'Je suis d'accord / pas d'accord'.",
+      "tip_bn": "মতামত শুরু করুন: 'À mon avis...' (আমার মতে), 'Je pense que...' (আমি মনে করি), 'Je suis d'accord / pas d'accord' (আমি একমত/একমত নই)।"
+    },
+    {
+      "id": 35,
+      "level": "B1",
+      "cefr_level": "B1",
+      "icon": "🔗",
+      "title_en": "Core Vocabulary I: Connectors",
+      "title_bn": "মূল শব্দভান্ডার ১: সংযোগকারী শব্দ",
+      "title_lang": "Vocabulaire Clé I : Connecteurs",
+      "description_en": "High-frequency connectors to make longer, more natural sentences.",
+      "description_bn": "বাক্যকে দীর্ঘ ও প্রাকৃতিক করতে উচ্চ-ব্যবহৃত সংযোগকারী শব্দ শিখুন।",
+      "vocabulary_categories": [
+        "reference"
+      ],
+      "vocabulary_slices": {
+        "reference": {
+          "offset": 0,
+          "limit": 60
+        }
+      },
+      "tip_en": "Practice linking ideas: 'parce que' (because), 'donc' (so), 'cependant' (however), 'même si' (even if).",
+      "tip_bn": "আইডিয়া যুক্ত করুন: 'parce que' (কারণ), 'donc' (তাই), 'cependant' (তবে), 'même si' (যদিও)।"
+    },
+    {
+      "id": 36,
+      "level": "B1",
+      "cefr_level": "B1",
+      "icon": "💬",
+      "title_en": "Core Vocabulary II: Opinions",
+      "title_bn": "মূল শব্দভান্ডার ২: মতামত",
+      "title_lang": "Vocabulaire Clé II : Opinions",
+      "description_en": "Common opinion and discussion vocabulary — agree, disagree, clarify and give reasons.",
+      "description_bn": "একমত/অসম্মত হওয়া, ব্যাখ্যা করা ও কারণ দেওয়ার জন্য মতামত-সংক্রান্ত শব্দভান্ডার।",
+      "vocabulary_categories": [
+        "reference"
+      ],
+      "vocabulary_slices": {
+        "reference": {
+          "offset": 60,
+          "limit": 60
+        }
+      },
+      "tip_en": "Useful patterns: 'Je suis d'accord', 'Je ne suis pas sûr(e)', 'Je trouve que...', 'C'est vrai, mais...'.",
+      "tip_bn": "দরকারি বাক্য: 'Je suis d'accord', 'Je ne suis pas sûr(e)', 'Je trouve que...', 'C'est vrai, mais...'।"
+    },
+    {
+      "id": 37,
+      "level": "B1",
+      "cefr_level": "B1",
+      "icon": "⏳",
+      "title_en": "Grammar: Imparfait vs Passé Composé",
+      "title_bn": "ব্যাকরণ: ইঁপারফে বনাম পাসে কম্পোজে",
+      "title_lang": "Grammaire : Imparfait vs Passé Composé",
+      "description_en": "Choose between background description (imparfait) and completed actions (passé composé).",
+      "description_bn": "পটভূমি/অভ্যাস বোঝাতে ইঁপারফে, আর সম্পন্ন কাজ বোঝাতে পাসে কম্পোজে — ঠিকভাবে বেছে নিন।",
+      "vocabulary_categories": [],
+      "grammar": {
+        "intro_en": "French past narration often mixes two tenses: the imparfait for background, habits and descriptions, and the passé composé for completed actions that move the story forward.",
+        "intro_bn": "ফরাসিতে অতীতের বর্ণনায় প্রায়ই দুইটি কাল একসাথে ব্যবহৃত হয়: পটভূমি/অভ্যাস/বর্ণনার জন্য ইঁপারফে, আর সম্পন্ন কাজ/ঘটনার জন্য পাসে কম্পোজে।",
+        "sections": [
+          {
+            "title_en": "Forming the Imparfait",
+            "title_bn": "ইঁপারফে গঠন",
+            "table": [
+              ["Subject", "PARLER", "English", "Bengali"],
+              ["je", "je parlais", "I was speaking / I used to speak", "আমি বলতাম"],
+              ["tu", "tu parlais", "you were speaking", "তুমি বলতে"],
+              ["il/elle", "il/elle parlait", "he/she was speaking", "সে বলত"],
+              ["nous", "nous parlions", "we were speaking", "আমরা বলতাম"],
+              ["vous", "vous parliez", "you were speaking", "আপনি/আপনারা বলতেন"],
+              ["ils/elles", "ils/elles parlaient", "they were speaking", "তারা বলত"]
+            ],
+            "note_en": "Take the 'nous' present form (parlons), remove -ons to get the stem (parl-), then add: -ais, -ais, -ait, -ions, -iez, -aient. ÊTRE is irregular: j'étais, tu étais, il était...",
+            "note_bn": "'nous' ফর্ম (parlons) থেকে -ons বাদ দিয়ে স্টেম (parl-) নিন, তারপর যোগ করুন: -ais, -ais, -ait, -ions, -iez, -aient। ÊTRE অনিয়মিত: j'étais, tu étais, il était..."
+          },
+          {
+            "title_en": "When to use which tense?",
+            "title_bn": "কোন কাল কখন?",
+            "table": [
+              ["Situation", "Imparfait", "Passé composé", "Example"],
+              ["Background / description", "✔", "—", "Il faisait froid."],
+              ["Habit in the past", "✔", "—", "Quand j'étais enfant, je lisais beaucoup."],
+              ["Completed action", "—", "✔", "Hier, j'ai fermé la porte."],
+              ["Interrupted action", "✔", "✔", "Je lisais quand il a appelé."]
+            ],
+            "note_en": "A common pattern is: background (imparfait) + event (passé composé).",
+            "note_bn": "সাধারণ প্যাটার্ন: পটভূমি (ইঁপারফে) + ঘটনা (পাসে কম্পোজে)।"
+          }
+        ],
+        "quiz_questions": [
+          {
+            "question_en": "Choose the correct sentence for a habit in the past:",
+            "question_bn": "অতীতে অভ্যাস বোঝাতে সঠিক বাক্যটি বাছুন:",
+            "choices": [
+              "Quand j'étais petit, je jouais au football.",
+              "Quand j'ai été petit, je jouais au football.",
+              "Quand j'étais petit, j'ai joué au football.",
+              "Quand j'ai été petit, j'ai joué au football."
+            ],
+            "correct": "Quand j'étais petit, je jouais au football."
+          },
+          {
+            "question_en": "Complete the story: 'Hier, il ___ (pleuvoir) et nous ___ (regarder) un film.'",
+            "question_bn": "পূর্ণ করুন: 'গতকাল, বৃষ্টি ___ এবং আমরা একটি সিনেমা ___।'",
+            "choices": [
+              "pleuvait / avons regardé",
+              "a plu / regardions",
+              "pleuvait / regardions",
+              "a plu / avons regardé"
+            ],
+            "correct": "pleuvait / avons regardé"
+          },
+          {
+            "question_en": "Complete: 'Je ___ au téléphone quand tu ___.' (I was on the phone when you arrived)",
+            "question_bn": "পূর্ণ করুন: 'আমি ফোনে ___ ছিলাম যখন তুমি ___।'",
+            "choices": [
+              "étais / es arrivé",
+              "ai été / arrivais",
+              "étais / arrivais",
+              "ai été / es arrivé"
+            ],
+            "correct": "étais / es arrivé"
+          },
+          {
+            "question_en": "Choose the best tense for a sudden completed action: 'Tout à coup, elle ___.'",
+            "question_bn": "হঠাৎ সম্পন্ন কাজ বোঝাতে সঠিক রূপ: 'হঠাৎ, সে ___।'",
+            "choices": [
+              "est tombée",
+              "tombait",
+              "tombe",
+              "tombera"
+            ],
+            "correct": "est tombée"
+          },
+          {
+            "question_en": "Pick the correct imparfait form: 'Nous ___ (finir)'",
+            "question_bn": "সঠিক ইঁপারফে রূপ বাছুন: 'Nous ___ (finir)'",
+            "choices": [
+              "finissions",
+              "finissons",
+              "avons fini",
+              "finirons"
+            ],
+            "correct": "finissions"
+          }
+        ]
+      }
+    },
+    {
+      "id": 38,
+      "level": "B1",
+      "cefr_level": "B1",
+      "icon": "✨",
+      "title_en": "Grammar: Conditional (Polite & Hypothetical)",
+      "title_bn": "ব্যাকরণ: শর্তবাচক কাল (কন্ডিশনেল)",
+      "title_lang": "Grammaire : Le Conditionnel",
+      "description_en": "Use the conditional to be polite, to express wishes, and to talk about hypothetical situations.",
+      "description_bn": "ভদ্রভাবে অনুরোধ করা, ইচ্ছা প্রকাশ করা এবং কল্পিত পরিস্থিতি নিয়ে কথা বলতে কন্ডিশনেল ব্যবহার করুন।",
+      "vocabulary_categories": [],
+      "grammar": {
+        "intro_en": "The French conditional is used for: politeness (requests), wishes, advice, and hypothetical results (often with 'si').",
+        "intro_bn": "ফরাসিতে কন্ডিশনেল ব্যবহার হয়: ভদ্র অনুরোধ, ইচ্ছা, পরামর্শ এবং 'si' দিয়ে কল্পিত ফলাফল বোঝাতে।",
+        "sections": [
+          {
+            "title_en": "How to form the conditional",
+            "title_bn": "কন্ডিশনেল গঠন",
+            "table": [
+              ["Subject", "PARLER", "English", "Bengali"],
+              ["je", "je parlerais", "I would speak", "আমি বলতাম"],
+              ["tu", "tu parlerais", "you would speak", "তুমি বলতে"],
+              ["il/elle", "il/elle parlerait", "he/she would speak", "সে বলত"],
+              ["nous", "nous parlerions", "we would speak", "আমরা বলতাম"],
+              ["vous", "vous parleriez", "you would speak", "আপনি/আপনারা বলতেন"],
+              ["ils/elles", "ils/elles parleraient", "they would speak", "তারা বলত"]
+            ],
+            "note_en": "Conditional endings are the same as imparfait endings: -ais, -ais, -ait, -ions, -iez, -aient. Add them to the infinitive (parler-) or an irregular stem (être → ser-, avoir → aur-, aller → ir-).",
+            "note_bn": "কন্ডিশনেলের শেষাংশ ইঁপারফের মতোই: -ais, -ais, -ait, -ions, -iez, -aient। এগুলো ইনফিনিটিভের সাথে যোগ করুন (parler-) বা অনিয়মিত স্টেমে (être → ser-, avoir → aur-, aller → ir-)।"
+          },
+          {
+            "title_en": "Polite requests",
+            "title_bn": "ভদ্র অনুরোধ",
+            "table": [
+              ["Expression", "Meaning", "Example", "Bengali"],
+              ["Je voudrais...", "I'd like...", "Je voudrais un café.", "আমি একটি কফি চাই।"],
+              ["Pourriez-vous... ?", "Could you...?", "Pourriez-vous m'aider ?", "আপনি কি আমাকে সাহায্য করতে পারবেন?"],
+              ["J'aimerais...", "I would like...", "J'aimerais essayer.", "আমি চেষ্টা করতে চাই।"]
+            ],
+            "note_en": "Using the conditional makes your French sound softer and more natural in real life.",
+            "note_bn": "কন্ডিশনেল ব্যবহার করলে বাক্যটি আরও ভদ্র ও স্বাভাবিক শোনায়।"
+          }
+        ],
+        "quiz_questions": [
+          {
+            "question_en": "Choose the most polite option:",
+            "question_bn": "সবচেয়ে ভদ্র বিকল্পটি বাছুন:",
+            "choices": [
+              "Je voudrais un café, s'il vous plaît.",
+              "Je veux un café.",
+              "Je voulais un café.",
+              "Je voudrai un café."
+            ],
+            "correct": "Je voudrais un café, s'il vous plaît."
+          },
+          {
+            "question_en": "Complete: 'Si j'avais le temps, je ___.' (I would come)",
+            "question_bn": "পূর্ণ করুন: 'Si j'avais le temps, je ___.' (আমি আসতাম)",
+            "choices": [
+              "viendrais",
+              "viens",
+              "viendrai",
+              "venais"
+            ],
+            "correct": "viendrais"
+          },
+          {
+            "question_en": "Complete the request: 'Vous ___ m'aider ?'",
+            "question_bn": "অনুরোধটি পূরণ করুন: 'Vous ___ m'aider ?'",
+            "choices": [
+              "pourriez",
+              "pouvez",
+              "pourrez",
+              "pouviez"
+            ],
+            "correct": "pourriez"
+          },
+          {
+            "question_en": "Choose the correct conditional form for 'nous':",
+            "question_bn": "'nous' এর জন্য সঠিক কন্ডিশনেল রূপ:",
+            "choices": [
+              "nous parlerions",
+              "nous parlons",
+              "nous parlerons",
+              "nous avons parlé"
+            ],
+            "correct": "nous parlerions"
+          },
+          {
+            "question_en": "Pick the correct future vs conditional: 'Demain, je ___ (venir).'",
+            "question_bn": "ফিউচার বনাম কন্ডিশনেল: 'আগামীকাল, আমি ___ (venir)।'",
+            "choices": [
+              "viendrai",
+              "viendrais",
+              "venais",
+              "viens"
+            ],
+            "correct": "viendrai"
+          }
+        ]
+      }
+    },
+    {
+      "id": 39,
+      "level": "B2",
+      "cefr_level": "B2",
+      "icon": "🍽️",
+      "title_en": "Food & Cooking (Expert)",
+      "title_bn": "খাবার ও রান্না (B2)",
+      "title_lang": "Cuisine (B2)",
+      "description_en": "B2-level food vocabulary: cooking techniques, tasting, menus and regional cuisine.",
+      "description_bn": "B2 স্তরে রান্নার পদ্ধতি, স্বাদ বর্ণনা, মেনু ও আঞ্চলিক খাবারের শব্দভান্ডার শিখুন।",
+      "vocabulary_categories": [
+        "food_advanced"
+      ],
+      "vocabulary_slices": {
+        "food_advanced": {
+          "offset": 60,
+          "limit": 60
+        }
+      },
+      "tip_en": "At a restaurant: 'J'aimerais goûter...' (I'd like to taste...). For doneness: 'à point' (medium).",
+      "tip_bn": "রেস্তোরাঁয়: 'J'aimerais goûter...' (আমি চেখে দেখতে চাই...)। রান্নার মাত্রা: 'à point' (মাঝারি)।"
+    },
+    {
+      "id": 40,
+      "level": "B2",
+      "cefr_level": "B2",
+      "icon": "🏢",
+      "title_en": "Work & Business (B2)",
+      "title_bn": "কাজ ও ব্যবসা (B2)",
+      "title_lang": "Travail et Entreprise (B2)",
+      "description_en": "B2 professional vocabulary — contracts, negotiations, performance and workplace culture.",
+      "description_bn": "চুক্তি, আলোচনা, কর্মদক্ষতা ও কর্মক্ষেত্রের সংস্কৃতি নিয়ে B2 স্তরের শব্দভান্ডার।",
+      "vocabulary_categories": [
+        "work"
+      ],
+      "vocabulary_slices": {
+        "work": {
+          "offset": 120,
+          "limit": 60
+        }
+      },
+      "tip_en": "Common words: 'un entretien' (interview), 'un contrat' (contract), 'une promotion' (promotion).",
+      "tip_bn": "কিছু সাধারণ শব্দ: 'un entretien' (ইন্টারভিউ), 'un contrat' (চুক্তি), 'une promotion' (পদোন্নতি)।"
+    },
+    {
+      "id": 41,
+      "level": "B2",
+      "cefr_level": "B2",
+      "icon": "🏛️",
+      "title_en": "People & Society (B2)",
+      "title_bn": "সমাজ (B2)",
+      "title_lang": "Société (B2)",
+      "description_en": "Discuss social issues and community life with richer B2 vocabulary.",
+      "description_bn": "সামাজিক বিষয় ও কমিউনিটি জীবন নিয়ে আলোচনা করার জন্য আরও সমৃদ্ধ B2 শব্দভান্ডার।",
+      "vocabulary_categories": [
+        "people"
+      ],
+      "vocabulary_slices": {
+        "people": {
+          "offset": 120,
+          "limit": 60
+        }
+      },
+      "tip_en": "Debate tools: 'Je suis pour / contre...' (I'm for/against), 'D'un côté... de l'autre...' (on one hand... on the other...).",
+      "tip_bn": "আলোচনার টুল: 'Je suis pour / contre...' (পক্ষে/বিপক্ষে), 'D'un côté... de l'autre...' (একদিকে... অন্যদিকে...)।"
+    },
+    {
+      "id": 42,
+      "level": "B2",
+      "cefr_level": "B2",
+      "icon": "🏥",
+      "title_en": "Health & Wellness (B2)",
+      "title_bn": "স্বাস্থ্য ও সুস্থতা (B2)",
+      "title_lang": "Santé et Bien-être (B2)",
+      "description_en": "B2 health vocabulary — treatments, side effects, prevention and speaking with professionals.",
+      "description_bn": "চিকিৎসা, পার্শ্বপ্রতিক্রিয়া, প্রতিরোধ এবং স্বাস্থ্যকর্মীদের সাথে কথা বলার B2 শব্দভান্ডার।",
+      "vocabulary_categories": [
+        "health"
+      ],
+      "vocabulary_slices": {
+        "health": {
+          "offset": 120,
+          "limit": 60
+        }
+      },
+      "tip_en": "Useful words: 'une ordonnance' (prescription), 'les effets secondaires' (side effects), 'un vaccin' (vaccine).",
+      "tip_bn": "দরকারি শব্দ: 'une ordonnance' (প্রেসক্রিপশন), 'les effets secondaires' (পার্শ্বপ্রতিক্রিয়া), 'un vaccin' (ভ্যাকসিন)।"
+    },
+    {
+      "id": 43,
+      "level": "B2",
+      "cefr_level": "B2",
+      "icon": "🏡",
+      "title_en": "Home & Housing (B2)",
+      "title_bn": "বাড়ি ও বাসস্থান (B2)",
+      "title_lang": "Logement (B2)",
+      "description_en": "B2 home vocabulary — moving, utilities, rules, maintenance and dealing with landlords.",
+      "description_bn": "বাড়ি বদল, বিল/ইউটিলিটি, নিয়ম, রক্ষণাবেক্ষণ ও বাড়িওয়ালার সাথে কথোপকথনের B2 শব্দভান্ডার।",
+      "vocabulary_categories": [
+        "home"
+      ],
+      "vocabulary_slices": {
+        "home": {
+          "offset": 120,
+          "limit": 60
+        }
+      },
+      "tip_en": "Moving: 'déménager'. Charges and bills: 'les charges', 'la facture'. Repairs: 'réparer', 'une panne'.",
+      "tip_bn": "বাড়ি বদল: 'déménager'। বিল: 'les charges', 'la facture'। মেরামত/সমস্যা: 'réparer', 'une panne'।"
+    },
+    {
+      "id": 44,
+      "level": "B2",
+      "cefr_level": "B2",
+      "icon": "🌍",
+      "title_en": "Environment & Climate (B2)",
+      "title_bn": "পরিবেশ (B2)",
+      "title_lang": "Environnement (B2)",
+      "description_en": "B2 environment vocabulary — climate, energy, resources and sustainable choices.",
+      "description_bn": "জলবায়ু, শক্তি, সম্পদ ও টেকসই সিদ্ধান্ত নিয়ে B2 পরিবেশ-সংক্রান্ত শব্দভান্ডার।",
+      "vocabulary_categories": [
+        "nature"
+      ],
+      "vocabulary_slices": {
+        "nature": {
+          "offset": 120,
+          "limit": 60
+        }
+      },
+      "tip_en": "Key topic: 'le réchauffement climatique' (global warming). 'Réduire, réutiliser, recycler' (reduce, reuse, recycle).",
+      "tip_bn": "মূল বিষয়: 'le réchauffement climatique' (গ্লোবাল ওয়ার্মিং)। 'Réduire, réutiliser, recycler' (কমানো, পুনর্ব্যবহার, রিসাইকেল)।"
+    },
+    {
+      "id": 45,
+      "level": "B2",
+      "cefr_level": "B2",
+      "icon": "✈️",
+      "title_en": "Travel & Transport (B2)",
+      "title_bn": "ভ্রমণ ও যাতায়াত (B2)",
+      "title_lang": "Voyages (B2)",
+      "description_en": "B2 travel vocabulary — airports, delays, insurance, complaints and trip planning.",
+      "description_bn": "এয়ারপোর্ট, দেরি, ইন্স্যুরেন্স, অভিযোগ এবং ভ্রমণ পরিকল্পনার B2 শব্দভান্ডার।",
+      "vocabulary_categories": [
+        "transport_advanced"
+      ],
+      "vocabulary_slices": {
+        "transport_advanced": {
+          "offset": 120,
+          "limit": 60
+        }
+      },
+      "tip_en": "Air travel: 'une escale' (stopover), 'un retard' (delay), 'annulé' (cancelled).",
+      "tip_bn": "এয়ার ট্রাভেল: 'une escale' (স্টপওভার), 'un retard' (দেরি), 'annulé' (বাতিল)।"
+    },
+    {
+      "id": 46,
+      "level": "B2",
+      "cefr_level": "B2",
+      "icon": "🧠",
+      "title_en": "Core Vocabulary III: Nuance",
+      "title_bn": "মূল শব্দভান্ডার ৩: নুয়ান্স",
+      "title_lang": "Vocabulaire Clé III : Nuance",
+      "description_en": "High-utility words for nuance — soften statements, add contrast, and sound natural at B2.",
+      "description_bn": "কথায় সূক্ষ্মতা আনতে, কনট্রাস্ট তৈরি করতে এবং B2 স্তরে স্বাভাবিক শোনাতে উচ্চ-ব্যবহৃত শব্দ।",
+      "vocabulary_categories": [
+        "reference"
+      ],
+      "vocabulary_slices": {
+        "reference": {
+          "offset": 120,
+          "limit": 60
+        }
+      },
+      "tip_en": "Examples: 'en fait' (actually), 'pourtant' (yet), 'd'ailleurs' (by the way), 'à vrai dire' (to be honest).",
+      "tip_bn": "উদাহরণ: 'en fait' (আসলে), 'pourtant' (তবু), 'd'ailleurs' (যাই হোক), 'à vrai dire' (সত্য বলতে)।"
+    },
+    {
+      "id": 47,
+      "level": "B2",
+      "cefr_level": "B2",
+      "icon": "🔗",
+      "title_en": "Grammar: Relative Clauses",
+      "title_bn": "ব্যাকরণ: সম্পর্কবাচক সর্বনাম",
+      "title_lang": "Grammaire : Les Pronoms Relatifs",
+      "description_en": "Master qui, que, dont, où to connect ideas into longer, more precise sentences.",
+      "description_bn": "qui, que, dont, où ব্যবহার করে বাক্য জুড়ে আরও নির্ভুল ও দীর্ঘ বাক্য তৈরি করুন।",
+      "vocabulary_categories": [],
+      "grammar": {
+        "intro_en": "Relative pronouns connect two sentences: 'C'est une personne. Elle parle vite.' → 'C'est une personne qui parle vite.'",
+        "intro_bn": "সম্পর্কবাচক সর্বনাম দুইটি বাক্যকে যুক্ত করে: 'C'est une personne. Elle parle vite.' → 'C'est une personne qui parle vite.'",
+        "sections": [
+          {
+            "title_en": "QUI vs QUE (basic)",
+            "title_bn": "QUI বনাম QUE",
+            "table": [
+              ["Pronoun", "Use", "Example", "English"],
+              ["qui", "subject", "La fille qui parle.", "the girl who speaks"],
+              ["que", "object", "Le film que j'ai vu.", "the movie (that) I saw"]
+            ],
+            "note_en": "Rule of thumb: if the pronoun is followed by a verb, use QUI. If it's followed by a subject (je/tu/il...), use QUE.",
+            "note_bn": "সহজ নিয়ম: সর্বনামের পরে যদি ক্রিয়া আসে = QUI। সর্বনামের পরে যদি কর্তা (je/tu/il...) আসে = QUE।"
+          },
+          {
+            "title_en": "DONT and OÙ",
+            "title_bn": "DONT এবং OÙ",
+            "table": [
+              ["Pronoun", "Use", "Example", "English"],
+              ["dont", "de + something", "La personne dont je parle.", "the person I'm talking about"],
+              ["où", "place/time", "La ville où j'habite.", "the city where I live"]
+            ],
+            "note_en": "Use DONT with verbs/adjectives that require 'de' (parler de, avoir besoin de, se souvenir de...).",
+            "note_bn": "যেসব ক্রিয়ায় 'de' লাগে তাদের সাথে DONT ব্যবহার করুন (parler de, avoir besoin de, se souvenir de...)।"
+          }
+        ],
+        "quiz_questions": [
+          {
+            "question_en": "Complete: 'C'est la fille ___ parle.'",
+            "question_bn": "পূর্ণ করুন: 'C'est la fille ___ parle.'",
+            "choices": ["qui", "que", "dont", "où"],
+            "correct": "qui"
+          },
+          {
+            "question_en": "Complete: 'Voici le film ___ j'ai vu.'",
+            "question_bn": "পূর্ণ করুন: 'Voici le film ___ j'ai vu.'",
+            "choices": ["que", "qui", "dont", "où"],
+            "correct": "que"
+          },
+          {
+            "question_en": "Complete: 'C'est l'histoire ___ je me souviens.'",
+            "question_bn": "পূর্ণ করুন: 'C'est l'histoire ___ je me souviens.'",
+            "choices": ["dont", "que", "qui", "où"],
+            "correct": "dont"
+          },
+          {
+            "question_en": "Complete: 'La ville ___ j'habite est grande.'",
+            "question_bn": "পূর্ণ করুন: 'La ville ___ j'habite est grande.'",
+            "choices": ["où", "dont", "que", "qui"],
+            "correct": "où"
+          },
+          {
+            "question_en": "Complete: 'Le livre ___ je parle est intéressant.'",
+            "question_bn": "পূর্ণ করুন: 'Le livre ___ je parle est intéressant.'",
+            "choices": ["dont", "que", "où", "qui"],
+            "correct": "dont"
+          }
+        ]
+      }
+    },
+    {
+      "id": 48,
+      "level": "B2",
+      "cefr_level": "B2",
+      "icon": "🗣️",
+      "title_en": "Grammar: Reported Speech",
+      "title_bn": "ব্যাকরণ: পরোক্ষ উক্তি",
+      "title_lang": "Grammaire : Le Discours Indirect",
+      "description_en": "Report what someone said using que/si and basic tense changes.",
+      "description_bn": "que/si ব্যবহার করে কারো কথা পরোক্ষভাবে বলুন এবং মৌলিক কাল পরিবর্তন শিখুন।",
+      "vocabulary_categories": [],
+      "grammar": {
+        "intro_en": "Reported speech lets you report statements and questions: 'Il dit : « Je suis prêt. »' → 'Il dit qu'il est prêt.'",
+        "intro_bn": "পরোক্ষ উক্তি দিয়ে আপনি বক্তব্য/প্রশ্ন রিপোর্ট করেন: 'Il dit : « Je suis prêt. »' → 'Il dit qu'il est prêt.'",
+        "sections": [
+          {
+            "title_en": "Reporting statements and questions",
+            "title_bn": "বক্তব্য ও প্রশ্ন রিপোর্ট করা",
+            "table": [
+              ["Direct", "Indirect", "Note", "Bengali"],
+              ["Il dit : « Je suis fatigué. »", "Il dit qu'il est fatigué.", "report now", "সে বলে যে সে ক্লান্ত।"],
+              ["Elle demande : « Tu viens ? »", "Elle demande si tu viens.", "yes/no question", "সে জিজ্ঞাসা করে তুমি আসছ কি না।"],
+              ["Le prof dit : « Travaillez ! »", "Le prof dit de travailler.", "order → infinitive", "শিক্ষক কাজ করতে বলেন।"]
+            ],
+            "note_en": "Use QUE for statements and SI for yes/no questions.",
+            "note_bn": "বক্তব্যে QUE, হ্যাঁ/না প্রশ্নে SI ব্যবহার করুন।"
+          },
+          {
+            "title_en": "Basic tense backshift (past reporting)",
+            "title_bn": "অতীতে রিপোর্ট করলে কাল পরিবর্তন",
+            "table": [
+              ["Direct tense", "Indirect (past reporting)", "Example", "Bengali"],
+              ["présent", "imparfait", "Il a dit qu'il était prêt.", "সে বলেছিল সে প্রস্তুত ছিল।"],
+              ["futur", "conditionnel", "Il a dit qu'il viendrait.", "সে বলেছিল সে আসবে।"]
+            ],
+            "note_en": "If the reporting verb is in the past (il a dit...), French often shifts the tense back.",
+            "note_bn": "যদি রিপোর্টিং ক্রিয়া অতীতে হয় (il a dit...), তখন সাধারণত কাল এক ধাপ পিছিয়ে যায়।"
+          }
+        ],
+        "quiz_questions": [
+          {
+            "question_en": "Choose the correct indirect speech: Il dit : « Je suis fatigué. »",
+            "question_bn": "সঠিক পরোক্ষ উক্তি বাছুন: Il dit : « Je suis fatigué. »",
+            "choices": [
+              "Il dit qu'il est fatigué.",
+              "Il dit qu'il était fatigué.",
+              "Il dit si il est fatigué.",
+              "Il dit de être fatigué."
+            ],
+            "correct": "Il dit qu'il est fatigué."
+          },
+          {
+            "question_en": "Choose the correct indirect speech (past reporting): Il a dit : « Je suis fatigué. »",
+            "question_bn": "অতীতে রিপোর্ট: Il a dit : « Je suis fatigué. »",
+            "choices": [
+              "Il a dit qu'il était fatigué.",
+              "Il a dit qu'il est fatigué.",
+              "Il a dit si il était fatigué.",
+              "Il a dit de travailler."
+            ],
+            "correct": "Il a dit qu'il était fatigué."
+          },
+          {
+            "question_en": "Turn the question into indirect speech: Elle demande : « Tu viens ? »",
+            "question_bn": "প্রশ্নটি পরোক্ষ করুন: Elle demande : « Tu viens ? »",
+            "choices": [
+              "Elle demande si tu viens.",
+              "Elle demande que tu viens.",
+              "Elle demande si tu viens ?",
+              "Elle demande de venir."
+            ],
+            "correct": "Elle demande si tu viens."
+          },
+          {
+            "question_en": "Future → conditional (past reporting): Il a dit : « Je viendrai. »",
+            "question_bn": "ফিউচার → কন্ডিশনেল (অতীতে রিপোর্ট): Il a dit : « Je viendrai. »",
+            "choices": [
+              "Il a dit qu'il viendrait.",
+              "Il a dit qu'il vient.",
+              "Il a dit qu'il viendra.",
+              "Il a dit si il viendrait."
+            ],
+            "correct": "Il a dit qu'il viendrait."
+          },
+          {
+            "question_en": "Turn the order into indirect speech: Le professeur dit : « Travaillez ! »",
+            "question_bn": "আদেশটি পরোক্ষ করুন: Le professeur dit : « Travaillez ! »",
+            "choices": [
+              "Le professeur dit de travailler.",
+              "Le professeur dit que travailler.",
+              "Le professeur demande si vous travaillez.",
+              "Le professeur dit que vous travaillez."
+            ],
+            "correct": "Le professeur dit de travailler."
+          }
+        ]
+      }
+    },
+    {
+      "id": 49,
+      "level": "B1",
+      "cefr_level": "B1",
+      "icon": "🏥",
+      "title_en": "Health & Wellness (Advanced)",
+      "title_bn": "স্বাস্থ্য ও সুস্থতা (উন্নত)",
+      "title_lang": "Santé et Bien-être (Avancé)",
+      "description_en": "B1 health vocabulary — symptoms, appointments, pharmacy language and healthy habits.",
+      "description_bn": "উপসর্গ, অ্যাপয়েন্টমেন্ট, ফার্মেসি এবং স্বাস্থ্যকর অভ্যাস নিয়ে B1 স্তরের শব্দভান্ডার।",
+      "vocabulary_categories": [
+        "health"
+      ],
+      "vocabulary_slices": {
+        "health": {
+          "offset": 60,
+          "limit": 60
+        }
+      },
+      "tip_en": "Appointments: 'prendre rendez-vous'. Common phrase: 'J'ai mal à...' (It hurts...).",
+      "tip_bn": "অ্যাপয়েন্টমেন্ট: 'prendre rendez-vous'। সাধারণ বাক্য: 'J'ai mal à...' (এখানে ব্যথা করছে...)।"
     }
   ],
   "spanish": [
@@ -2193,6 +2942,731 @@
       ],
       "tip_en": "Gustar-type verbs flip the sentence! 'Me gusta viajar' = I like travelling (lit: travelling pleases me). Plural noun → plural verb: 'Me encantan los libros' (I love books)!",
       "tip_bn": "Gustar-টাইপ ক্রিয়া বাক্য উল্টে দেয়! 'Me gusta viajar' = আমি ভ্রমণ পছন্দ করি (অর্থাৎ: ভ্রমণ আমাকে আনন্দিত করে)। বহুবচনে: 'Me encantan los libros' (বইগুলো আমার খুব পছন্দ)!"
+    },
+    {
+      "id": 29,
+      "level": "B1",
+      "cefr_level": "B1",
+      "icon": "💼",
+      "title_en": "Workplace Communication",
+      "title_bn": "কর্মক্ষেত্রে যোগাযোগ",
+      "title_lang": "Comunicación en el Trabajo",
+      "description_en": "B1-level work vocabulary for meetings, emails, roles and professional conversations.",
+      "description_bn": "B1 স্তরে মিটিং, ইমেইল, দায়িত্ব ও কর্মক্ষেত্রের কথোপকথনের জন্য কাজ-সংক্রান্ত শব্দভান্ডার শিখুন।",
+      "vocabulary_categories": [
+        "work"
+      ],
+      "vocabulary_slices": {
+        "work": {
+          "offset": 60,
+          "limit": 60
+        }
+      },
+      "tip_en": "Polite at work: 'Me gustaría...' (I'd like...), '¿Podría...?' (Could you...?).",
+      "tip_bn": "কর্মক্ষেত্রে ভদ্রভাবে বলুন: 'Me gustaría...' (আমি চাই...), '¿Podría...?' (আপনি কি পারবেন...?)।"
+    },
+    {
+      "id": 30,
+      "level": "B1",
+      "cefr_level": "B1",
+      "icon": "🏠",
+      "title_en": "Home & Housing (Advanced)",
+      "title_bn": "বাড়ি ও বাসস্থান (উন্নত)",
+      "title_lang": "La Vivienda (Avanzado)",
+      "description_en": "Go beyond basics: renting, repairs, furniture and everyday home life in Spanish.",
+      "description_bn": "ভাড়া, মেরামত, আসবাবপত্র ও ঘরের দৈনন্দিন জীবনের উন্নত শব্দভান্ডার শিখুন।",
+      "vocabulary_categories": [
+        "home"
+      ],
+      "vocabulary_slices": {
+        "home": {
+          "offset": 60,
+          "limit": 60
+        }
+      },
+      "tip_en": "Renting: 'Busco un piso' (I'm looking for a flat). A contract is 'un contrato' and a deposit is 'una fianza'.",
+      "tip_bn": "ভাড়া: 'Busco un piso' (আমি একটি ফ্ল্যাট খুঁজছি)। চুক্তি = 'un contrato', জামানত/ডিপোজিট = 'una fianza'।"
+    },
+    {
+      "id": 31,
+      "level": "B1",
+      "cefr_level": "B1",
+      "icon": "🏅",
+      "title_en": "Sports & Leisure (Advanced)",
+      "title_bn": "খেলাধুলা ও অবসর (উন্নত)",
+      "title_lang": "Deportes y Ocio (Avanzado)",
+      "description_en": "Advanced sports vocabulary — training, competitions, equipment and talking about routines.",
+      "description_bn": "ট্রেনিং, প্রতিযোগিতা, সরঞ্জাম ও রুটিন নিয়ে কথা বলার জন্য উন্নত খেলাধুলার শব্দভান্ডার।",
+      "vocabulary_categories": [
+        "sports"
+      ],
+      "vocabulary_slices": {
+        "sports": {
+          "offset": 60,
+          "limit": 60
+        }
+      },
+      "tip_en": "Sports verbs: 'hacer' (hago yoga) and 'jugar a' (juego al fútbol). Talk about habits with 'entreno' (I train).",
+      "tip_bn": "খেলাধুলার ক্রিয়া: 'hacer' (hago yoga) এবং 'jugar a' (juego al fútbol)। অভ্যাস/রুটিন: 'entreno' (আমি অনুশীলন করি)।"
+    },
+    {
+      "id": 32,
+      "level": "B1",
+      "cefr_level": "B1",
+      "icon": "🌿",
+      "title_en": "Nature & Environment (Advanced)",
+      "title_bn": "প্রকৃতি ও পরিবেশ (উন্নত)",
+      "title_lang": "Naturaleza y Medio Ambiente (Avanzado)",
+      "description_en": "Advanced nature vocabulary — landscapes, climate, pollution and protecting the environment.",
+      "description_bn": "ভূদৃশ্য, জলবায়ু, দূষণ ও পরিবেশ রক্ষার উন্নত শব্দভান্ডার শিখুন।",
+      "vocabulary_categories": [
+        "nature"
+      ],
+      "vocabulary_slices": {
+        "nature": {
+          "offset": 60,
+          "limit": 60
+        }
+      },
+      "tip_en": "Useful phrase: 'proteger el medio ambiente' (to protect the environment). Opinions: 'Estoy a favor / en contra de...'.",
+      "tip_bn": "দরকারি বাক্য: 'proteger el medio ambiente' (পরিবেশ রক্ষা করা)। মতামত: 'Estoy a favor / en contra de...' (আমি পক্ষে/বিপক্ষে)।"
+    },
+    {
+      "id": 33,
+      "level": "B1",
+      "cefr_level": "B1",
+      "icon": "🚆",
+      "title_en": "Travel & Transport (B1)",
+      "title_bn": "ভ্রমণ ও যাতায়াত (B1)",
+      "title_lang": "Viajes y Transporte (B1)",
+      "description_en": "B1 travel vocabulary — tickets, delays, connections, accommodation and getting around.",
+      "description_bn": "টিকিট, দেরি, কানেকশন, থাকার ব্যবস্থা ও যাতায়াতের B1 স্তরের শব্দভান্ডার।",
+      "vocabulary_categories": [
+        "transport_advanced"
+      ],
+      "vocabulary_slices": {
+        "transport_advanced": {
+          "offset": 60,
+          "limit": 60
+        }
+      },
+      "tip_en": "Train travel: 'un billete de ida y vuelta' (return ticket), 'un transbordo' (connection), 'con retraso' (late).",
+      "tip_bn": "ট্রেন ভ্রমণ: 'un billete de ida y vuelta' (রিটার্ন টিকিট), 'un transbordo' (কানেকশন), 'con retraso' (দেরি)।"
+    },
+    {
+      "id": 34,
+      "level": "B1",
+      "cefr_level": "B1",
+      "icon": "👥",
+      "title_en": "People & Society (B1)",
+      "title_bn": "মানুষ ও সমাজ (B1)",
+      "title_lang": "Las Personas y la Sociedad (B1)",
+      "description_en": "Talk about society and daily life: communities, roles, relationships and social topics.",
+      "description_bn": "কমিউনিটি, ভূমিকা, সম্পর্ক ও সামাজিক বিষয় নিয়ে কথা বলার জন্য B1 স্তরের শব্দভান্ডার।",
+      "vocabulary_categories": [
+        "people"
+      ],
+      "vocabulary_slices": {
+        "people": {
+          "offset": 60,
+          "limit": 60
+        }
+      },
+      "tip_en": "Opinion starters: 'En mi opinión...' (in my opinion), 'Creo que...' (I think that), 'Estoy de acuerdo / no estoy de acuerdo'.",
+      "tip_bn": "মতামত শুরু করুন: 'En mi opinión...' (আমার মতে), 'Creo que...' (আমি মনে করি), 'Estoy de acuerdo / no estoy de acuerdo' (আমি একমত/একমত নই)।"
+    },
+    {
+      "id": 35,
+      "level": "B1",
+      "cefr_level": "B1",
+      "icon": "🔗",
+      "title_en": "Core Vocabulary I: Connectors",
+      "title_bn": "মূল শব্দভান্ডার ১: সংযোগকারী শব্দ",
+      "title_lang": "Vocabulario Clave I: Conectores",
+      "description_en": "High-frequency connectors to make longer, more natural sentences.",
+      "description_bn": "বাক্যকে দীর্ঘ ও প্রাকৃতিক করতে উচ্চ-ব্যবহৃত সংযোগকারী শব্দ শিখুন।",
+      "vocabulary_categories": [
+        "reference"
+      ],
+      "vocabulary_slices": {
+        "reference": {
+          "offset": 0,
+          "limit": 60
+        }
+      },
+      "tip_en": "Practice linking ideas: 'porque' (because), 'así que' (so), 'sin embargo' (however), 'aunque' (even though).",
+      "tip_bn": "আইডিয়া যুক্ত করুন: 'porque' (কারণ), 'así que' (তাই), 'sin embargo' (তবে), 'aunque' (যদিও)।"
+    },
+    {
+      "id": 36,
+      "level": "B1",
+      "cefr_level": "B1",
+      "icon": "💬",
+      "title_en": "Core Vocabulary II: Opinions",
+      "title_bn": "মূল শব্দভান্ডার ২: মতামত",
+      "title_lang": "Vocabulario Clave II: Opiniones",
+      "description_en": "Common opinion and discussion vocabulary — agree, disagree, clarify and give reasons.",
+      "description_bn": "একমত/অসম্মত হওয়া, ব্যাখ্যা করা ও কারণ দেওয়ার জন্য মতামত-সংক্রান্ত শব্দভান্ডার।",
+      "vocabulary_categories": [
+        "reference"
+      ],
+      "vocabulary_slices": {
+        "reference": {
+          "offset": 60,
+          "limit": 60
+        }
+      },
+      "tip_en": "Useful patterns: 'Estoy de acuerdo', 'No estoy seguro/a', 'Me parece que...', 'Es verdad, pero...'.",
+      "tip_bn": "দরকারি বাক্য: 'Estoy de acuerdo', 'No estoy seguro/a', 'Me parece que...', 'Es verdad, pero...'।"
+    },
+    {
+      "id": 37,
+      "level": "B1",
+      "cefr_level": "B1",
+      "icon": "⏳",
+      "title_en": "Grammar: Imperfect vs Preterite",
+      "title_bn": "ব্যাকরণ: ইমপারফেক্তো বনাম প্রেতেরিতো",
+      "title_lang": "Gramática: Imperfecto vs Indefinido",
+      "description_en": "Choose between background/habits (imperfecto) and completed actions (pretérito indefinido).",
+      "description_bn": "পটভূমি/অভ্যাস বোঝাতে ইমপারফেক্তো, আর সম্পন্ন কাজ বোঝাতে প্রেতেরিতো — ঠিকভাবে বেছে নিন।",
+      "vocabulary_categories": [],
+      "grammar": {
+        "intro_en": "Spanish past narration often mixes two tenses: imperfecto for background, habits and descriptions, and pretérito indefinido for completed actions that move the story forward.",
+        "intro_bn": "স্প্যানিশে অতীতের বর্ণনায় প্রায়ই দুইটি কাল ব্যবহৃত হয়: পটভূমি/অভ্যাস/বর্ণনার জন্য imperfecto, আর সম্পন্ন কাজ/ঘটনার জন্য pretérito indefinido।",
+        "sections": [
+          {
+            "title_en": "Imperfecto endings",
+            "title_bn": "ইমপারফেক্তো শেষাংশ",
+            "table": [
+              ["Subject", "HABLAR (-ar)", "COMER/VIVIR (-er/-ir)", "Bengali"],
+              ["yo", "hablaba", "comía", "আমি বলতাম/খেতাম"],
+              ["tú", "hablabas", "comías", "তুমি বলতে/খেতে"],
+              ["él/ella", "hablaba", "comía", "সে বলত/খেত"],
+              ["nosotros", "hablábamos", "comíamos", "আমরা বলতাম/খেতাম"],
+              ["vosotros", "hablabais", "comíais", "তোমরা/আপনারা বলতেন/খেতেন"],
+              ["ellos/ellas", "hablaban", "comían", "তারা বলত/খেত"]
+            ],
+            "note_en": "-ar verbs use -aba endings. -er/-ir verbs use -ía endings. Imperfecto is often translated as 'was doing' or 'used to do'.",
+            "note_bn": "-ar ক্রিয়ায় -aba শেষাংশ, -er/-ir ক্রিয়ায় -ía শেষাংশ। imperfecto সাধারণত 'করতাম/করছিলাম' বোঝায়।"
+          },
+          {
+            "title_en": "When to use which tense?",
+            "title_bn": "কোন কাল কখন?",
+            "table": [
+              ["Situation", "Imperfecto", "Indefinido", "Example"],
+              ["Background / description", "✔", "—", "Hacía frío."],
+              ["Habit in the past", "✔", "—", "Cuando era niño, leía mucho."],
+              ["Completed action", "—", "✔", "Ayer cerré la puerta."],
+              ["Interrupted action", "✔", "✔", "Leía cuando sonó el teléfono."]
+            ],
+            "note_en": "A common pattern is: background (imperfecto) + event (indefinido).",
+            "note_bn": "সাধারণ প্যাটার্ন: পটভূমি (imperfecto) + ঘটনা (indefinido)।"
+          }
+        ],
+        "quiz_questions": [
+          {
+            "question_en": "Complete: 'Cuando era niño, ___ al fútbol todos los días.'",
+            "question_bn": "পূর্ণ করুন: 'যখন আমি শিশু ছিলাম, আমি প্রতিদিন ফুটবল ___।'",
+            "choices": ["jugaba", "jugué", "juego", "jugaré"],
+            "correct": "jugaba"
+          },
+          {
+            "question_en": "Complete: 'Ayer ___ una película.'",
+            "question_bn": "পূর্ণ করুন: 'গতকাল আমি একটি সিনেমা ___।'",
+            "choices": ["vi", "veía", "veo", "veré"],
+            "correct": "vi"
+          },
+          {
+            "question_en": "Complete: 'Mientras ___, sonó el teléfono.'",
+            "question_bn": "পূর্ণ করুন: 'আমি ___ করছিলাম, তখন ফোন বেজে উঠল।'",
+            "choices": ["estudiaba", "estudié", "estudio", "estudiaré"],
+            "correct": "estudiaba"
+          },
+          {
+            "question_en": "Choose the best tense for a sudden completed action: 'De repente, él ___.'",
+            "question_bn": "হঠাৎ সম্পন্ন কাজ বোঝাতে সঠিক রূপ: 'হঠাৎ, সে ___।'",
+            "choices": ["llegó", "llegaba", "llega", "llegará"],
+            "correct": "llegó"
+          },
+          {
+            "question_en": "Complete the description: 'Hacía frío y ___.'",
+            "question_bn": "বর্ণনা পূরণ করুন: 'ঠান্ডা ছিল এবং ___।'",
+            "choices": ["llovía", "llovió", "llueve", "lloverá"],
+            "correct": "llovía"
+          }
+        ]
+      }
+    },
+    {
+      "id": 38,
+      "level": "B1",
+      "cefr_level": "B1",
+      "icon": "✨",
+      "title_en": "Grammar: Conditional (Polite & Hypothetical)",
+      "title_bn": "ব্যাকরণ: শর্তবাচক কাল (কন্ডিশনেল)",
+      "title_lang": "Gramática: Condicional",
+      "description_en": "Use the conditional to be polite, to express wishes, and to talk about hypothetical situations.",
+      "description_bn": "ভদ্রভাবে অনুরোধ করা, ইচ্ছা প্রকাশ করা এবং কল্পিত পরিস্থিতি নিয়ে কথা বলতে condicional ব্যবহার করুন।",
+      "vocabulary_categories": [],
+      "grammar": {
+        "intro_en": "The Spanish conditional is used for: politeness (requests), wishes, advice, and hypothetical results (often with 'si').",
+        "intro_bn": "স্প্যানিশে condicional ব্যবহার হয়: ভদ্র অনুরোধ, ইচ্ছা, পরামর্শ এবং 'si' দিয়ে কল্পিত ফলাফল বোঝাতে।",
+        "sections": [
+          {
+            "title_en": "How to form the conditional",
+            "title_bn": "কন্ডিশনেল গঠন",
+            "table": [
+              ["Subject", "HABLAR", "COMER", "Bengali"],
+              ["yo", "hablaría", "comería", "আমি বলতাম/খেতাম"],
+              ["tú", "hablarías", "comerías", "তুমি বলতে/খেতে"],
+              ["él/ella", "hablaría", "comería", "সে বলত/খেত"],
+              ["nosotros", "hablaríamos", "comeríamos", "আমরা বলতাম/খেতাম"],
+              ["vosotros", "hablaríais", "comeríais", "তোমরা/আপনারা বলতেন/খেতেন"],
+              ["ellos/ellas", "hablarían", "comerían", "তারা বলত/খেত"]
+            ],
+            "note_en": "Add: -ía, -ías, -ía, -íamos, -íais, -ían to the infinitive. Some verbs have irregular stems: tener → tendr-, poder → podr-, hacer → har-.",
+            "note_bn": "ইনফিনিটিভের সাথে যোগ করুন: -ía, -ías, -ía, -íamos, -íais, -ían। কিছু অনিয়মিত স্টেম: tener → tendr-, poder → podr-, hacer → har-।"
+          },
+          {
+            "title_en": "Polite requests",
+            "title_bn": "ভদ্র অনুরোধ",
+            "table": [
+              ["Expression", "Meaning", "Example", "Bengali"],
+              ["Me gustaría...", "I'd like...", "Me gustaría un café.", "আমি একটি কফি চাই।"],
+              ["¿Podría...?", "Could you...?", "¿Podría ayudarme?", "আপনি কি আমাকে সাহায্য করতে পারবেন?"],
+              ["Deberías...", "You should...", "Deberías descansar.", "তোমার বিশ্রাম নেওয়া উচিত।"]
+            ],
+            "note_en": "The conditional makes requests sound softer and more polite.",
+            "note_bn": "condicional ব্যবহার করলে অনুরোধ আরও ভদ্র শোনায়।"
+          }
+        ],
+        "quiz_questions": [
+          {
+            "question_en": "Choose the most polite option:",
+            "question_bn": "সবচেয়ে ভদ্র বিকল্পটি বাছুন:",
+            "choices": [
+              "Me gustaría un café, por favor.",
+              "Quiero un café.",
+              "Quería un café.",
+              "Querré un café."
+            ],
+            "correct": "Me gustaría un café, por favor."
+          },
+          {
+            "question_en": "Complete: 'Si tuviera tiempo, ___ contigo.'",
+            "question_bn": "পূর্ণ করুন: 'Si tuviera tiempo, ___ contigo.'",
+            "choices": [
+              "viajaría",
+              "viajo",
+              "viajé",
+              "viajaré"
+            ],
+            "correct": "viajaría"
+          },
+          {
+            "question_en": "Complete the request: '¿___ ayudarme?'",
+            "question_bn": "অনুরোধটি পূরণ করুন: '¿___ ayudarme?'",
+            "choices": [
+              "Podría",
+              "Puedo",
+              "Pude",
+              "Podía"
+            ],
+            "correct": "Podría"
+          },
+          {
+            "question_en": "Choose the correct form: 'Nosotros ___ ir mañana.'",
+            "question_bn": "সঠিক রূপ বাছুন: 'Nosotros ___ ir mañana.'",
+            "choices": [
+              "podríamos",
+              "podemos",
+              "pudimos",
+              "podíamos"
+            ],
+            "correct": "podríamos"
+          },
+          {
+            "question_en": "Complete: 'Ellos hablar___'",
+            "question_bn": "পূর্ণ করুন: 'Ellos hablar___'",
+            "choices": [
+              "ían",
+              "on",
+              "aban",
+              "án"
+            ],
+            "correct": "ían"
+          }
+        ]
+      }
+    },
+    {
+      "id": 39,
+      "level": "B2",
+      "cefr_level": "B2",
+      "icon": "🍽️",
+      "title_en": "Food & Cooking (Expert)",
+      "title_bn": "খাবার ও রান্না (B2)",
+      "title_lang": "La Comida y la Cocina (B2)",
+      "description_en": "B2-level food vocabulary: cooking techniques, tasting, menus and regional cuisine.",
+      "description_bn": "B2 স্তরে রান্নার পদ্ধতি, স্বাদ বর্ণনা, মেনু ও আঞ্চলিক খাবারের শব্দভান্ডার শিখুন।",
+      "vocabulary_categories": [
+        "food_advanced"
+      ],
+      "vocabulary_slices": {
+        "food_advanced": {
+          "offset": 60,
+          "limit": 60
+        }
+      },
+      "tip_en": "At a restaurant: 'Me gustaría probar...' (I'd like to try...). For doneness: 'al punto' (medium).",
+      "tip_bn": "রেস্তোরাঁয়: 'Me gustaría probar...' (আমি চেখে দেখতে চাই...)। রান্নার মাত্রা: 'al punto' (মাঝারি)।"
+    },
+    {
+      "id": 40,
+      "level": "B2",
+      "cefr_level": "B2",
+      "icon": "🏢",
+      "title_en": "Work & Business (B2)",
+      "title_bn": "কাজ ও ব্যবসা (B2)",
+      "title_lang": "Trabajo y Empresa (B2)",
+      "description_en": "B2 professional vocabulary — contracts, negotiations, performance and workplace culture.",
+      "description_bn": "চুক্তি, আলোচনা, কর্মদক্ষতা ও কর্মক্ষেত্রের সংস্কৃতি নিয়ে B2 স্তরের শব্দভান্ডার।",
+      "vocabulary_categories": [
+        "work"
+      ],
+      "vocabulary_slices": {
+        "work": {
+          "offset": 120,
+          "limit": 60
+        }
+      },
+      "tip_en": "Common words: 'una entrevista' (interview), 'un contrato' (contract), 'un ascenso' (promotion).",
+      "tip_bn": "কিছু সাধারণ শব্দ: 'una entrevista' (ইন্টারভিউ), 'un contrato' (চুক্তি), 'un ascenso' (পদোন্নতি)।"
+    },
+    {
+      "id": 41,
+      "level": "B2",
+      "cefr_level": "B2",
+      "icon": "🏛️",
+      "title_en": "People & Society (B2)",
+      "title_bn": "সমাজ (B2)",
+      "title_lang": "Sociedad (B2)",
+      "description_en": "Discuss social issues and community life with richer B2 vocabulary.",
+      "description_bn": "সামাজিক বিষয় ও কমিউনিটি জীবন নিয়ে আলোচনা করার জন্য আরও সমৃদ্ধ B2 শব্দভান্ডার।",
+      "vocabulary_categories": [
+        "people"
+      ],
+      "vocabulary_slices": {
+        "people": {
+          "offset": 120,
+          "limit": 60
+        }
+      },
+      "tip_en": "Debate tools: 'Estoy a favor / en contra de...' (I'm for/against), 'Por un lado... por otro...' (on one hand... on the other...).",
+      "tip_bn": "আলোচনার টুল: 'Estoy a favor / en contra de...' (পক্ষে/বিপক্ষে), 'Por un lado... por otro...' (একদিকে... অন্যদিকে...)।"
+    },
+    {
+      "id": 42,
+      "level": "B2",
+      "cefr_level": "B2",
+      "icon": "🏥",
+      "title_en": "Health & Wellness (B2)",
+      "title_bn": "স্বাস্থ্য ও সুস্থতা (B2)",
+      "title_lang": "Salud y Bienestar (B2)",
+      "description_en": "B2 health vocabulary — treatments, side effects, prevention and speaking with professionals.",
+      "description_bn": "চিকিৎসা, পার্শ্বপ্রতিক্রিয়া, প্রতিরোধ এবং স্বাস্থ্যকর্মীদের সাথে কথা বলার B2 শব্দভান্ডার।",
+      "vocabulary_categories": [
+        "health"
+      ],
+      "vocabulary_slices": {
+        "health": {
+          "offset": 120,
+          "limit": 60
+        }
+      },
+      "tip_en": "Useful words: 'una receta' (prescription), 'efectos secundarios' (side effects), 'una vacuna' (vaccine).",
+      "tip_bn": "দরকারি শব্দ: 'una receta' (প্রেসক্রিপশন), 'efectos secundarios' (পার্শ্বপ্রতিক্রিয়া), 'una vacuna' (ভ্যাকসিন)।"
+    },
+    {
+      "id": 43,
+      "level": "B2",
+      "cefr_level": "B2",
+      "icon": "🏡",
+      "title_en": "Home & Housing (B2)",
+      "title_bn": "বাড়ি ও বাসস্থান (B2)",
+      "title_lang": "La Vivienda (B2)",
+      "description_en": "B2 home vocabulary — moving, utilities, rules, maintenance and dealing with landlords.",
+      "description_bn": "বাড়ি বদল, বিল/ইউটিলিটি, নিয়ম, রক্ষণাবেক্ষণ ও বাড়িওয়ালার সাথে কথোপকথনের B2 শব্দভান্ডার।",
+      "vocabulary_categories": [
+        "home"
+      ],
+      "vocabulary_slices": {
+        "home": {
+          "offset": 120,
+          "limit": 60
+        }
+      },
+      "tip_en": "Moving: 'mudarse'. Bills: 'la factura'. Repairs: 'arreglar' and 'una avería'.",
+      "tip_bn": "বাড়ি বদল: 'mudarse'। বিল: 'la factura'। মেরামত/সমস্যা: 'arreglar', 'una avería'।"
+    },
+    {
+      "id": 44,
+      "level": "B2",
+      "cefr_level": "B2",
+      "icon": "🌍",
+      "title_en": "Environment & Climate (B2)",
+      "title_bn": "পরিবেশ (B2)",
+      "title_lang": "Medio Ambiente (B2)",
+      "description_en": "B2 environment vocabulary — climate, energy, resources and sustainable choices.",
+      "description_bn": "জলবায়ু, শক্তি, সম্পদ ও টেকসই সিদ্ধান্ত নিয়ে B2 পরিবেশ-সংক্রান্ত শব্দভান্ডার।",
+      "vocabulary_categories": [
+        "nature"
+      ],
+      "vocabulary_slices": {
+        "nature": {
+          "offset": 120,
+          "limit": 60
+        }
+      },
+      "tip_en": "Key topic: 'el cambio climático' (climate change). 'Reducir, reutilizar, reciclar' (reduce, reuse, recycle).",
+      "tip_bn": "মূল বিষয়: 'el cambio climático' (জলবায়ু পরিবর্তন)। 'Reducir, reutilizar, reciclar' (কমানো, পুনর্ব্যবহার, রিসাইকেল)।"
+    },
+    {
+      "id": 45,
+      "level": "B2",
+      "cefr_level": "B2",
+      "icon": "✈️",
+      "title_en": "Travel & Transport (B2)",
+      "title_bn": "ভ্রমণ ও যাতায়াত (B2)",
+      "title_lang": "Viajes y Transporte (B2)",
+      "description_en": "B2 travel vocabulary — airports, delays, insurance, complaints and trip planning.",
+      "description_bn": "এয়ারপোর্ট, দেরি, ইন্স্যুরেন্স, অভিযোগ এবং ভ্রমণ পরিকল্পনার B2 শব্দভান্ডার।",
+      "vocabulary_categories": [
+        "transport_advanced"
+      ],
+      "vocabulary_slices": {
+        "transport_advanced": {
+          "offset": 120,
+          "limit": 60
+        }
+      },
+      "tip_en": "Air travel: 'una escala' (stopover), 'un retraso' (delay), 'cancelado' (cancelled).",
+      "tip_bn": "এয়ার ট্রাভেল: 'una escala' (স্টপওভার), 'un retraso' (দেরি), 'cancelado' (বাতিল)।"
+    },
+    {
+      "id": 46,
+      "level": "B2",
+      "cefr_level": "B2",
+      "icon": "🧠",
+      "title_en": "Core Vocabulary III: Nuance",
+      "title_bn": "মূল শব্দভান্ডার ৩: নুয়ান্স",
+      "title_lang": "Vocabulario Clave III: Matices",
+      "description_en": "High-utility words for nuance — soften statements, add contrast, and sound natural at B2.",
+      "description_bn": "কথায় সূক্ষ্মতা আনতে, কনট্রাস্ট তৈরি করতে এবং B2 স্তরে স্বাভাবিক শোনাতে উচ্চ-ব্যবহৃত শব্দ।",
+      "vocabulary_categories": [
+        "reference"
+      ],
+      "vocabulary_slices": {
+        "reference": {
+          "offset": 120,
+          "limit": 60
+        }
+      },
+      "tip_en": "Examples: 'en realidad' (actually), 'sin embargo' (yet), 'de hecho' (in fact), 'a decir verdad' (to be honest).",
+      "tip_bn": "উদাহরণ: 'en realidad' (আসলে), 'sin embargo' (তবু), 'de hecho' (প্রকৃতপক্ষে), 'a decir verdad' (সত্য বলতে)।"
+    },
+    {
+      "id": 47,
+      "level": "B2",
+      "cefr_level": "B2",
+      "icon": "🔗",
+      "title_en": "Grammar: Relative Clauses",
+      "title_bn": "ব্যাকরণ: সম্পর্কবাচক সর্বনাম",
+      "title_lang": "Gramática: Pronombres Relativos",
+      "description_en": "Use relative pronouns to connect ideas into longer, more precise sentences.",
+      "description_bn": "সম্পর্কবাচক সর্বনাম দিয়ে বাক্য যুক্ত করে আরও নির্ভুল ও দীর্ঘ বাক্য তৈরি করুন।",
+      "vocabulary_categories": [],
+      "grammar": {
+        "intro_en": "Relative pronouns connect two sentences: 'Es una persona. Habla rápido.' → 'Es una persona que habla rápido.'",
+        "intro_bn": "সম্পর্কবাচক সর্বনাম দুইটি বাক্যকে যুক্ত করে: 'Es una persona. Habla rápido.' → 'Es una persona que habla rápido.'",
+        "sections": [
+          {
+            "title_en": "QUE / QUIEN / DONDE",
+            "title_bn": "QUE / QUIEN / DONDE",
+            "table": [
+              ["Pronoun", "Use", "Example", "English"],
+              ["que", "most common", "La chica que habla.", "the girl who speaks"],
+              ["a quien", "person + preposition", "El chico a quien conozco.", "the boy (whom) I know"],
+              ["donde", "place", "La ciudad donde nací.", "the city where I was born"]
+            ],
+            "note_en": "After a preposition (a, con, de...), use QUIEN/EL CUAL for people: 'a quien', 'con quien'...",
+            "note_bn": "preposición (a, con, de...) এর পরে মানুষের জন্য সাধারণত 'a quien / con quien' ব্যবহার হয়।"
+          },
+          {
+            "title_en": "CUYO and LO QUE",
+            "title_bn": "CUYO এবং LO QUE",
+            "table": [
+              ["Form", "Use", "Example", "English"],
+              ["cuyo/cuya", "possession", "El libro cuya portada es roja.", "the book whose cover is red"],
+              ["lo que", "what (the thing that)", "No entiendo lo que dices.", "I don't understand what you say"]
+            ],
+            "note_en": "CUYO agrees with the thing possessed (portada → cuya).",
+            "note_bn": "CUYO/ CUYA মালিকানাধীন জিনিসের সাথে মিল রাখে (portada → cuya)।"
+          }
+        ],
+        "quiz_questions": [
+          {
+            "question_en": "Complete: 'La mujer ___ vive aquí es médica.'",
+            "question_bn": "পূর্ণ করুন: 'La mujer ___ vive aquí es médica.'",
+            "choices": ["que", "donde", "cuyo", "lo que"],
+            "correct": "que"
+          },
+          {
+            "question_en": "Complete: 'El chico a ___ conozco es de España.'",
+            "question_bn": "পূর্ণ করুন: 'El chico a ___ conozco es de España.'",
+            "choices": ["que", "a quien", "cuyo", "donde"],
+            "correct": "a quien"
+          },
+          {
+            "question_en": "Complete: 'La ciudad ___ nací es pequeña.'",
+            "question_bn": "পূর্ণ করুন: 'La ciudad ___ nací es pequeña.'",
+            "choices": ["donde", "que", "lo que", "cuya"],
+            "correct": "donde"
+          },
+          {
+            "question_en": "Complete: 'El libro ___ portada es roja.'",
+            "question_bn": "পূর্ণ করুন: 'El libro ___ portada es roja.'",
+            "choices": ["cuyo", "cuya", "que", "donde"],
+            "correct": "cuya"
+          },
+          {
+            "question_en": "Complete: 'No entiendo ___ dices.'",
+            "question_bn": "পূর্ণ করুন: 'No entiendo ___ dices.'",
+            "choices": ["lo que", "que", "donde", "cuyo"],
+            "correct": "lo que"
+          }
+        ]
+      }
+    },
+    {
+      "id": 48,
+      "level": "B2",
+      "cefr_level": "B2",
+      "icon": "🗣️",
+      "title_en": "Grammar: Reported Speech",
+      "title_bn": "ব্যাকরণ: পরোক্ষ উক্তি",
+      "title_lang": "Gramática: Estilo Indirecto",
+      "description_en": "Report what someone said using que/si and basic tense changes.",
+      "description_bn": "que/si ব্যবহার করে কারো কথা পরোক্ষভাবে বলুন এবং মৌলিক কাল পরিবর্তন শিখুন।",
+      "vocabulary_categories": [],
+      "grammar": {
+        "intro_en": "Reported speech lets you report statements and questions: 'Él dice: « Estoy listo. »' → 'Él dice que está listo.'",
+        "intro_bn": "পরোক্ষ উক্তি দিয়ে আপনি বক্তব্য/প্রশ্ন রিপোর্ট করেন: 'Él dice: « Estoy listo. »' → 'Él dice que está listo.'",
+        "sections": [
+          {
+            "title_en": "Reporting statements and questions",
+            "title_bn": "বক্তব্য ও প্রশ্ন রিপোর্ট করা",
+            "table": [
+              ["Direct", "Indirect", "Note", "Bengali"],
+              ["Él dice: « Estoy cansado. »", "Él dice que está cansado.", "report now", "সে বলে সে ক্লান্ত।"],
+              ["Ella pregunta: « ¿Vienes? »", "Ella pregunta si vienes.", "yes/no question", "সে জিজ্ঞাসা করে তুমি আসছ কি না।"],
+              ["El profesor dijo: « No hables. »", "El profesor dijo que no hablara.", "order → subjunctive", "শিক্ষক বললেন যেন তুমি না বলো।"]
+            ],
+            "note_en": "Use QUE for statements and SI for yes/no questions.",
+            "note_bn": "বক্তব্যে QUE, হ্যাঁ/না প্রশ্নে SI ব্যবহার করুন।"
+          },
+          {
+            "title_en": "Basic tense backshift (past reporting)",
+            "title_bn": "অতীতে রিপোর্ট করলে কাল পরিবর্তন",
+            "table": [
+              ["Direct tense", "Indirect (past reporting)", "Example", "Bengali"],
+              ["presente", "imperfecto", "Él dijo que estaba cansado.", "সে বলেছিল সে ক্লান্ত ছিল।"],
+              ["futuro", "condicional", "Él dijo que iría al día siguiente.", "সে বলেছিল সে পরদিন যাবে।"]
+            ],
+            "note_en": "If the reporting verb is in the past (dijo...), Spanish often shifts the tense back.",
+            "note_bn": "যদি রিপোর্টিং ক্রিয়া অতীতে হয় (dijo...), তখন সাধারণত কাল এক ধাপ পিছিয়ে যায়।"
+          }
+        ],
+        "quiz_questions": [
+          {
+            "question_en": "Choose the correct indirect speech: Él dice: « Estoy cansado. »",
+            "question_bn": "সঠিক পরোক্ষ উক্তি বাছুন: Él dice: « Estoy cansado. »",
+            "choices": [
+              "Él dice que está cansado.",
+              "Él dice que estaba cansado.",
+              "Él dice si está cansado.",
+              "Él dice de estar cansado."
+            ],
+            "correct": "Él dice que está cansado."
+          },
+          {
+            "question_en": "Choose the correct indirect speech (past reporting): Él dijo: « Estoy cansado. »",
+            "question_bn": "অতীতে রিপোর্ট: Él dijo: « Estoy cansado. »",
+            "choices": [
+              "Él dijo que estaba cansado.",
+              "Él dijo que está cansado.",
+              "Él dijo si estaba cansado.",
+              "Él dijo que iría."
+            ],
+            "correct": "Él dijo que estaba cansado."
+          },
+          {
+            "question_en": "Turn the question into indirect speech: Ella preguntó: « ¿Vienes? »",
+            "question_bn": "প্রশ্নটি পরোক্ষ করুন: Ella preguntó: « ¿Vienes? »",
+            "choices": [
+              "Ella preguntó si venía.",
+              "Ella preguntó que venías.",
+              "Ella preguntó si vienes.",
+              "Ella preguntó de venir."
+            ],
+            "correct": "Ella preguntó si venía."
+          },
+          {
+            "question_en": "Future → conditional (past reporting): Él dijo: « Iré mañana. »",
+            "question_bn": "ফিউচার → কন্ডিশনেল (অতীতে রিপোর্ট): Él dijo: « Iré mañana. »",
+            "choices": [
+              "Él dijo que iría al día siguiente.",
+              "Él dijo que irá mañana.",
+              "Él dijo que iba mañana.",
+              "Él dijo que va mañana."
+            ],
+            "correct": "Él dijo que iría al día siguiente."
+          },
+          {
+            "question_en": "Turn the order into indirect speech: El profesor dijo: « No hables. »",
+            "question_bn": "আদেশটি পরোক্ষ করুন: El profesor dijo: « No hables. »",
+            "choices": [
+              "El profesor dijo que no hablara.",
+              "El profesor dijo que no habla.",
+              "El profesor preguntó si no hablas.",
+              "El profesor dijo de no hablar."
+            ],
+            "correct": "El profesor dijo que no hablara."
+          }
+        ]
+      }
+    },
+    {
+      "id": 49,
+      "level": "B1",
+      "cefr_level": "B1",
+      "icon": "🏥",
+      "title_en": "Health & Wellness (Advanced)",
+      "title_bn": "স্বাস্থ্য ও সুস্থতা (উন্নত)",
+      "title_lang": "Salud y Bienestar (Avanzado)",
+      "description_en": "B1 health vocabulary — symptoms, appointments, pharmacy language and healthy habits.",
+      "description_bn": "উপসর্গ, অ্যাপয়েন্টমেন্ট, ফার্মেসি এবং স্বাস্থ্যকর অভ্যাস নিয়ে B1 স্তরের শব্দভান্ডার।",
+      "vocabulary_categories": [
+        "health"
+      ],
+      "vocabulary_slices": {
+        "health": {
+          "offset": 60,
+          "limit": 60
+        }
+      },
+      "tip_en": "Appointments: 'pedir cita'. Common phrase: 'Me duele...' (It hurts...).",
+      "tip_bn": "অ্যাপয়েন্টমেন্ট: 'pedir cita'। সাধারণ বাক্য: 'Me duele...' (এখানে ব্যথা করছে...)।"
     }
   ]
 }
