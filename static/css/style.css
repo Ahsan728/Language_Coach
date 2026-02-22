@@ -169,7 +169,7 @@ body { font-family: 'Poppins', sans-serif; color: var(--text-dark); background: 
   display: inline-block;
   padding: 0.1em 0.6em;
   background: rgba(255,255,255,0.92);
-  border: 2px solid var(--lc-ink);
+  border: 2px solid var(--lc-outline-strong);
   border-radius: 999px;
   box-shadow: 0 8px 0 rgba(26,26,46,0.10);
   margin-right: 0.25rem;
