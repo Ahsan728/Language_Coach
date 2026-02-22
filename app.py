@@ -1111,7 +1111,10 @@ def api_tts():
 
     # Normalize whitespace to improve cache hit rate and avoid odd linebreak reads.
     norm_text = ' '.join(text.split())
-    cache_key = hashlib.sha256(f'{provider}|{tts_lang}|{norm_text}'.encode('utf-8')).hexdigest()
+    # Both `gtts` and `auto` generate audio via gTTS; use a stable cache prefix so the same
+    # text+language hits the same cached MP3 regardless of the configured provider.
+    cache_provider = 'gtts'
+    cache_key = hashlib.sha256(f'{cache_provider}|{tts_lang}|{norm_text}'.encode('utf-8')).hexdigest()
 
     cache_dir = app.config.get('TTS_CACHE_DIR') or TTS_CACHE_DIR
     os.makedirs(cache_dir, exist_ok=True)
