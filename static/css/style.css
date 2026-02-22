@@ -294,7 +294,10 @@ body { font-family: 'Poppins', sans-serif; color: var(--text-dark); background: 
   border: 2px dashed #dee2e6;
 }
 
-footer { background: #1a1a2e; color: rgba(255,255,255,0.6); }
+footer { background: #1a1a2e; color: rgba(255,255,255,0.8); }
+footer .text-muted { color: rgba(255,255,255,0.75) !important; }
+footer a { color: rgba(255,255,255,0.9); }
+footer a:hover { color: rgba(255,255,255,1); }
 
 /* Responsive tweaks */
 @media (max-width: 768px) {
