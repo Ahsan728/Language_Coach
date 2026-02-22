@@ -3,11 +3,14 @@ param(
   [string]$Remote = 'origin',
   [string]$Branch = '',
   [string]$MessagePrefix = 'Auto-sync',
+  [ValidateSet('timestamp', 'files', 'smart')][string]$MessageMode = 'smart',
   [switch]$DryRun
 )
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
+
+. (Join-Path $PSScriptRoot 'auto_sync_message.ps1')
 
 # PowerShell 7+: avoid treating stderr from native commands as errors
 if (Get-Variable -Name PSNativeCommandUseErrorActionPreference -ErrorAction SilentlyContinue) {
@@ -105,7 +108,7 @@ function Invoke-AutoSync {
     }
 
     $stat = Invoke-Git -Args @('diff', '--cached', '--stat')
-    $subject = "${MessagePrefix}: $ts ($fileCount file(s))"
+    $subject = Get-AutoSyncSubject -MessagePrefix $MessagePrefix -Timestamp $ts -NameStatusLines $nsLines -Mode $MessageMode
     $bodyLines = @('Files:') + ($fileLines | ForEach-Object { " - $($_)" }) + @('', 'Stat:', $stat)
     $body = $bodyLines -join "`n"
 

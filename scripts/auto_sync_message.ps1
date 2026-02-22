@@ -148,7 +148,7 @@ function Get-AutoSyncSubject {
 
   if ($Mode -eq 'timestamp') {
     $base = "$Timestamp ($fileCount file(s))"
-    $subject = if ($MessagePrefix) { "$MessagePrefix: $base" } else { $base }
+    $subject = if ($MessagePrefix) { "${MessagePrefix}: $base" } else { $base }
     return (Truncate-Subject -Text $subject -MaxLen $MaxLen)
   }
 
@@ -181,7 +181,7 @@ function Get-AutoSyncSubject {
     if (-not $label) { $label = 'files' }
     if ($bases.Count -gt 3) { $label = "$label..." }
     $base = "Update $label ($fileCount file(s))"
-    $subject = if ($MessagePrefix) { "$MessagePrefix: $base" } else { $base }
+    $subject = if ($MessagePrefix) { "${MessagePrefix}: $base" } else { $base }
     return (Truncate-Subject -Text $subject -MaxLen $MaxLen)
   }
 
@@ -222,6 +222,6 @@ function Get-AutoSyncSubject {
   if (-not $summary) { $summary = "Update files" }
 
   $base = "$summary ($fileCount file(s))"
-  $subject = if ($MessagePrefix) { "$MessagePrefix: $base" } else { $base }
+  $subject = if ($MessagePrefix) { "${MessagePrefix}: $base" } else { $base }
   return (Truncate-Subject -Text $subject -MaxLen $MaxLen)
 }
