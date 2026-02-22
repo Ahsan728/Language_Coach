@@ -310,6 +310,33 @@ function langToTtsTag(lang) {
   return '';
 }
 
+function initTtsProviderMenu() {
+  const menu = document.getElementById('ttsProviderMenu');
+  if (!menu) return;
+
+  const current = _getTtsProvider();
+  const serverDefault = String((window && window.TTS_PROVIDER) ? window.TTS_PROVIDER : 'auto').trim().toLowerCase() || 'auto';
+  let override = '';
+  try { override = String(localStorage.getItem('lc_tts_provider') || '').trim().toLowerCase(); } catch { /* noop */ }
+
+  menu.querySelectorAll('[data-tts-provider]').forEach(btn => {
+    const p = String(btn.dataset.ttsProvider || '').trim().toLowerCase();
+    if (p === current) btn.classList.add('active');
+    btn.addEventListener('click', () => {
+      try { localStorage.setItem('lc_tts_provider', p); } catch { /* noop */ }
+      location.reload();
+    });
+  });
+
+  const status = document.getElementById('ttsProviderStatus');
+  if (status) {
+    let txt = `Using: ${current}`;
+    if (override) txt += ' (override)';
+    txt += ` • Server default: ${serverDefault}`;
+    status.textContent = txt;
+  }
+}
+
 /* ===============================================
    FLASHCARD MODULE
    =============================================== */
@@ -1355,6 +1382,7 @@ function attachQuizShortcuts() {
    INIT on page load
    =============================================== */
 document.addEventListener('DOMContentLoaded', () => {
+  initTtsProviderMenu();
   // Flashcards page
   if (typeof VOCAB !== 'undefined') initFlashcards();
   // Quiz page
