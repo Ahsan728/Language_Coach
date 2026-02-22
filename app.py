@@ -19,9 +19,9 @@ DATA_DIR = os.path.join(BASE_DIR, 'data')
 DB_PATH  = os.path.join(DATA_DIR, 'progress.db')
 TTS_CACHE_DIR = (os.environ.get('TTS_CACHE_DIR') or os.path.join(DATA_DIR, 'tts_cache')).strip() or os.path.join(DATA_DIR, 'tts_cache')
 
-_TTS_PROVIDER = (os.environ.get('TTS_PROVIDER') or 'browser').strip().lower()
-if _TTS_PROVIDER not in {'browser', 'gtts'}:
-    _TTS_PROVIDER = 'browser'
+_TTS_PROVIDER = (os.environ.get('TTS_PROVIDER') or 'auto').strip().lower()
+if _TTS_PROVIDER not in {'browser', 'gtts', 'auto'}:
+    _TTS_PROVIDER = 'auto'
 app.config['TTS_PROVIDER'] = _TTS_PROVIDER
 app.config['TTS_CACHE_DIR'] = TTS_CACHE_DIR
 
@@ -1090,9 +1090,9 @@ def progress_view():
 # ---------- API ----------
 @app.route('/api/tts')
 def api_tts():
-    provider = (app.config.get('TTS_PROVIDER') or 'browser').strip().lower()
-    if provider != 'gtts':
-        return ('TTS disabled (set TTS_PROVIDER=gtts on the server)', 501)
+    provider = (app.config.get('TTS_PROVIDER') or 'auto').strip().lower()
+    if provider not in {'gtts', 'auto'}:
+        return ('TTS disabled (set TTS_PROVIDER=gtts or auto on the server)', 501)
 
     text = (request.args.get('text') or '').strip()
     lang_tag = (request.args.get('lang') or '').strip().lower().replace('_', '-')
@@ -1123,9 +1123,17 @@ def api_tts():
         except Exception as exc:  # pragma: no cover
             return (f'TTS server dependency missing: {exc}', 500)
 
+        # gTTS can vary slightly by top-level domain (accent/voice). Allow override per language.
+        tld_default = (os.environ.get('GTTS_TLD') or 'com').strip() or 'com'
+        tld = tld_default
+        if tts_lang == 'es':
+            tld = (os.environ.get('GTTS_TLD_ES') or tld_default).strip() or tld_default
+        elif tts_lang == 'fr':
+            tld = (os.environ.get('GTTS_TLD_FR') or tld_default).strip() or tld_default
+
         tmp_path = os.path.join(cache_dir, f'.{cache_key}.{uuid.uuid4().hex}.tmp.mp3')
         try:
-            gTTS(text=norm_text, lang=tts_lang, slow=False).save(tmp_path)
+            gTTS(text=norm_text, lang=tts_lang, slow=False, tld=tld).save(tmp_path)
             os.replace(tmp_path, final_path)
         finally:
             try:

@@ -9,6 +9,7 @@
 // Cache voices once they're available (Chrome loads them async)
 let _ttsVoices = [];
 let _ttsWarnedLangs = new Set();
+let _ttsServerWarnedLangs = new Set();
 let _ttsAutoplayWarned = false;
 
 function _normalizeLangTag(tag) {
@@ -94,17 +95,48 @@ let _serverTtsBackoffUntil = 0;
 
 function _getTtsProvider() {
   try {
-    const p = String((window && window.TTS_PROVIDER) ? window.TTS_PROVIDER : 'browser').trim().toLowerCase();
-    return p || 'browser';
+    const allowed = new Set(['browser', 'gtts', 'auto']);
+
+    // User override (per-browser)
+    let stored = '';
+    try { stored = String(localStorage.getItem('lc_tts_provider') || '').trim().toLowerCase(); } catch { /* noop */ }
+    if (stored && allowed.has(stored)) return stored;
+
+    // Server-provided default
+    const p = String((window && window.TTS_PROVIDER) ? window.TTS_PROVIDER : 'auto').trim().toLowerCase();
+    if (allowed.has(p)) return p;
+    return 'auto';
   } catch {
-    return 'browser';
+    return 'auto';
   }
+}
+
+function _hasBrowserVoiceFor(langTag) {
+  const want = langTag ? _normalizeLangTag(langTag) : '';
+  const wantPrefix = want.split('-')[0];
+  if (!wantPrefix) return true;
+
+  const synth = window.speechSynthesis;
+  if (!synth) return false;
+
+  // Refresh voice cache now (cheap, sync).
+  try {
+    const fresh = synth.getVoices();
+    if (fresh.length) _ttsVoices = fresh;
+  } catch { /* noop */ }
+
+  return _ttsVoices.some(v => _normalizeLangTag(v.lang).startsWith(wantPrefix));
 }
 
 async function _speakTextServer(text, langTag) {
   const url = `/api/tts?lang=${encodeURIComponent(langTag || '')}&text=${encodeURIComponent(text || '')}`;
   const res = await fetch(url, {cache: 'force-cache'});
-  if (!res.ok) throw new Error(`TTS HTTP ${res.status}`);
+  if (!res.ok) {
+    let detail = '';
+    try { detail = (await res.text()) || ''; } catch { /* noop */ }
+    const msg = detail ? `TTS HTTP ${res.status}: ${detail}` : `TTS HTTP ${res.status}`;
+    throw new Error(msg);
+  }
 
   const blob = await res.blob();
 
@@ -120,29 +152,106 @@ async function _speakTextServer(text, langTag) {
   await _ttsAudio.play();
 }
 
+function _showServerTtsError(langName, details) {
+  if (_ttsServerWarnedLangs.has(langName)) return;
+  _ttsServerWarnedLangs.add(langName);
+
+  const existing = document.getElementById('tts-server-banner');
+  if (existing) existing.remove();
+
+  const banner = document.createElement('div');
+  banner.id = 'tts-server-banner';
+  banner.style.cssText = [
+    'position:fixed', 'bottom:1rem', 'left:50%', 'transform:translateX(-50%)',
+    'z-index:9999', 'max-width:560px', 'width:calc(100% - 2rem)',
+    'background:#f8d7da', 'border:1px solid #dc3545', 'border-radius:10px',
+    'padding:.85rem 1.1rem', 'box-shadow:0 4px 20px rgba(0,0,0,.15)',
+    'font-size:.875rem', 'line-height:1.5'
+  ].join(';');
+
+  const safeDetails = details ? escapeHtml(details) : '';
+  banner.innerHTML = `
+    <strong>🔊 Server TTS failed (${escapeHtml(langName)})</strong>
+    <button onclick="this.closest('#tts-server-banner').remove()"
+            style="float:right;background:none;border:none;font-size:1.1rem;cursor:pointer;line-height:1">×</button>
+    <div class="mt-1">
+      ${safeDetails ? `<div class="small text-muted">${safeDetails}</div>` : ``}
+      If this keeps happening: check server internet access (gTTS), or install a local ${escapeHtml(langName)} voice.
+    </div>`;
+
+  document.body.appendChild(banner);
+}
+
 async function speakText(text, langTag, retryOnce = true) {
   if (!text) return;
 
   const provider = _getTtsProvider();
+  const hasVoice = _hasBrowserVoiceFor(langTag);
+  const wantPrefix = _normalizeLangTag(langTag || '').split('-')[0];
+  const langName = wantPrefix === 'fr' ? 'French'
+                 : wantPrefix === 'es' ? 'Spanish'
+                 : (langTag || 'this language');
+
   const now = Date.now();
-  if (provider !== 'browser' && now >= _serverTtsBackoffUntil) {
+  const tryServer = async () => {
+    const t = Date.now();
+    if (t < _serverTtsBackoffUntil) return {ok: false, error: null};
     try {
       // Stop any in-progress browser speech to avoid overlap.
       if (window.speechSynthesis) window.speechSynthesis.cancel();
       await _speakTextServer(text, langTag);
-      return;
+      return {ok: true, error: null};
     } catch (e) {
       const name = (e && e.name) ? String(e.name) : '';
       if (name === 'NotAllowedError') {
         _showAutoplayWarning();
-        return;
+        return {ok: false, error: e};
       }
-      console.warn('Server TTS failed; falling back to browser TTS:', e);
-      _serverTtsBackoffUntil = now + 30000;
+      console.warn('Server TTS failed:', e);
+      _serverTtsBackoffUntil = Date.now() + 30000;
+      return {ok: false, error: e};
     }
+  };
+
+  if (provider === 'browser') {
+    _speakTextBrowser(text, langTag, retryOnce);
+    return;
   }
 
-  _speakTextBrowser(text, langTag, retryOnce);
+  // Auto mode: use browser if a matching voice exists; otherwise use server TTS.
+  if (provider === 'auto') {
+    if (hasVoice) {
+      _speakTextBrowser(text, langTag, retryOnce);
+      return;
+    }
+    const res = await tryServer();
+    if (res.ok) return;
+    _showServerTtsError(langName, res.error ? String(res.error.message || res.error) : '');
+    _showTtsWarning(langName);
+    return;
+  }
+
+  // Server mode (gtts): prefer server; only fall back to browser if the browser has a matching voice.
+  if (now >= _serverTtsBackoffUntil) {
+    const res = await tryServer();
+    if (res.ok) return;
+
+    if (hasVoice) {
+      _speakTextBrowser(text, langTag, retryOnce);
+      return;
+    }
+    _showServerTtsError(langName, res.error ? String(res.error.message || res.error) : '');
+    _showTtsWarning(langName);
+    return;
+  }
+
+  // Backoff window: try browser voice if available, otherwise show a helpful message.
+  if (hasVoice) {
+    _speakTextBrowser(text, langTag, retryOnce);
+    return;
+  }
+  _showServerTtsError(langName, 'Temporarily backing off after server TTS errors.');
+  _showTtsWarning(langName);
 }
 
 function _speakTextBrowser(text, langTag, retryOnce = true) {
