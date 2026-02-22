@@ -94,21 +94,7 @@ let _ttsAudioObjectUrl = null;
 let _serverTtsBackoffUntil = 0;
 
 function _getTtsProvider() {
-  try {
-    const allowed = new Set(['browser', 'gtts', 'auto']);
-
-    // User override (per-browser)
-    let stored = '';
-    try { stored = String(localStorage.getItem('lc_tts_provider') || '').trim().toLowerCase(); } catch { /* noop */ }
-    if (stored && allowed.has(stored)) return stored;
-
-    // Server-provided default
-    const p = String((window && window.TTS_PROVIDER) ? window.TTS_PROVIDER : 'auto').trim().toLowerCase();
-    if (allowed.has(p)) return p;
-    return 'auto';
-  } catch {
-    return 'auto';
-  }
+  return 'gtts';
 }
 
 function _hasBrowserVoiceFor(langTag) {

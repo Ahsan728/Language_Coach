@@ -23,9 +23,7 @@ DATA_DIR = os.path.join(BASE_DIR, 'data')
 DB_PATH  = os.path.join(DATA_DIR, 'progress.db')
 TTS_CACHE_DIR = (os.environ.get('TTS_CACHE_DIR') or os.path.join(DATA_DIR, 'tts_cache')).strip() or os.path.join(DATA_DIR, 'tts_cache')
 
-_TTS_PROVIDER = (os.environ.get('TTS_PROVIDER') or 'auto').strip().lower()
-if _TTS_PROVIDER not in {'browser', 'gtts', 'auto'}:
-    _TTS_PROVIDER = 'auto'
+_TTS_PROVIDER = 'gtts'
 app.config['TTS_PROVIDER'] = _TTS_PROVIDER
 app.config['TTS_CACHE_DIR'] = TTS_CACHE_DIR
 
