@@ -42,9 +42,9 @@
 }
 
 :root[data-theme="lime"] {
-  --lc-accent:     var(--french-color);
-  --lc-accent-dark:var(--french-dark);
-  --lc-accent-soft:rgba(0,85,164,0.16);
+  --lc-accent:     var(--lc-ink);
+  --lc-accent-dark:#0c0c15;
+  --lc-accent-soft:rgba(26,26,46,0.10);
 
   --lc-page-bg:    #fbf6e6;
   --lc-bg-light:   #fbf6e6;
