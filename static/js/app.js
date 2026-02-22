@@ -337,6 +337,27 @@ function initTtsProviderMenu() {
   }
 }
 
+function initThemeMenu() {
+  const menu = document.getElementById('themeMenu');
+  if (!menu) return;
+
+  const allowed = new Set(['purple', 'lime']);
+  const current = String((document.documentElement && document.documentElement.dataset)
+    ? (document.documentElement.dataset.theme || '') : '').trim().toLowerCase();
+
+  menu.querySelectorAll('[data-theme]').forEach(btn => {
+    const t = String(btn.dataset.theme || '').trim().toLowerCase();
+    if (!allowed.has(t)) return;
+    if (t === current) btn.classList.add('active');
+
+    btn.addEventListener('click', () => {
+      try { localStorage.setItem('lc_theme', t); } catch { /* noop */ }
+      try { document.documentElement.dataset.theme = t; } catch { /* noop */ }
+      location.reload();
+    });
+  });
+}
+
 /* ===============================================
    FLASHCARD MODULE
    =============================================== */
@@ -1382,6 +1403,7 @@ function attachQuizShortcuts() {
    INIT on page load
    =============================================== */
 document.addEventListener('DOMContentLoaded', () => {
+  initThemeMenu();
   initTtsProviderMenu();
   // Flashcards page
   if (typeof VOCAB !== 'undefined') initFlashcards();
