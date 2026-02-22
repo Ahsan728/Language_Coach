@@ -81,13 +81,24 @@ body { font-family: 'Poppins', sans-serif; color: var(--text-dark); background: 
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }
-.brand-icon { font-size: 1.8rem; line-height: 1; }
-img.brand-icon {
-  display: block;
+.brand-icon {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 999px;
-  object-fit: cover;
+  overflow: hidden;
   border: 1px solid var(--lc-outline);
-  background: rgba(255,255,255,0.8);
+  background: #fff;
+}
+.brand-icon-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: translate(1%, -8%) scale(1.2);
+  transform-origin: 50% 50%;
 }
 .brand-title { font-size: 1.1rem; font-weight: 700; line-height: 1.2; }
 .brand-subtitle { font-size: 0.7rem; opacity: 0.8; font-family: 'Noto Serif Bengali', serif; }
