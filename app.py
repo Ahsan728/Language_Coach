@@ -1127,19 +1127,28 @@ def logout():
     return redirect(url_for('dashboard'))
 
 
-@app.route('/favicon.png')
-def favicon_png():
-    path = os.path.join(BASE_DIR, 'logo', 'AhsanSuny_Logo.png')
+def _logo_file_path():
+    return os.path.join(BASE_DIR, 'logo', 'AhsanSuny_Logo.png')
+
+
+@app.route('/logo.png')
+def logo_png():
+    path = _logo_file_path()
     if not os.path.exists(path):
-        return ('Missing favicon', 404)
+        return ('Missing logo', 404)
     resp = send_file(path, mimetype='image/png', conditional=True)
     resp.headers['Cache-Control'] = 'public, max-age=86400'
     return resp
 
 
+@app.route('/favicon.png')
+def favicon_png():
+    return logo_png()
+
+
 @app.route('/favicon.ico')
 def favicon_ico():
-    return favicon_png()
+    return logo_png()
 
 
 @app.route('/language/<lang>')
