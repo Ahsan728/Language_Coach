@@ -521,6 +521,29 @@ LANG_META = {
 
 LANGS = list(LANG_META.keys())
 
+def _static_asset_version():
+    """Cache-bust static assets (CSS/JS) by appending a version query parameter.
+
+    Prefer `STATIC_VERSION` env var; otherwise derive from file mtimes.
+    """
+    env = (os.environ.get('STATIC_VERSION') or '').strip()
+    if env:
+        return env
+
+    paths = [
+        os.path.join(BASE_DIR, 'static', 'css', 'style.css'),
+        os.path.join(BASE_DIR, 'static', 'js', 'app.js'),
+    ]
+    mtimes = []
+    for p in paths:
+        try:
+            mtimes.append(int(os.path.getmtime(p)))
+        except OSError:
+            pass
+    if mtimes:
+        return str(max(mtimes))
+    return str(int(datetime.now().timestamp()))
+
 
 @app.context_processor
 def inject_globals():
@@ -528,6 +551,7 @@ def inject_globals():
         'lang_meta': LANG_META,
         'tts_provider': app.config.get('TTS_PROVIDER', 'auto'),
         'current_year': datetime.now().year,
+        'static_version': _static_asset_version(),
     }
 
 # ---------- Routes ----------
