@@ -717,7 +717,7 @@ def init_db():
 # Initialise DB at import time so gunicorn (production) also creates tables
 init_db()
 
-_EMAIL_SIMPLE_RE = re.compile(r'^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$')
+_EMAIL_SIMPLE_RE = re.compile(r'^[^@\s]+@[^@\s]+\.[^@\s]+$')
 
 
 def _normalize_email(value: str) -> str:
