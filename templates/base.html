@@ -73,20 +73,6 @@
           </ul>
         </li>
 
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="fas fa-volume-up me-1"></i> Audio
-          </a>
-          <ul class="dropdown-menu dropdown-menu-end" id="ttsProviderMenu">
-            <li><h6 class="dropdown-header">Pronunciation</h6></li>
-            <li><button class="dropdown-item" type="button" data-tts-provider="auto">Auto (Recommended)</button></li>
-            <li><button class="dropdown-item" type="button" data-tts-provider="gtts">Server (Best accent)</button></li>
-            <li><button class="dropdown-item" type="button" data-tts-provider="browser">Browser (Offline)</button></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><span class="dropdown-item-text small text-muted" id="ttsProviderStatus"></span></li>
-          </ul>
-        </li>
-
         <li class="nav-item">
           <a class="nav-link {% if request.endpoint == 'resources_view' %}active{% endif %}" href="{{ url_for('resources_view') }}">
             <i class="fas fa-compass me-1"></i> Resources
