@@ -524,7 +524,11 @@ LANGS = list(LANG_META.keys())
 
 @app.context_processor
 def inject_globals():
-    return {'lang_meta': LANG_META, 'tts_provider': app.config.get('TTS_PROVIDER', 'browser')}
+    return {
+        'lang_meta': LANG_META,
+        'tts_provider': app.config.get('TTS_PROVIDER', 'auto'),
+        'current_year': datetime.now().year,
+    }
 
 # ---------- Routes ----------
 @app.route('/')
