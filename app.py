@@ -8,6 +8,7 @@ import threading
 import unicodedata
 import uuid
 from datetime import datetime, date, timedelta
+from collections import Counter
 from typing import Optional
 from flask import Flask, render_template, jsonify, request, redirect, url_for, send_file
 
@@ -603,6 +604,13 @@ def dashboard():
     vocab_all = get_vocab()
     resource_all = get_resource_sentences()
     activity = get_activity_summary()
+
+    cefr_counts = Counter()
+    canon = lessons_all.get('french', []) or next(iter(lessons_all.values()), [])
+    for l in canon or []:
+        lvl = (l.get('cefr_level') or l.get('level') or '').strip() or 'A1'
+        cefr_counts[lvl] += 1
+
     stats = {}
     for lang in LANGS:
         prog = load_progress(lang)
@@ -618,7 +626,7 @@ def dashboard():
                        'next_lesson': rec,
                        'continue_url': url_for('lesson_view', lang=lang, lesson_id=rec['id']) if rec else url_for('language_home', lang=lang),
                        'resource': resource_info}
-    return render_template('dashboard.html', stats=stats, activity=activity)
+    return render_template('dashboard.html', stats=stats, activity=activity, cefr_counts=dict(cefr_counts))
 
 @app.route('/resources')
 def resources_view():

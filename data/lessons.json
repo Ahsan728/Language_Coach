@@ -1,6 +1,21 @@
 {
   "french": [
     {
+      "id": 0,
+      "level": "A1",
+      "cefr_level": "A1",
+      "icon": "🔤",
+      "title_en": "Alphabet & Pronunciation Basics",
+      "title_bn": "বর্ণমালা ও উচ্চারণ (মূল)",
+      "title_lang": "Alphabet et Prononciation",
+      "description_en": "Learn the French alphabet, letter names, and how to spell words out loud.",
+      "description_bn": "ফরাসি বর্ণমালা, অক্ষরের নাম এবং শব্দ বানান করে বলার পদ্ধতি শিখুন।",
+      "vocabulary_categories": [],
+      "tip_en": "Spelling tip: French letters are read by their names (A, B, C...). Practise with your name and email!",
+      "tip_bn": "বানান টিপ: ফরাসিতে অক্ষরগুলো তাদের নাম দিয়ে পড়া হয় (A, B, C...)। আপনার নাম ও ইমেইল দিয়ে অনুশীলন করুন!",
+      "activity": "alphabet"
+    },
+    {
       "id": 1,
       "level": "A1",
       "icon": "👋",
@@ -23,14 +38,15 @@
       "title_en": "Numbers 1–1000",
       "title_bn": "সংখ্যা ১–১০০০",
       "title_lang": "Les Nombres 1–1000",
-      "description_en": "Count in French from one to a thousand.",
-      "description_bn": "ফরাসিতে এক থেকে হাজার পর্যন্ত গণনা করুন।",
+      "description_en": "Count in French from one to a thousand with an interactive number trainer.",
+      "description_bn": "ইন্টারেক্টিভ নাম্বার ট্রেইনার দিয়ে ফরাসিতে এক থেকে হাজার পর্যন্ত গণনা করুন।",
       "vocabulary_categories": [
         "numbers"
       ],
       "tip_en": "French numbers 70–99 are tricky! 70 = soixante-dix (sixty-ten), 80 = quatre-vingts (four-twenties), 90 = quatre-vingt-dix (four-twenty-ten).",
       "tip_bn": "ফরাসিতে ৭০-৯৯ একটু কঠিন! ৭০ = soixante-dix (ষাট-দশ), ৮০ = quatre-vingts (চার-বিশ), ৯০ = quatre-vingt-dix (চার-বিশ-দশ)।",
-      "cefr_level": "A1"
+      "cefr_level": "A1",
+      "activity": "numbers"
     },
     {
       "id": 3,
@@ -1857,6 +1873,21 @@
   ],
   "spanish": [
     {
+      "id": 0,
+      "level": "A1",
+      "cefr_level": "A1",
+      "icon": "🔤",
+      "title_en": "Alphabet & Pronunciation Basics",
+      "title_bn": "বর্ণমালা ও উচ্চারণ (মূল)",
+      "title_lang": "Alfabeto y Pronunciación",
+      "description_en": "Learn the Spanish alphabet (including Ñ) and how to spell words out loud.",
+      "description_bn": "স্প্যানিশ বর্ণমালা (Ñ সহ) এবং শব্দ বানান করে বলার পদ্ধতি শিখুন।",
+      "vocabulary_categories": [],
+      "tip_en": "Spelling tip: 'h' is silent in words, but its letter name is 'hache'. Ñ is a separate letter in Spanish.",
+      "tip_bn": "বানান টিপ: শব্দে 'h' নীরব, কিন্তু অক্ষরের নাম 'hache'। Ñ স্প্যানিশে আলাদা একটি অক্ষর।",
+      "activity": "alphabet"
+    },
+    {
       "id": 1,
       "level": "A1",
       "icon": "👋",
@@ -1879,14 +1910,15 @@
       "title_en": "Numbers 1–1000",
       "title_bn": "সংখ্যা ১–১০০০",
       "title_lang": "Los Números 1–1000",
-      "description_en": "Count in Spanish from one to a thousand.",
-      "description_bn": "স্প্যানিশে এক থেকে হাজার পর্যন্ত গণনা করুন।",
+      "description_en": "Count in Spanish from one to a thousand with an interactive number trainer.",
+      "description_bn": "ইন্টারেক্টিভ নাম্বার ট্রেইনার দিয়ে স্প্যানিশে এক থেকে হাজার পর্যন্ত গণনা করুন।",
       "vocabulary_categories": [
         "numbers"
       ],
       "tip_en": "16-19 in Spanish are combined: dieciséis (16), diecisiete (17), dieciocho (18), diecinueve (19). 21-29 are: veintiuno, veintidós... etc.",
       "tip_bn": "স্প্যানিশে ১৬-১৯ মিলিত: dieciséis (১৬), diecisiete (১৭), dieciocho (১৮), diecinueve (১৯)। ২১-২৯: veintiuno, veintidós... ইত্যাদি।",
-      "cefr_level": "A1"
+      "cefr_level": "A1",
+      "activity": "numbers"
     },
     {
       "id": 3,

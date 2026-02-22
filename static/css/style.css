@@ -110,6 +110,28 @@ body { font-family: 'Poppins', sans-serif; color: var(--text-dark); background: 
 .flag-card-es { background: linear-gradient(135deg, var(--spanish-color), var(--spanish-dark)); }
 .flag-card-bd { background: linear-gradient(135deg, #006a4e, #f42a41); }
 
+.hero-glass{
+  background: rgba(255,255,255,0.09);
+  border: 1px solid rgba(255,255,255,0.14);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  color: #fff;
+  border-radius: var(--radius);
+}
+.hero-glass .form-control{
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.18);
+  color: #fff;
+}
+.hero-glass .form-control::placeholder{ color: rgba(255,255,255,0.65); }
+.hero-glass .btn-outline-light.active{
+  background: rgba(255,255,255,0.18);
+  border-color: rgba(255,255,255,0.35);
+}
+.hero-lang-flag{ font-size: 2.3rem; line-height: 1; }
+.hero-progress{ background: rgba(255,255,255,0.22); border-radius: 20px; }
+.hero-progress .progress-bar{ border-radius: 20px; }
+
 /* ---- Section titles ---- */
 .section-title { font-weight: 700; font-size: 1.8rem; color: var(--text-dark); }
 
@@ -205,6 +227,27 @@ body { font-family: 'Poppins', sans-serif; color: var(--text-dark); background: 
   border-left: 4px solid #4caf50; font-size: 0.9rem;
 }
 .tip-icon { font-size: 1.5rem; flex-shrink: 0; }
+
+/* ---- Lesson Activities ---- */
+.lesson-activity { border-radius: var(--radius); }
+.lc-alphabet-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+  gap: 0.7rem;
+}
+.lc-alphabet-btn {
+  border: 1px solid #dee2e6;
+  background: #fff;
+  border-radius: 14px;
+  padding: 0.6rem 0.7rem;
+  text-align: center;
+  cursor: pointer;
+  transition: transform .15s, box-shadow .15s, border-color .15s;
+}
+.lc-alphabet-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow); border-color: #adb5bd; }
+.lc-alphabet-btn:focus-visible { outline: 3px solid rgba(13,110,253,0.35); outline-offset: 2px; }
+.lc-alphabet-letter { font-size: 1.35rem; font-weight: 800; color: var(--text-dark); line-height: 1; }
+.lc-alphabet-name { font-size: 0.78rem; color: #6c757d; margin-top: 0.25rem; }
 
 /* ---- Sidebar ---- */
 .info-row { display: flex; justify-content: space-between; align-items: center; padding: 0.4rem 0; border-bottom: 1px solid #f0f0f0; }

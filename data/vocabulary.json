@@ -229,6 +229,87 @@
         "example_bn": "দশ ইউরো।"
       },
       {
+        "word": "onze",
+        "english": "eleven",
+        "bengali": "এগারো",
+        "pronunciation": "ONZ",
+        "example": "J'ai onze ans.",
+        "example_en": "I am eleven years old.",
+        "example_bn": "আমার বয়স এগারো বছর।"
+      },
+      {
+        "word": "douze",
+        "english": "twelve",
+        "bengali": "বারো",
+        "pronunciation": "DOOZ",
+        "example": "Il est douze heures.",
+        "example_en": "It is twelve o'clock.",
+        "example_bn": "এখন বারোটা বাজে।"
+      },
+      {
+        "word": "treize",
+        "english": "thirteen",
+        "bengali": "তেরো",
+        "pronunciation": "TREHZ",
+        "example": "Treize élèves.",
+        "example_en": "Thirteen students.",
+        "example_bn": "তেরো জন ছাত্র।"
+      },
+      {
+        "word": "quatorze",
+        "english": "fourteen",
+        "bengali": "চৌদ্দ",
+        "pronunciation": "kah-TORZ",
+        "example": "Quatorze jours.",
+        "example_en": "Fourteen days.",
+        "example_bn": "চৌদ্দ দিন।"
+      },
+      {
+        "word": "quinze",
+        "english": "fifteen",
+        "bengali": "পনেরো",
+        "pronunciation": "KANZ",
+        "example": "Quinze minutes.",
+        "example_en": "Fifteen minutes.",
+        "example_bn": "পনেরো মিনিট।"
+      },
+      {
+        "word": "seize",
+        "english": "sixteen",
+        "bengali": "ষোল",
+        "pronunciation": "SEHZ",
+        "example": "J'ai seize ans.",
+        "example_en": "I am sixteen years old.",
+        "example_bn": "আমার বয়স ষোল বছর।"
+      },
+      {
+        "word": "dix-sept",
+        "english": "seventeen",
+        "bengali": "সতেরো",
+        "pronunciation": "DEES-SET",
+        "example": "Il a dix-sept ans.",
+        "example_en": "He is seventeen years old.",
+        "example_bn": "তার বয়স সতেরো বছর।"
+      },
+      {
+        "word": "dix-huit",
+        "english": "eighteen",
+        "bengali": "আঠারো",
+        "pronunciation": "DEES-WEET",
+        "example": "Dix-huit pages.",
+        "example_en": "Eighteen pages.",
+        "example_bn": "আঠারো পৃষ্ঠা।"
+      },
+      {
+        "word": "dix-neuf",
+        "english": "nineteen",
+        "bengali": "উনিশ",
+        "pronunciation": "DEES-NUHF",
+        "example": "Dix-neuf personnes.",
+        "example_en": "Nineteen people.",
+        "example_bn": "উনিশ জন মানুষ।"
+      },
+      {
         "word": "vingt",
         "english": "twenty",
         "bengali": "বিশ",
@@ -245,6 +326,60 @@
         "example": "Trente minutes.",
         "example_en": "Thirty minutes.",
         "example_bn": "ত্রিশ মিনিট।"
+      },
+      {
+        "word": "quarante",
+        "english": "forty",
+        "bengali": "চল্লিশ",
+        "pronunciation": "kah-RAHNT",
+        "example": "Quarante minutes.",
+        "example_en": "Forty minutes.",
+        "example_bn": "চল্লিশ মিনিট।"
+      },
+      {
+        "word": "cinquante",
+        "english": "fifty",
+        "bengali": "পঞ্চাশ",
+        "pronunciation": "san-KONT",
+        "example": "Cinquante euros.",
+        "example_en": "Fifty euros.",
+        "example_bn": "পঞ্চাশ ইউরো।"
+      },
+      {
+        "word": "soixante",
+        "english": "sixty",
+        "bengali": "ষাট",
+        "pronunciation": "swa-SAHNT",
+        "example": "Soixante secondes.",
+        "example_en": "Sixty seconds.",
+        "example_bn": "ষাট সেকেন্ড।"
+      },
+      {
+        "word": "soixante-dix",
+        "english": "seventy",
+        "bengali": "সত্তর",
+        "pronunciation": "swa-SAHNT-DEES",
+        "example": "Soixante-dix places.",
+        "example_en": "Seventy seats.",
+        "example_bn": "সত্তরটি আসন।"
+      },
+      {
+        "word": "quatre-vingts",
+        "english": "eighty",
+        "bengali": "আশি",
+        "pronunciation": "KAT-ruh-VAN",
+        "example": "Quatre-vingts pages.",
+        "example_en": "Eighty pages.",
+        "example_bn": "আশি পৃষ্ঠা।"
+      },
+      {
+        "word": "quatre-vingt-dix",
+        "english": "ninety",
+        "bengali": "নব্বই",
+        "pronunciation": "KAT-ruh-VAN-DEES",
+        "example": "Quatre-vingt-dix minutes.",
+        "example_en": "Ninety minutes.",
+        "example_bn": "নব্বই মিনিট।"
       },
       {
         "word": "cent",
@@ -44052,6 +44187,87 @@
         "example_bn": "দশ ইউরো।"
       },
       {
+        "word": "once",
+        "english": "eleven",
+        "bengali": "এগারো",
+        "pronunciation": "ON-seh",
+        "example": "Tengo once libros.",
+        "example_en": "I have eleven books.",
+        "example_bn": "আমার এগারোটি বই আছে।"
+      },
+      {
+        "word": "doce",
+        "english": "twelve",
+        "bengali": "বারো",
+        "pronunciation": "DOH-seh",
+        "example": "Son las doce.",
+        "example_en": "It is twelve o'clock.",
+        "example_bn": "এখন বারোটা।"
+      },
+      {
+        "word": "trece",
+        "english": "thirteen",
+        "bengali": "তেরো",
+        "pronunciation": "TREH-seh",
+        "example": "Tengo trece años.",
+        "example_en": "I am thirteen years old.",
+        "example_bn": "আমার বয়স তেরো বছর।"
+      },
+      {
+        "word": "catorce",
+        "english": "fourteen",
+        "bengali": "চৌদ্দ",
+        "pronunciation": "kah-TOR-seh",
+        "example": "Catorce días.",
+        "example_en": "Fourteen days.",
+        "example_bn": "চৌদ্দ দিন।"
+      },
+      {
+        "word": "quince",
+        "english": "fifteen",
+        "bengali": "পনেরো",
+        "pronunciation": "KEEN-seh",
+        "example": "Quince minutos.",
+        "example_en": "Fifteen minutes.",
+        "example_bn": "পনেরো মিনিট।"
+      },
+      {
+        "word": "dieciséis",
+        "english": "sixteen",
+        "bengali": "ষোল",
+        "pronunciation": "dyeh-see-SAYS",
+        "example": "Tengo dieciséis años.",
+        "example_en": "I am sixteen years old.",
+        "example_bn": "আমার বয়স ষোল বছর।"
+      },
+      {
+        "word": "diecisiete",
+        "english": "seventeen",
+        "bengali": "সতেরো",
+        "pronunciation": "dyeh-see-SYEH-teh",
+        "example": "Diecisiete estudiantes.",
+        "example_en": "Seventeen students.",
+        "example_bn": "সতেরো জন ছাত্র।"
+      },
+      {
+        "word": "dieciocho",
+        "english": "eighteen",
+        "bengali": "আঠারো",
+        "pronunciation": "dyeh-see-OH-cho",
+        "example": "Dieciocho páginas.",
+        "example_en": "Eighteen pages.",
+        "example_bn": "আঠারো পৃষ্ঠা।"
+      },
+      {
+        "word": "diecinueve",
+        "english": "nineteen",
+        "bengali": "উনিশ",
+        "pronunciation": "dyeh-see-NWEH-veh",
+        "example": "Diecinueve personas.",
+        "example_en": "Nineteen people.",
+        "example_bn": "উনিশ জন মানুষ।"
+      },
+      {
         "word": "veinte",
         "english": "twenty",
         "bengali": "বিশ",
@@ -44068,6 +44284,60 @@
         "example": "Treinta minutos.",
         "example_en": "Thirty minutes.",
         "example_bn": "ত্রিশ মিনিট।"
+      },
+      {
+        "word": "cuarenta",
+        "english": "forty",
+        "bengali": "চল্লিশ",
+        "pronunciation": "KWAH-REN-tah",
+        "example": "Tengo cuarenta años.",
+        "example_en": "I am forty years old.",
+        "example_bn": "আমার বয়স চল্লিশ বছর।"
+      },
+      {
+        "word": "cincuenta",
+        "english": "fifty",
+        "bengali": "পঞ্চাশ",
+        "pronunciation": "seen-KWEN-tah",
+        "example": "Cincuenta minutos.",
+        "example_en": "Fifty minutes.",
+        "example_bn": "পঞ্চাশ মিনিট।"
+      },
+      {
+        "word": "sesenta",
+        "english": "sixty",
+        "bengali": "ষাট",
+        "pronunciation": "seh-SEN-tah",
+        "example": "Sesenta estudiantes.",
+        "example_en": "Sixty students.",
+        "example_bn": "ষাটজন ছাত্র।"
+      },
+      {
+        "word": "setenta",
+        "english": "seventy",
+        "bengali": "সত্তর",
+        "pronunciation": "seh-TEN-tah",
+        "example": "Setenta personas.",
+        "example_en": "Seventy people.",
+        "example_bn": "সত্তর মানুষ।"
+      },
+      {
+        "word": "ochenta",
+        "english": "eighty",
+        "bengali": "আশি",
+        "pronunciation": "oh-CHEN-tah",
+        "example": "Ochenta páginas.",
+        "example_en": "Eighty pages.",
+        "example_bn": "আশি পৃষ্ঠা।"
+      },
+      {
+        "word": "noventa",
+        "english": "ninety",
+        "bengali": "নব্বই",
+        "pronunciation": "noh-VEN-tah",
+        "example": "Noventa días.",
+        "example_en": "Ninety days.",
+        "example_bn": "নব্বই দিন।"
       },
       {
         "word": "cien",

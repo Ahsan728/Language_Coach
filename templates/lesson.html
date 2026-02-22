@@ -47,6 +47,12 @@
       </div>
       {% endif %}
 
+      {% if lesson.get('activity') == 'alphabet' %}
+        {% include "partials/activity_alphabet.html" %}
+      {% elif lesson.get('activity') == 'numbers' %}
+        {% include "partials/activity_numbers.html" %}
+      {% endif %}
+
       <!-- ========== VOCABULARY SECTION ========== -->
       {% if vocabulary %}
       <h3 class="section-label mb-3">

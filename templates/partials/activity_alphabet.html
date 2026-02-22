@@ -1,0 +1,130 @@
+<div class="card border-0 shadow-sm mb-4 lesson-activity lesson-activity-alphabet">
+  <div class="card-body p-4">
+    <h3 class="section-label mb-3">
+      <i class="fas fa-font me-2 text-{{ 'french' if lang == 'french' else 'spanish' }}"></i>
+      Alphabet — বর্ণমালা
+    </h3>
+
+    <p class="text-muted small mb-3">
+      Click a letter to hear its name. Then try spelling a word (your name, email, address…).
+    </p>
+
+    <div id="lcAlphabetGrid" class="lc-alphabet-grid"></div>
+
+    <hr class="my-4">
+
+    <div class="row g-2 align-items-end">
+      <div class="col-md-8">
+        <label class="form-label small text-muted mb-1">Spell a word</label>
+        <input id="lcAlphabetWord" type="text" class="form-control"
+               placeholder="Type a word to spell…"
+               autocomplete="off" spellcheck="false">
+      </div>
+      <div class="col-md-4 d-grid">
+        <button id="lcAlphabetSpeak" type="button"
+                class="btn btn-outline-{{ 'french' if lang == 'french' else 'spanish' }}">
+          🔊 Speak spelling
+        </button>
+      </div>
+      <div class="col-12">
+        <div id="lcAlphabetPreview" class="small text-muted mt-1"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const lang = '{{ lang }}';
+  const ttsLang = lang === 'french' ? 'fr-FR' : 'es-ES';
+
+  const alphabets = {
+    french: [
+      {letter: 'A', name: 'a'}, {letter: 'B', name: 'bé'}, {letter: 'C', name: 'cé'}, {letter: 'D', name: 'dé'},
+      {letter: 'E', name: 'e'}, {letter: 'F', name: 'effe'}, {letter: 'G', name: 'gé'}, {letter: 'H', name: 'ache'},
+      {letter: 'I', name: 'i'}, {letter: 'J', name: 'ji'}, {letter: 'K', name: 'ka'}, {letter: 'L', name: 'elle'},
+      {letter: 'M', name: 'emme'}, {letter: 'N', name: 'enne'}, {letter: 'O', name: 'o'}, {letter: 'P', name: 'pé'},
+      {letter: 'Q', name: 'ku'}, {letter: 'R', name: 'erre'}, {letter: 'S', name: 'esse'}, {letter: 'T', name: 'té'},
+      {letter: 'U', name: 'u'}, {letter: 'V', name: 'vé'}, {letter: 'W', name: 'double vé'}, {letter: 'X', name: 'ix'},
+      {letter: 'Y', name: 'i grec'}, {letter: 'Z', name: 'zède'},
+    ],
+    spanish: [
+      {letter: 'A', name: 'a'}, {letter: 'B', name: 'be'}, {letter: 'C', name: 'ce'}, {letter: 'D', name: 'de'},
+      {letter: 'E', name: 'e'}, {letter: 'F', name: 'efe'}, {letter: 'G', name: 'ge'}, {letter: 'H', name: 'hache'},
+      {letter: 'I', name: 'i'}, {letter: 'J', name: 'jota'}, {letter: 'K', name: 'ka'}, {letter: 'L', name: 'ele'},
+      {letter: 'M', name: 'eme'}, {letter: 'N', name: 'ene'}, {letter: 'Ñ', name: 'eñe'}, {letter: 'O', name: 'o'},
+      {letter: 'P', name: 'pe'}, {letter: 'Q', name: 'cu'}, {letter: 'R', name: 'erre'}, {letter: 'S', name: 'ese'},
+      {letter: 'T', name: 'te'}, {letter: 'U', name: 'u'}, {letter: 'V', name: 'uve'}, {letter: 'W', name: 'doble uve'},
+      {letter: 'X', name: 'equis'}, {letter: 'Y', name: 'ye'}, {letter: 'Z', name: 'zeta'},
+    ],
+  };
+
+  const list = (alphabets[lang] || []).slice();
+  const byLetter = {};
+  for (const it of list) byLetter[it.letter] = it.name;
+
+  const grid = document.getElementById('lcAlphabetGrid');
+  const input = document.getElementById('lcAlphabetWord');
+  const speakBtn = document.getElementById('lcAlphabetSpeak');
+  const preview = document.getElementById('lcAlphabetPreview');
+
+  if (!grid || !input || !speakBtn || !preview || !list.length) return;
+
+  function stripDiacritics(ch) {
+    try {
+      return ch.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    } catch {
+      return ch;
+    }
+  }
+
+  function normaliseLetter(ch) {
+    if (!ch) return '';
+    if (ch === 'ñ' || ch === 'Ñ') return 'Ñ';
+    const s = stripDiacritics(ch);
+    return String(s).toUpperCase();
+  }
+
+  function spellingTokens(text) {
+    const out = [];
+    for (const raw of String(text || '')) {
+      const L = normaliseLetter(raw);
+      const name = byLetter[L];
+      if (!name) continue;
+      out.push({letter: L, name});
+    }
+    return out;
+  }
+
+  function updatePreview() {
+    const tokens = spellingTokens(input.value);
+    if (!tokens.length) {
+      preview.textContent = '';
+      return;
+    }
+    preview.textContent = tokens.map(t => `${t.letter} — ${t.name}`).join(' • ');
+  }
+
+  function speakSpelling() {
+    const tokens = spellingTokens(input.value);
+    if (!tokens.length) return;
+    const phrase = tokens.map(t => t.name).join(' . ');
+    speakText(phrase, ttsLang);
+  }
+
+  for (const it of list) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'lc-alphabet-btn';
+    btn.innerHTML = `<div class="lc-alphabet-letter">${it.letter}</div><div class="lc-alphabet-name">${it.name}</div>`;
+    btn.addEventListener('click', () => speakText(it.name, ttsLang));
+    grid.appendChild(btn);
+  }
+
+  input.addEventListener('input', updatePreview);
+  speakBtn.addEventListener('click', speakSpelling);
+
+  updatePreview();
+})();
+</script>
+
