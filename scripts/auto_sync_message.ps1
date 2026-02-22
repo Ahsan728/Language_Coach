@@ -203,7 +203,7 @@ function Get-AutoSyncSubject {
         [void]$set.Add($t)
       }
     }
-    $labels = Select-TopicLabels -Topics $set -Max 3
+    $labels = Select-TopicLabels -Topics $set -Max 2
     $label = Format-LabelList -Items $labels
     if ($label) { return $label }
 
