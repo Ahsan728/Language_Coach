@@ -51,8 +51,10 @@
           <div id="practiceChoices" class="choices-grid"></div>
 
           <div id="practiceTypeWrap" style="display:none">
-            <div class="input-group mt-3">
-              <input id="practiceTypeInput" type="text" class="form-control" placeholder="Type your answer…">
+            <div class="diacritic-bar mb-2" id="practiceDiacriticBar"></div>
+            <div class="input-group mt-1">
+              <input id="practiceTypeInput" type="text" class="form-control" placeholder="Type your answer…"
+                     autocomplete="off" spellcheck="false">
               <button class="btn btn-{{ 'french' if lang == 'french' else 'spanish' }}" type="button" onclick="practiceSubmitType()">
                 Check
               </button>
