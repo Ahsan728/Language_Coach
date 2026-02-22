@@ -1726,7 +1726,22 @@ def progress_view():
             p = prog.get(l['id'], {'completed': 0, 'best_score': 0, 'attempts': 0})
             enriched.append({**l, **p})
         all_prog[lang] = enriched
-    return render_template('progress.html', progress=all_prog)
+
+    # Last 30 days of XP history for chart
+    conn = get_db()
+    if uid is None:
+        xp_rows = conn.execute(
+            'SELECT date, xp FROM daily_activity WHERE xp > 0 ORDER BY date DESC LIMIT 30'
+        ).fetchall()
+    else:
+        xp_rows = conn.execute(
+            'SELECT date, xp FROM user_daily_activity WHERE user_id=? AND xp > 0 ORDER BY date DESC LIMIT 30',
+            (uid,)
+        ).fetchall()
+    conn.close()
+    xp_history = [{'date': r['date'], 'xp': r['xp']} for r in reversed(xp_rows)]
+
+    return render_template('progress.html', progress=all_prog, xp_history=xp_history)
 
 # ---------- API ----------
 @app.route('/api/tts')

@@ -185,7 +185,10 @@
       "title_lang": "Grammaire : Les Articles et le Genre",
       "description_en": "Understand French noun gender and definite/indefinite articles.",
       "description_bn": "ফরাসি বিশেষ্যের লিঙ্গ এবং নির্দিষ্ট/অনির্দিষ্ট আর্টিকেল বুঝুন।",
-      "vocabulary_categories": [],
+      "vocabulary_categories": [
+        "family",
+        "body"
+      ],
       "grammar": {
         "intro_en": "Every French noun has a gender — masculine (m) or feminine (f). This is different from Bengali or English! You MUST memorize the gender with each word.",
         "intro_bn": "প্রতিটি ফরাসি বিশেষ্যের লিঙ্গ আছে — পুংলিঙ্গ (m) বা স্ত্রীলিঙ্গ (f)। এটি বাংলা বা ইংরেজি থেকে আলাদা! প্রতিটি শব্দের সাথে লিঙ্গ মনে রাখতে হবে।",
@@ -317,7 +320,8 @@
           }
         ]
       },
-      "cefr_level": "A1"
+      "cefr_level": "A1",
+      "vocab_limit_per_category": 20
     },
     {
       "id": 12,
@@ -328,7 +332,10 @@
       "title_lang": "Grammaire : Le Présent",
       "description_en": "Conjugate regular and common irregular verbs in the present tense.",
       "description_bn": "বর্তমান কালে নিয়মিত এবং সাধারণ অনিয়মিত ক্রিয়া পরিবর্তন করুন।",
-      "vocabulary_categories": [],
+      "vocabulary_categories": [
+        "verbs",
+        "daily_activities"
+      ],
       "grammar": {
         "intro_en": "French verbs must change form (conjugate) depending on who is doing the action. There are 3 types of regular verbs: -er, -ir, -re. The most common is -er.",
         "intro_bn": "ফরাসি ক্রিয়া কর্তার উপর নির্ভর করে পরিবর্তিত হয়। তিন ধরনের নিয়মিত ক্রিয়া আছে: -er, -ir, -re। সবচেয়ে সাধারণ হলো -er ক্রিয়া।",
@@ -542,7 +549,8 @@
           }
         ]
       },
-      "cefr_level": "A1"
+      "cefr_level": "A1",
+      "vocab_limit_per_category": 20
     },
     {
       "id": 13,
@@ -553,7 +561,10 @@
       "title_lang": "Grammaire : Le Passé Composé",
       "description_en": "Talk about completed actions in the past using Passé Composé.",
       "description_bn": "Passé Composé ব্যবহার করে অতীতে সম্পন্ন কাজ সম্পর্কে কথা বলুন।",
-      "vocabulary_categories": [],
+      "vocabulary_categories": [
+        "verbs",
+        "food"
+      ],
       "grammar": {
         "intro_en": "The Passé Composé is the most common past tense in spoken French. It is formed with: AVOIR or ÊTRE + past participle. Think of it like 'I have eaten' in English.",
         "intro_bn": "Passé Composé হলো কথ্য ফরাসিতে সবচেয়ে সাধারণ অতীত কাল। এটি গঠিত হয়: AVOIR বা ÊTRE + past participle দিয়ে। ইংরেজির 'I have eaten' এর মতো ভাবুন।",
@@ -717,7 +728,8 @@
           }
         ]
       },
-      "cefr_level": "A2"
+      "cefr_level": "A2",
+      "vocab_limit_per_category": 20
     },
     {
       "id": 14,
@@ -728,7 +740,10 @@
       "title_lang": "Grammaire : Le Futur",
       "description_en": "Talk about future plans and events using the future tense.",
       "description_bn": "ভবিষ্যৎ কাল ব্যবহার করে ভবিষ্যৎ পরিকল্পনা ও ঘটনা সম্পর্কে কথা বলুন।",
-      "vocabulary_categories": [],
+      "vocabulary_categories": [
+        "verbs",
+        "transport"
+      ],
       "grammar": {
         "intro_en": "There are two ways to express the future in French: (1) Futur Proche (near future) = aller + infinitive, like English 'going to', and (2) Futur Simple (simple future) = infinitive + endings.",
         "intro_bn": "ফরাসিতে ভবিষ্যৎ প্রকাশের দুটি উপায়: (১) Futur Proche (নিকট ভবিষ্যৎ) = aller + infinitive, ইংরেজির 'going to' মতো, এবং (২) Futur Simple = infinitive + endings।",
@@ -892,7 +907,8 @@
           }
         ]
       },
-      "cefr_level": "A2"
+      "cefr_level": "A2",
+      "vocab_limit_per_category": 20
     },
     {
       "id": 15,
@@ -1307,7 +1323,10 @@
       "title_lang": "Grammaire : Imparfait vs Passé Composé",
       "description_en": "Choose between background description (imparfait) and completed actions (passé composé).",
       "description_bn": "পটভূমি/অভ্যাস বোঝাতে ইঁপারফে, আর সম্পন্ন কাজ বোঝাতে পাসে কম্পোজে — ঠিকভাবে বেছে নিন।",
-      "vocabulary_categories": [],
+      "vocabulary_categories": [
+        "verbs",
+        "daily_activities"
+      ],
       "grammar": {
         "intro_en": "French past narration often mixes two tenses: the imparfait for background, habits and descriptions, and the passé composé for completed actions that move the story forward.",
         "intro_bn": "ফরাসিতে অতীতের বর্ণনায় প্রায়ই দুইটি কাল একসাথে ব্যবহৃত হয়: পটভূমি/অভ্যাস/বর্ণনার জন্য ইঁপারফে, আর সম্পন্ন কাজ/ঘটনার জন্য পাসে কম্পোজে।",
@@ -1316,13 +1335,48 @@
             "title_en": "Forming the Imparfait",
             "title_bn": "ইঁপারফে গঠন",
             "table": [
-              ["Subject", "PARLER", "English", "Bengali"],
-              ["je", "je parlais", "I was speaking / I used to speak", "আমি বলতাম"],
-              ["tu", "tu parlais", "you were speaking", "তুমি বলতে"],
-              ["il/elle", "il/elle parlait", "he/she was speaking", "সে বলত"],
-              ["nous", "nous parlions", "we were speaking", "আমরা বলতাম"],
-              ["vous", "vous parliez", "you were speaking", "আপনি/আপনারা বলতেন"],
-              ["ils/elles", "ils/elles parlaient", "they were speaking", "তারা বলত"]
+              [
+                "Subject",
+                "PARLER",
+                "English",
+                "Bengali"
+              ],
+              [
+                "je",
+                "je parlais",
+                "I was speaking / I used to speak",
+                "আমি বলতাম"
+              ],
+              [
+                "tu",
+                "tu parlais",
+                "you were speaking",
+                "তুমি বলতে"
+              ],
+              [
+                "il/elle",
+                "il/elle parlait",
+                "he/she was speaking",
+                "সে বলত"
+              ],
+              [
+                "nous",
+                "nous parlions",
+                "we were speaking",
+                "আমরা বলতাম"
+              ],
+              [
+                "vous",
+                "vous parliez",
+                "you were speaking",
+                "আপনি/আপনারা বলতেন"
+              ],
+              [
+                "ils/elles",
+                "ils/elles parlaient",
+                "they were speaking",
+                "তারা বলত"
+              ]
             ],
             "note_en": "Take the 'nous' present form (parlons), remove -ons to get the stem (parl-), then add: -ais, -ais, -ait, -ions, -iez, -aient. ÊTRE is irregular: j'étais, tu étais, il était...",
             "note_bn": "'nous' ফর্ম (parlons) থেকে -ons বাদ দিয়ে স্টেম (parl-) নিন, তারপর যোগ করুন: -ais, -ais, -ait, -ions, -iez, -aient। ÊTRE অনিয়মিত: j'étais, tu étais, il était..."
@@ -1331,11 +1385,36 @@
             "title_en": "When to use which tense?",
             "title_bn": "কোন কাল কখন?",
             "table": [
-              ["Situation", "Imparfait", "Passé composé", "Example"],
-              ["Background / description", "✔", "—", "Il faisait froid."],
-              ["Habit in the past", "✔", "—", "Quand j'étais enfant, je lisais beaucoup."],
-              ["Completed action", "—", "✔", "Hier, j'ai fermé la porte."],
-              ["Interrupted action", "✔", "✔", "Je lisais quand il a appelé."]
+              [
+                "Situation",
+                "Imparfait",
+                "Passé composé",
+                "Example"
+              ],
+              [
+                "Background / description",
+                "✔",
+                "—",
+                "Il faisait froid."
+              ],
+              [
+                "Habit in the past",
+                "✔",
+                "—",
+                "Quand j'étais enfant, je lisais beaucoup."
+              ],
+              [
+                "Completed action",
+                "—",
+                "✔",
+                "Hier, j'ai fermé la porte."
+              ],
+              [
+                "Interrupted action",
+                "✔",
+                "✔",
+                "Je lisais quand il a appelé."
+              ]
             ],
             "note_en": "A common pattern is: background (imparfait) + event (passé composé).",
             "note_bn": "সাধারণ প্যাটার্ন: পটভূমি (ইঁপারফে) + ঘটনা (পাসে কম্পোজে)।"
@@ -1398,7 +1477,8 @@
             "correct": "finissions"
           }
         ]
-      }
+      },
+      "vocab_limit_per_category": 20
     },
     {
       "id": 38,
@@ -1410,7 +1490,10 @@
       "title_lang": "Grammaire : Le Conditionnel",
       "description_en": "Use the conditional to be polite, to express wishes, and to talk about hypothetical situations.",
       "description_bn": "ভদ্রভাবে অনুরোধ করা, ইচ্ছা প্রকাশ করা এবং কল্পিত পরিস্থিতি নিয়ে কথা বলতে কন্ডিশনেল ব্যবহার করুন।",
-      "vocabulary_categories": [],
+      "vocabulary_categories": [
+        "verbs",
+        "adjectives"
+      ],
       "grammar": {
         "intro_en": "The French conditional is used for: politeness (requests), wishes, advice, and hypothetical results (often with 'si').",
         "intro_bn": "ফরাসিতে কন্ডিশনেল ব্যবহার হয়: ভদ্র অনুরোধ, ইচ্ছা, পরামর্শ এবং 'si' দিয়ে কল্পিত ফলাফল বোঝাতে।",
@@ -1419,13 +1502,48 @@
             "title_en": "How to form the conditional",
             "title_bn": "কন্ডিশনেল গঠন",
             "table": [
-              ["Subject", "PARLER", "English", "Bengali"],
-              ["je", "je parlerais", "I would speak", "আমি বলতাম"],
-              ["tu", "tu parlerais", "you would speak", "তুমি বলতে"],
-              ["il/elle", "il/elle parlerait", "he/she would speak", "সে বলত"],
-              ["nous", "nous parlerions", "we would speak", "আমরা বলতাম"],
-              ["vous", "vous parleriez", "you would speak", "আপনি/আপনারা বলতেন"],
-              ["ils/elles", "ils/elles parleraient", "they would speak", "তারা বলত"]
+              [
+                "Subject",
+                "PARLER",
+                "English",
+                "Bengali"
+              ],
+              [
+                "je",
+                "je parlerais",
+                "I would speak",
+                "আমি বলতাম"
+              ],
+              [
+                "tu",
+                "tu parlerais",
+                "you would speak",
+                "তুমি বলতে"
+              ],
+              [
+                "il/elle",
+                "il/elle parlerait",
+                "he/she would speak",
+                "সে বলত"
+              ],
+              [
+                "nous",
+                "nous parlerions",
+                "we would speak",
+                "আমরা বলতাম"
+              ],
+              [
+                "vous",
+                "vous parleriez",
+                "you would speak",
+                "আপনি/আপনারা বলতেন"
+              ],
+              [
+                "ils/elles",
+                "ils/elles parleraient",
+                "they would speak",
+                "তারা বলত"
+              ]
             ],
             "note_en": "Conditional endings are the same as imparfait endings: -ais, -ais, -ait, -ions, -iez, -aient. Add them to the infinitive (parler-) or an irregular stem (être → ser-, avoir → aur-, aller → ir-).",
             "note_bn": "কন্ডিশনেলের শেষাংশ ইঁপারফের মতোই: -ais, -ais, -ait, -ions, -iez, -aient। এগুলো ইনফিনিটিভের সাথে যোগ করুন (parler-) বা অনিয়মিত স্টেমে (être → ser-, avoir → aur-, aller → ir-)।"
@@ -1434,10 +1552,30 @@
             "title_en": "Polite requests",
             "title_bn": "ভদ্র অনুরোধ",
             "table": [
-              ["Expression", "Meaning", "Example", "Bengali"],
-              ["Je voudrais...", "I'd like...", "Je voudrais un café.", "আমি একটি কফি চাই।"],
-              ["Pourriez-vous... ?", "Could you...?", "Pourriez-vous m'aider ?", "আপনি কি আমাকে সাহায্য করতে পারবেন?"],
-              ["J'aimerais...", "I would like...", "J'aimerais essayer.", "আমি চেষ্টা করতে চাই।"]
+              [
+                "Expression",
+                "Meaning",
+                "Example",
+                "Bengali"
+              ],
+              [
+                "Je voudrais...",
+                "I'd like...",
+                "Je voudrais un café.",
+                "আমি একটি কফি চাই।"
+              ],
+              [
+                "Pourriez-vous... ?",
+                "Could you...?",
+                "Pourriez-vous m'aider ?",
+                "আপনি কি আমাকে সাহায্য করতে পারবেন?"
+              ],
+              [
+                "J'aimerais...",
+                "I would like...",
+                "J'aimerais essayer.",
+                "আমি চেষ্টা করতে চাই।"
+              ]
             ],
             "note_en": "Using the conditional makes your French sound softer and more natural in real life.",
             "note_bn": "কন্ডিশনেল ব্যবহার করলে বাক্যটি আরও ভদ্র ও স্বাভাবিক শোনায়।"
@@ -1500,7 +1638,8 @@
             "correct": "viendrai"
           }
         ]
-      }
+      },
+      "vocab_limit_per_category": 20
     },
     {
       "id": 39,
@@ -1688,7 +1827,10 @@
       "title_lang": "Grammaire : Les Pronoms Relatifs",
       "description_en": "Master qui, que, dont, où to connect ideas into longer, more precise sentences.",
       "description_bn": "qui, que, dont, où ব্যবহার করে বাক্য জুড়ে আরও নির্ভুল ও দীর্ঘ বাক্য তৈরি করুন।",
-      "vocabulary_categories": [],
+      "vocabulary_categories": [
+        "people",
+        "adjectives"
+      ],
       "grammar": {
         "intro_en": "Relative pronouns connect two sentences: 'C'est une personne. Elle parle vite.' → 'C'est une personne qui parle vite.'",
         "intro_bn": "সম্পর্কবাচক সর্বনাম দুইটি বাক্যকে যুক্ত করে: 'C'est une personne. Elle parle vite.' → 'C'est une personne qui parle vite.'",
@@ -1697,9 +1839,24 @@
             "title_en": "QUI vs QUE (basic)",
             "title_bn": "QUI বনাম QUE",
             "table": [
-              ["Pronoun", "Use", "Example", "English"],
-              ["qui", "subject", "La fille qui parle.", "the girl who speaks"],
-              ["que", "object", "Le film que j'ai vu.", "the movie (that) I saw"]
+              [
+                "Pronoun",
+                "Use",
+                "Example",
+                "English"
+              ],
+              [
+                "qui",
+                "subject",
+                "La fille qui parle.",
+                "the girl who speaks"
+              ],
+              [
+                "que",
+                "object",
+                "Le film que j'ai vu.",
+                "the movie (that) I saw"
+              ]
             ],
             "note_en": "Rule of thumb: if the pronoun is followed by a verb, use QUI. If it's followed by a subject (je/tu/il...), use QUE.",
             "note_bn": "সহজ নিয়ম: সর্বনামের পরে যদি ক্রিয়া আসে = QUI। সর্বনামের পরে যদি কর্তা (je/tu/il...) আসে = QUE।"
@@ -1708,9 +1865,24 @@
             "title_en": "DONT and OÙ",
             "title_bn": "DONT এবং OÙ",
             "table": [
-              ["Pronoun", "Use", "Example", "English"],
-              ["dont", "de + something", "La personne dont je parle.", "the person I'm talking about"],
-              ["où", "place/time", "La ville où j'habite.", "the city where I live"]
+              [
+                "Pronoun",
+                "Use",
+                "Example",
+                "English"
+              ],
+              [
+                "dont",
+                "de + something",
+                "La personne dont je parle.",
+                "the person I'm talking about"
+              ],
+              [
+                "où",
+                "place/time",
+                "La ville où j'habite.",
+                "the city where I live"
+              ]
             ],
             "note_en": "Use DONT with verbs/adjectives that require 'de' (parler de, avoir besoin de, se souvenir de...).",
             "note_bn": "যেসব ক্রিয়ায় 'de' লাগে তাদের সাথে DONT ব্যবহার করুন (parler de, avoir besoin de, se souvenir de...)।"
@@ -1720,35 +1892,61 @@
           {
             "question_en": "Complete: 'C'est la fille ___ parle.'",
             "question_bn": "পূর্ণ করুন: 'C'est la fille ___ parle.'",
-            "choices": ["qui", "que", "dont", "où"],
+            "choices": [
+              "qui",
+              "que",
+              "dont",
+              "où"
+            ],
             "correct": "qui"
           },
           {
             "question_en": "Complete: 'Voici le film ___ j'ai vu.'",
             "question_bn": "পূর্ণ করুন: 'Voici le film ___ j'ai vu.'",
-            "choices": ["que", "qui", "dont", "où"],
+            "choices": [
+              "que",
+              "qui",
+              "dont",
+              "où"
+            ],
             "correct": "que"
           },
           {
             "question_en": "Complete: 'C'est l'histoire ___ je me souviens.'",
             "question_bn": "পূর্ণ করুন: 'C'est l'histoire ___ je me souviens.'",
-            "choices": ["dont", "que", "qui", "où"],
+            "choices": [
+              "dont",
+              "que",
+              "qui",
+              "où"
+            ],
             "correct": "dont"
           },
           {
             "question_en": "Complete: 'La ville ___ j'habite est grande.'",
             "question_bn": "পূর্ণ করুন: 'La ville ___ j'habite est grande.'",
-            "choices": ["où", "dont", "que", "qui"],
+            "choices": [
+              "où",
+              "dont",
+              "que",
+              "qui"
+            ],
             "correct": "où"
           },
           {
             "question_en": "Complete: 'Le livre ___ je parle est intéressant.'",
             "question_bn": "পূর্ণ করুন: 'Le livre ___ je parle est intéressant.'",
-            "choices": ["dont", "que", "où", "qui"],
+            "choices": [
+              "dont",
+              "que",
+              "où",
+              "qui"
+            ],
             "correct": "dont"
           }
         ]
-      }
+      },
+      "vocab_limit_per_category": 20
     },
     {
       "id": 48,
@@ -1760,7 +1958,10 @@
       "title_lang": "Grammaire : Le Discours Indirect",
       "description_en": "Report what someone said using que/si and basic tense changes.",
       "description_bn": "que/si ব্যবহার করে কারো কথা পরোক্ষভাবে বলুন এবং মৌলিক কাল পরিবর্তন শিখুন।",
-      "vocabulary_categories": [],
+      "vocabulary_categories": [
+        "phrases",
+        "verbs"
+      ],
       "grammar": {
         "intro_en": "Reported speech lets you report statements and questions: 'Il dit : « Je suis prêt. »' → 'Il dit qu'il est prêt.'",
         "intro_bn": "পরোক্ষ উক্তি দিয়ে আপনি বক্তব্য/প্রশ্ন রিপোর্ট করেন: 'Il dit : « Je suis prêt. »' → 'Il dit qu'il est prêt.'",
@@ -1769,10 +1970,30 @@
             "title_en": "Reporting statements and questions",
             "title_bn": "বক্তব্য ও প্রশ্ন রিপোর্ট করা",
             "table": [
-              ["Direct", "Indirect", "Note", "Bengali"],
-              ["Il dit : « Je suis fatigué. »", "Il dit qu'il est fatigué.", "report now", "সে বলে যে সে ক্লান্ত।"],
-              ["Elle demande : « Tu viens ? »", "Elle demande si tu viens.", "yes/no question", "সে জিজ্ঞাসা করে তুমি আসছ কি না।"],
-              ["Le prof dit : « Travaillez ! »", "Le prof dit de travailler.", "order → infinitive", "শিক্ষক কাজ করতে বলেন।"]
+              [
+                "Direct",
+                "Indirect",
+                "Note",
+                "Bengali"
+              ],
+              [
+                "Il dit : « Je suis fatigué. »",
+                "Il dit qu'il est fatigué.",
+                "report now",
+                "সে বলে যে সে ক্লান্ত।"
+              ],
+              [
+                "Elle demande : « Tu viens ? »",
+                "Elle demande si tu viens.",
+                "yes/no question",
+                "সে জিজ্ঞাসা করে তুমি আসছ কি না।"
+              ],
+              [
+                "Le prof dit : « Travaillez ! »",
+                "Le prof dit de travailler.",
+                "order → infinitive",
+                "শিক্ষক কাজ করতে বলেন।"
+              ]
             ],
             "note_en": "Use QUE for statements and SI for yes/no questions.",
             "note_bn": "বক্তব্যে QUE, হ্যাঁ/না প্রশ্নে SI ব্যবহার করুন।"
@@ -1781,9 +2002,24 @@
             "title_en": "Basic tense backshift (past reporting)",
             "title_bn": "অতীতে রিপোর্ট করলে কাল পরিবর্তন",
             "table": [
-              ["Direct tense", "Indirect (past reporting)", "Example", "Bengali"],
-              ["présent", "imparfait", "Il a dit qu'il était prêt.", "সে বলেছিল সে প্রস্তুত ছিল।"],
-              ["futur", "conditionnel", "Il a dit qu'il viendrait.", "সে বলেছিল সে আসবে।"]
+              [
+                "Direct tense",
+                "Indirect (past reporting)",
+                "Example",
+                "Bengali"
+              ],
+              [
+                "présent",
+                "imparfait",
+                "Il a dit qu'il était prêt.",
+                "সে বলেছিল সে প্রস্তুত ছিল।"
+              ],
+              [
+                "futur",
+                "conditionnel",
+                "Il a dit qu'il viendrait.",
+                "সে বলেছিল সে আসবে।"
+              ]
             ],
             "note_en": "If the reporting verb is in the past (il a dit...), French often shifts the tense back.",
             "note_bn": "যদি রিপোর্টিং ক্রিয়া অতীতে হয় (il a dit...), তখন সাধারণত কাল এক ধাপ পিছিয়ে যায়।"
@@ -1846,7 +2082,8 @@
             "correct": "Le professeur dit de travailler."
           }
         ]
-      }
+      },
+      "vocab_limit_per_category": 20
     },
     {
       "id": 49,
@@ -2057,7 +2294,10 @@
       "title_lang": "Gramática: SER vs ESTAR",
       "description_en": "Master the two Spanish verbs meaning 'to be' — the most important distinction in Spanish!",
       "description_bn": "'হওয়া' অর্থে দুটি স্প্যানিশ ক্রিয়া আয়ত্ত করুন — স্প্যানিশের সবচেয়ে গুরুত্বপূর্ণ পার্থক্য!",
-      "vocabulary_categories": [],
+      "vocabulary_categories": [
+        "family",
+        "body"
+      ],
       "grammar": {
         "intro_en": "Spanish has TWO verbs meaning 'to be': SER (permanent/inherent) and ESTAR (temporary/changeable). This has NO equivalent in Bengali — it's a uniquely Spanish challenge!",
         "intro_bn": "স্প্যানিশে 'হওয়া' অর্থে দুটি ক্রিয়া: SER (স্থায়ী/সহজাত) এবং ESTAR (অস্থায়ী/পরিবর্তনযোগ্য)। বাংলায় এর কোনো সমতুল্য নেই — এটি একটি বিশেষ স্প্যানিশ চ্যালেঞ্জ!",
@@ -2221,7 +2461,8 @@
           }
         ]
       },
-      "cefr_level": "A1"
+      "cefr_level": "A1",
+      "vocab_limit_per_category": 20
     },
     {
       "id": 12,
@@ -2232,7 +2473,10 @@
       "title_lang": "Gramática: El Presente",
       "description_en": "Conjugate -ar, -er, -ir verbs in the Spanish present tense.",
       "description_bn": "স্প্যানিশ বর্তমান কালে -ar, -er, -ir ক্রিয়া পরিবর্তন করুন।",
-      "vocabulary_categories": [],
+      "vocabulary_categories": [
+        "verbs",
+        "daily_activities"
+      ],
       "grammar": {
         "intro_en": "Spanish verbs end in -ar, -er, or -ir. Each type has its own set of endings in the present tense. The good news: -er and -ir are almost the same!",
         "intro_bn": "স্প্যানিশ ক্রিয়া -ar, -er, অথবা -ir দিয়ে শেষ হয়। প্রতিটি ধরনের বর্তমান কালে নিজস্ব শেষাংশ আছে। ভালো খবর: -er এবং -ir প্রায় একই!",
@@ -2396,7 +2640,8 @@
           }
         ]
       },
-      "cefr_level": "A1"
+      "cefr_level": "A1",
+      "vocab_limit_per_category": 20
     },
     {
       "id": 13,
@@ -2407,7 +2652,10 @@
       "title_lang": "Gramática: El Pretérito Indefinido",
       "description_en": "Talk about completed past actions using the Pretérito Indefinido.",
       "description_bn": "Pretérito Indefinido ব্যবহার করে অতীতে সম্পন্ন কাজ সম্পর্কে কথা বলুন।",
-      "vocabulary_categories": [],
+      "vocabulary_categories": [
+        "verbs",
+        "food"
+      ],
       "grammar": {
         "intro_en": "The Pretérito Indefinido is used for completed actions in the past with a specific time. 'Ayer comí arroz' (Yesterday I ate rice). It's like the simple past in English.",
         "intro_bn": "Pretérito Indefinido ব্যবহার হয় নির্দিষ্ট সময়ে অতীতে সম্পন্ন কাজের জন্য। 'Ayer comí arroz' (গতকাল আমি ভাত খেয়েছিলাম)। ইংরেজির simple past এর মতো।",
@@ -2571,7 +2819,8 @@
           }
         ]
       },
-      "cefr_level": "A2"
+      "cefr_level": "A2",
+      "vocab_limit_per_category": 20
     },
     {
       "id": 14,
@@ -2582,7 +2831,10 @@
       "title_lang": "Gramática: El Futuro",
       "description_en": "Talk about future plans using IR A + infinitive and the simple future.",
       "description_bn": "IR A + infinitive এবং simple future ব্যবহার করে ভবিষ্যৎ পরিকল্পনা সম্পর্কে কথা বলুন।",
-      "vocabulary_categories": [],
+      "vocabulary_categories": [
+        "verbs",
+        "transport"
+      ],
       "grammar": {
         "intro_en": "Just like French, Spanish has two ways to express the future: (1) IR A + infinitive (going to...) for near future plans, and (2) Futuro Simple (will...) for predictions and promises.",
         "intro_bn": "ফরাসির মতো, স্প্যানিশেও ভবিষ্যৎ প্রকাশের দুটি উপায়: (১) IR A + infinitive (যাচ্ছি...) নিকট ভবিষ্যতের জন্য, এবং (২) Futuro Simple (করব...) পূর্বানুমান ও প্রতিশ্রুতির জন্য।",
@@ -2746,7 +2998,8 @@
           }
         ]
       },
-      "cefr_level": "A2"
+      "cefr_level": "A2",
+      "vocab_limit_per_category": 20
     },
     {
       "id": 15,
@@ -3161,7 +3414,10 @@
       "title_lang": "Gramática: Imperfecto vs Indefinido",
       "description_en": "Choose between background/habits (imperfecto) and completed actions (pretérito indefinido).",
       "description_bn": "পটভূমি/অভ্যাস বোঝাতে ইমপারফেক্তো, আর সম্পন্ন কাজ বোঝাতে প্রেতেরিতো — ঠিকভাবে বেছে নিন।",
-      "vocabulary_categories": [],
+      "vocabulary_categories": [
+        "verbs",
+        "daily_activities"
+      ],
       "grammar": {
         "intro_en": "Spanish past narration often mixes two tenses: imperfecto for background, habits and descriptions, and pretérito indefinido for completed actions that move the story forward.",
         "intro_bn": "স্প্যানিশে অতীতের বর্ণনায় প্রায়ই দুইটি কাল ব্যবহৃত হয়: পটভূমি/অভ্যাস/বর্ণনার জন্য imperfecto, আর সম্পন্ন কাজ/ঘটনার জন্য pretérito indefinido।",
@@ -3170,13 +3426,48 @@
             "title_en": "Imperfecto endings",
             "title_bn": "ইমপারফেক্তো শেষাংশ",
             "table": [
-              ["Subject", "HABLAR (-ar)", "COMER/VIVIR (-er/-ir)", "Bengali"],
-              ["yo", "hablaba", "comía", "আমি বলতাম/খেতাম"],
-              ["tú", "hablabas", "comías", "তুমি বলতে/খেতে"],
-              ["él/ella", "hablaba", "comía", "সে বলত/খেত"],
-              ["nosotros", "hablábamos", "comíamos", "আমরা বলতাম/খেতাম"],
-              ["vosotros", "hablabais", "comíais", "তোমরা/আপনারা বলতেন/খেতেন"],
-              ["ellos/ellas", "hablaban", "comían", "তারা বলত/খেত"]
+              [
+                "Subject",
+                "HABLAR (-ar)",
+                "COMER/VIVIR (-er/-ir)",
+                "Bengali"
+              ],
+              [
+                "yo",
+                "hablaba",
+                "comía",
+                "আমি বলতাম/খেতাম"
+              ],
+              [
+                "tú",
+                "hablabas",
+                "comías",
+                "তুমি বলতে/খেতে"
+              ],
+              [
+                "él/ella",
+                "hablaba",
+                "comía",
+                "সে বলত/খেত"
+              ],
+              [
+                "nosotros",
+                "hablábamos",
+                "comíamos",
+                "আমরা বলতাম/খেতাম"
+              ],
+              [
+                "vosotros",
+                "hablabais",
+                "comíais",
+                "তোমরা/আপনারা বলতেন/খেতেন"
+              ],
+              [
+                "ellos/ellas",
+                "hablaban",
+                "comían",
+                "তারা বলত/খেত"
+              ]
             ],
             "note_en": "-ar verbs use -aba endings. -er/-ir verbs use -ía endings. Imperfecto is often translated as 'was doing' or 'used to do'.",
             "note_bn": "-ar ক্রিয়ায় -aba শেষাংশ, -er/-ir ক্রিয়ায় -ía শেষাংশ। imperfecto সাধারণত 'করতাম/করছিলাম' বোঝায়।"
@@ -3185,11 +3476,36 @@
             "title_en": "When to use which tense?",
             "title_bn": "কোন কাল কখন?",
             "table": [
-              ["Situation", "Imperfecto", "Indefinido", "Example"],
-              ["Background / description", "✔", "—", "Hacía frío."],
-              ["Habit in the past", "✔", "—", "Cuando era niño, leía mucho."],
-              ["Completed action", "—", "✔", "Ayer cerré la puerta."],
-              ["Interrupted action", "✔", "✔", "Leía cuando sonó el teléfono."]
+              [
+                "Situation",
+                "Imperfecto",
+                "Indefinido",
+                "Example"
+              ],
+              [
+                "Background / description",
+                "✔",
+                "—",
+                "Hacía frío."
+              ],
+              [
+                "Habit in the past",
+                "✔",
+                "—",
+                "Cuando era niño, leía mucho."
+              ],
+              [
+                "Completed action",
+                "—",
+                "✔",
+                "Ayer cerré la puerta."
+              ],
+              [
+                "Interrupted action",
+                "✔",
+                "✔",
+                "Leía cuando sonó el teléfono."
+              ]
             ],
             "note_en": "A common pattern is: background (imperfecto) + event (indefinido).",
             "note_bn": "সাধারণ প্যাটার্ন: পটভূমি (imperfecto) + ঘটনা (indefinido)।"
@@ -3199,35 +3515,61 @@
           {
             "question_en": "Complete: 'Cuando era niño, ___ al fútbol todos los días.'",
             "question_bn": "পূর্ণ করুন: 'যখন আমি শিশু ছিলাম, আমি প্রতিদিন ফুটবল ___।'",
-            "choices": ["jugaba", "jugué", "juego", "jugaré"],
+            "choices": [
+              "jugaba",
+              "jugué",
+              "juego",
+              "jugaré"
+            ],
             "correct": "jugaba"
           },
           {
             "question_en": "Complete: 'Ayer ___ una película.'",
             "question_bn": "পূর্ণ করুন: 'গতকাল আমি একটি সিনেমা ___।'",
-            "choices": ["vi", "veía", "veo", "veré"],
+            "choices": [
+              "vi",
+              "veía",
+              "veo",
+              "veré"
+            ],
             "correct": "vi"
           },
           {
             "question_en": "Complete: 'Mientras ___, sonó el teléfono.'",
             "question_bn": "পূর্ণ করুন: 'আমি ___ করছিলাম, তখন ফোন বেজে উঠল।'",
-            "choices": ["estudiaba", "estudié", "estudio", "estudiaré"],
+            "choices": [
+              "estudiaba",
+              "estudié",
+              "estudio",
+              "estudiaré"
+            ],
             "correct": "estudiaba"
           },
           {
             "question_en": "Choose the best tense for a sudden completed action: 'De repente, él ___.'",
             "question_bn": "হঠাৎ সম্পন্ন কাজ বোঝাতে সঠিক রূপ: 'হঠাৎ, সে ___।'",
-            "choices": ["llegó", "llegaba", "llega", "llegará"],
+            "choices": [
+              "llegó",
+              "llegaba",
+              "llega",
+              "llegará"
+            ],
             "correct": "llegó"
           },
           {
             "question_en": "Complete the description: 'Hacía frío y ___.'",
             "question_bn": "বর্ণনা পূরণ করুন: 'ঠান্ডা ছিল এবং ___।'",
-            "choices": ["llovía", "llovió", "llueve", "lloverá"],
+            "choices": [
+              "llovía",
+              "llovió",
+              "llueve",
+              "lloverá"
+            ],
             "correct": "llovía"
           }
         ]
-      }
+      },
+      "vocab_limit_per_category": 20
     },
     {
       "id": 38,
@@ -3239,7 +3581,10 @@
       "title_lang": "Gramática: Condicional",
       "description_en": "Use the conditional to be polite, to express wishes, and to talk about hypothetical situations.",
       "description_bn": "ভদ্রভাবে অনুরোধ করা, ইচ্ছা প্রকাশ করা এবং কল্পিত পরিস্থিতি নিয়ে কথা বলতে condicional ব্যবহার করুন।",
-      "vocabulary_categories": [],
+      "vocabulary_categories": [
+        "verbs",
+        "adjectives"
+      ],
       "grammar": {
         "intro_en": "The Spanish conditional is used for: politeness (requests), wishes, advice, and hypothetical results (often with 'si').",
         "intro_bn": "স্প্যানিশে condicional ব্যবহার হয়: ভদ্র অনুরোধ, ইচ্ছা, পরামর্শ এবং 'si' দিয়ে কল্পিত ফলাফল বোঝাতে।",
@@ -3248,13 +3593,48 @@
             "title_en": "How to form the conditional",
             "title_bn": "কন্ডিশনেল গঠন",
             "table": [
-              ["Subject", "HABLAR", "COMER", "Bengali"],
-              ["yo", "hablaría", "comería", "আমি বলতাম/খেতাম"],
-              ["tú", "hablarías", "comerías", "তুমি বলতে/খেতে"],
-              ["él/ella", "hablaría", "comería", "সে বলত/খেত"],
-              ["nosotros", "hablaríamos", "comeríamos", "আমরা বলতাম/খেতাম"],
-              ["vosotros", "hablaríais", "comeríais", "তোমরা/আপনারা বলতেন/খেতেন"],
-              ["ellos/ellas", "hablarían", "comerían", "তারা বলত/খেত"]
+              [
+                "Subject",
+                "HABLAR",
+                "COMER",
+                "Bengali"
+              ],
+              [
+                "yo",
+                "hablaría",
+                "comería",
+                "আমি বলতাম/খেতাম"
+              ],
+              [
+                "tú",
+                "hablarías",
+                "comerías",
+                "তুমি বলতে/খেতে"
+              ],
+              [
+                "él/ella",
+                "hablaría",
+                "comería",
+                "সে বলত/খেত"
+              ],
+              [
+                "nosotros",
+                "hablaríamos",
+                "comeríamos",
+                "আমরা বলতাম/খেতাম"
+              ],
+              [
+                "vosotros",
+                "hablaríais",
+                "comeríais",
+                "তোমরা/আপনারা বলতেন/খেতেন"
+              ],
+              [
+                "ellos/ellas",
+                "hablarían",
+                "comerían",
+                "তারা বলত/খেত"
+              ]
             ],
             "note_en": "Add: -ía, -ías, -ía, -íamos, -íais, -ían to the infinitive. Some verbs have irregular stems: tener → tendr-, poder → podr-, hacer → har-.",
             "note_bn": "ইনফিনিটিভের সাথে যোগ করুন: -ía, -ías, -ía, -íamos, -íais, -ían। কিছু অনিয়মিত স্টেম: tener → tendr-, poder → podr-, hacer → har-।"
@@ -3263,10 +3643,30 @@
             "title_en": "Polite requests",
             "title_bn": "ভদ্র অনুরোধ",
             "table": [
-              ["Expression", "Meaning", "Example", "Bengali"],
-              ["Me gustaría...", "I'd like...", "Me gustaría un café.", "আমি একটি কফি চাই।"],
-              ["¿Podría...?", "Could you...?", "¿Podría ayudarme?", "আপনি কি আমাকে সাহায্য করতে পারবেন?"],
-              ["Deberías...", "You should...", "Deberías descansar.", "তোমার বিশ্রাম নেওয়া উচিত।"]
+              [
+                "Expression",
+                "Meaning",
+                "Example",
+                "Bengali"
+              ],
+              [
+                "Me gustaría...",
+                "I'd like...",
+                "Me gustaría un café.",
+                "আমি একটি কফি চাই।"
+              ],
+              [
+                "¿Podría...?",
+                "Could you...?",
+                "¿Podría ayudarme?",
+                "আপনি কি আমাকে সাহায্য করতে পারবেন?"
+              ],
+              [
+                "Deberías...",
+                "You should...",
+                "Deberías descansar.",
+                "তোমার বিশ্রাম নেওয়া উচিত।"
+              ]
             ],
             "note_en": "The conditional makes requests sound softer and more polite.",
             "note_bn": "condicional ব্যবহার করলে অনুরোধ আরও ভদ্র শোনায়।"
@@ -3329,7 +3729,8 @@
             "correct": "ían"
           }
         ]
-      }
+      },
+      "vocab_limit_per_category": 20
     },
     {
       "id": 39,
@@ -3517,7 +3918,10 @@
       "title_lang": "Gramática: Pronombres Relativos",
       "description_en": "Use relative pronouns to connect ideas into longer, more precise sentences.",
       "description_bn": "সম্পর্কবাচক সর্বনাম দিয়ে বাক্য যুক্ত করে আরও নির্ভুল ও দীর্ঘ বাক্য তৈরি করুন।",
-      "vocabulary_categories": [],
+      "vocabulary_categories": [
+        "people",
+        "adjectives"
+      ],
       "grammar": {
         "intro_en": "Relative pronouns connect two sentences: 'Es una persona. Habla rápido.' → 'Es una persona que habla rápido.'",
         "intro_bn": "সম্পর্কবাচক সর্বনাম দুইটি বাক্যকে যুক্ত করে: 'Es una persona. Habla rápido.' → 'Es una persona que habla rápido.'",
@@ -3526,10 +3930,30 @@
             "title_en": "QUE / QUIEN / DONDE",
             "title_bn": "QUE / QUIEN / DONDE",
             "table": [
-              ["Pronoun", "Use", "Example", "English"],
-              ["que", "most common", "La chica que habla.", "the girl who speaks"],
-              ["a quien", "person + preposition", "El chico a quien conozco.", "the boy (whom) I know"],
-              ["donde", "place", "La ciudad donde nací.", "the city where I was born"]
+              [
+                "Pronoun",
+                "Use",
+                "Example",
+                "English"
+              ],
+              [
+                "que",
+                "most common",
+                "La chica que habla.",
+                "the girl who speaks"
+              ],
+              [
+                "a quien",
+                "person + preposition",
+                "El chico a quien conozco.",
+                "the boy (whom) I know"
+              ],
+              [
+                "donde",
+                "place",
+                "La ciudad donde nací.",
+                "the city where I was born"
+              ]
             ],
             "note_en": "After a preposition (a, con, de...), use QUIEN/EL CUAL for people: 'a quien', 'con quien'...",
             "note_bn": "preposición (a, con, de...) এর পরে মানুষের জন্য সাধারণত 'a quien / con quien' ব্যবহার হয়।"
@@ -3538,9 +3962,24 @@
             "title_en": "CUYO and LO QUE",
             "title_bn": "CUYO এবং LO QUE",
             "table": [
-              ["Form", "Use", "Example", "English"],
-              ["cuyo/cuya", "possession", "El libro cuya portada es roja.", "the book whose cover is red"],
-              ["lo que", "what (the thing that)", "No entiendo lo que dices.", "I don't understand what you say"]
+              [
+                "Form",
+                "Use",
+                "Example",
+                "English"
+              ],
+              [
+                "cuyo/cuya",
+                "possession",
+                "El libro cuya portada es roja.",
+                "the book whose cover is red"
+              ],
+              [
+                "lo que",
+                "what (the thing that)",
+                "No entiendo lo que dices.",
+                "I don't understand what you say"
+              ]
             ],
             "note_en": "CUYO agrees with the thing possessed (portada → cuya).",
             "note_bn": "CUYO/ CUYA মালিকানাধীন জিনিসের সাথে মিল রাখে (portada → cuya)।"
@@ -3550,35 +3989,61 @@
           {
             "question_en": "Complete: 'La mujer ___ vive aquí es médica.'",
             "question_bn": "পূর্ণ করুন: 'La mujer ___ vive aquí es médica.'",
-            "choices": ["que", "donde", "cuyo", "lo que"],
+            "choices": [
+              "que",
+              "donde",
+              "cuyo",
+              "lo que"
+            ],
             "correct": "que"
           },
           {
             "question_en": "Complete: 'El chico a ___ conozco es de España.'",
             "question_bn": "পূর্ণ করুন: 'El chico a ___ conozco es de España.'",
-            "choices": ["que", "a quien", "cuyo", "donde"],
+            "choices": [
+              "que",
+              "a quien",
+              "cuyo",
+              "donde"
+            ],
             "correct": "a quien"
           },
           {
             "question_en": "Complete: 'La ciudad ___ nací es pequeña.'",
             "question_bn": "পূর্ণ করুন: 'La ciudad ___ nací es pequeña.'",
-            "choices": ["donde", "que", "lo que", "cuya"],
+            "choices": [
+              "donde",
+              "que",
+              "lo que",
+              "cuya"
+            ],
             "correct": "donde"
           },
           {
             "question_en": "Complete: 'El libro ___ portada es roja.'",
             "question_bn": "পূর্ণ করুন: 'El libro ___ portada es roja.'",
-            "choices": ["cuyo", "cuya", "que", "donde"],
+            "choices": [
+              "cuyo",
+              "cuya",
+              "que",
+              "donde"
+            ],
             "correct": "cuya"
           },
           {
             "question_en": "Complete: 'No entiendo ___ dices.'",
             "question_bn": "পূর্ণ করুন: 'No entiendo ___ dices.'",
-            "choices": ["lo que", "que", "donde", "cuyo"],
+            "choices": [
+              "lo que",
+              "que",
+              "donde",
+              "cuyo"
+            ],
             "correct": "lo que"
           }
         ]
-      }
+      },
+      "vocab_limit_per_category": 20
     },
     {
       "id": 48,
@@ -3590,7 +4055,10 @@
       "title_lang": "Gramática: Estilo Indirecto",
       "description_en": "Report what someone said using que/si and basic tense changes.",
       "description_bn": "que/si ব্যবহার করে কারো কথা পরোক্ষভাবে বলুন এবং মৌলিক কাল পরিবর্তন শিখুন।",
-      "vocabulary_categories": [],
+      "vocabulary_categories": [
+        "phrases",
+        "verbs"
+      ],
       "grammar": {
         "intro_en": "Reported speech lets you report statements and questions: 'Él dice: « Estoy listo. »' → 'Él dice que está listo.'",
         "intro_bn": "পরোক্ষ উক্তি দিয়ে আপনি বক্তব্য/প্রশ্ন রিপোর্ট করেন: 'Él dice: « Estoy listo. »' → 'Él dice que está listo.'",
@@ -3599,10 +4067,30 @@
             "title_en": "Reporting statements and questions",
             "title_bn": "বক্তব্য ও প্রশ্ন রিপোর্ট করা",
             "table": [
-              ["Direct", "Indirect", "Note", "Bengali"],
-              ["Él dice: « Estoy cansado. »", "Él dice que está cansado.", "report now", "সে বলে সে ক্লান্ত।"],
-              ["Ella pregunta: « ¿Vienes? »", "Ella pregunta si vienes.", "yes/no question", "সে জিজ্ঞাসা করে তুমি আসছ কি না।"],
-              ["El profesor dijo: « No hables. »", "El profesor dijo que no hablara.", "order → subjunctive", "শিক্ষক বললেন যেন তুমি না বলো।"]
+              [
+                "Direct",
+                "Indirect",
+                "Note",
+                "Bengali"
+              ],
+              [
+                "Él dice: « Estoy cansado. »",
+                "Él dice que está cansado.",
+                "report now",
+                "সে বলে সে ক্লান্ত।"
+              ],
+              [
+                "Ella pregunta: « ¿Vienes? »",
+                "Ella pregunta si vienes.",
+                "yes/no question",
+                "সে জিজ্ঞাসা করে তুমি আসছ কি না।"
+              ],
+              [
+                "El profesor dijo: « No hables. »",
+                "El profesor dijo que no hablara.",
+                "order → subjunctive",
+                "শিক্ষক বললেন যেন তুমি না বলো।"
+              ]
             ],
             "note_en": "Use QUE for statements and SI for yes/no questions.",
             "note_bn": "বক্তব্যে QUE, হ্যাঁ/না প্রশ্নে SI ব্যবহার করুন।"
@@ -3611,9 +4099,24 @@
             "title_en": "Basic tense backshift (past reporting)",
             "title_bn": "অতীতে রিপোর্ট করলে কাল পরিবর্তন",
             "table": [
-              ["Direct tense", "Indirect (past reporting)", "Example", "Bengali"],
-              ["presente", "imperfecto", "Él dijo que estaba cansado.", "সে বলেছিল সে ক্লান্ত ছিল।"],
-              ["futuro", "condicional", "Él dijo que iría al día siguiente.", "সে বলেছিল সে পরদিন যাবে।"]
+              [
+                "Direct tense",
+                "Indirect (past reporting)",
+                "Example",
+                "Bengali"
+              ],
+              [
+                "presente",
+                "imperfecto",
+                "Él dijo que estaba cansado.",
+                "সে বলেছিল সে ক্লান্ত ছিল।"
+              ],
+              [
+                "futuro",
+                "condicional",
+                "Él dijo que iría al día siguiente.",
+                "সে বলেছিল সে পরদিন যাবে।"
+              ]
             ],
             "note_en": "If the reporting verb is in the past (dijo...), Spanish often shifts the tense back.",
             "note_bn": "যদি রিপোর্টিং ক্রিয়া অতীতে হয় (dijo...), তখন সাধারণত কাল এক ধাপ পিছিয়ে যায়।"
@@ -3676,7 +4179,8 @@
             "correct": "El profesor dijo que no hablara."
           }
         ]
-      }
+      },
+      "vocab_limit_per_category": 20
     },
     {
       "id": 49,
