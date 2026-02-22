@@ -31,6 +31,7 @@ Spanish Resources/*
 # Build artifacts from dictionary extraction scripts
 data/_bn_cache_*.json
 data/vocabulary_extended.json
+data/vocabulary_extended_clean.json
 
 # Build artifacts from local resource ingestion
 data/resource_sentences.json

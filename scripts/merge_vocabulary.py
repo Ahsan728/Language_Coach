@@ -23,13 +23,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.path.join(BASE_DIR, 'data')
 
 SRC  = os.path.join(DATA_DIR, 'vocabulary_extended.json')
+SRC_CLEAN = os.path.join(DATA_DIR, 'vocabulary_extended_clean.json')
 DEST = os.path.join(DATA_DIR, 'vocabulary.json')
 
-# Categories to skip (too noisy from PDF headers)
-SKIP_CATS = {'reference', 'general'}
+# Categories to skip
+SKIP_CATS = {'general'}
 
 # Max new words to add per category per language
-MAX_PER_CAT = 60
+MAX_PER_CAT = 800
 
 # Map new category names → human-readable labels (English + Bengali)
 CAT_LABELS = {
@@ -46,6 +47,9 @@ CAT_LABELS = {
     'people'           : ('People & Society',          'মানুষ ও সমাজ'),
     'transport_advanced': ('Transport & Travel',       'যানবাহন ও ভ্রমণ'),
 }
+
+# Categories we want to fully refresh from the extracted dictionaries.
+REPLACE_CATS = set(CAT_LABELS.keys())
 
 # Categories already covered by existing vocabulary — merge but don't duplicate
 EXISTING_CATS = {
@@ -67,7 +71,10 @@ def save_json(data, path):
 def normalise(word):
     """Lowercase, strip articles for dedup check."""
     w = word.lower().strip()
+    w = w.replace('•', ' ').replace('|', ' ')
+    w = re.sub(r'\b\d{1,4}\b', '', w)
     w = re.sub(r"^(le |la |l'|les |un |une |des |el |los |las |un |una |unos |unas )", '', w, flags=re.I)
+    w = re.sub(r'\s+', ' ', w).strip()
     return w.strip()
 
 
@@ -77,8 +84,11 @@ def merge(lang, existing_grouped, extended_grouped):
     extended_grouped: {category: [word_dicts]}   (from build_vocabulary.py)
     Returns a merged dict in the same {category: [word_dicts]} shape.
     """
+    # Drop categories that we want to fully refresh.
+    existing_kept = {cat: list(words) for cat, words in existing_grouped.items() if cat not in REPLACE_CATS}
+
     # Flatten existing into dedup sets
-    all_existing = [e for words in existing_grouped.values() for e in words]
+    all_existing = [e for words in existing_kept.values() for e in words]
     existing_norms   = {normalise(e['word'])           for e in all_existing}
     existing_english = {e['english'].lower()[:30]      for e in all_existing}
 
@@ -86,7 +96,7 @@ def merge(lang, existing_grouped, extended_grouped):
     added_total = 0
 
     # Start with a copy of the existing grouped dict
-    result = {cat: list(words) for cat, words in existing_grouped.items()}
+    result = dict(existing_kept)
 
     for cat, words in sorted(extended_grouped.items()):
         if cat in SKIP_CATS:
@@ -96,6 +106,12 @@ def merge(lang, existing_grouped, extended_grouped):
         for entry in words:
             if count >= MAX_PER_CAT:
                 break
+
+            if not entry.get('word') or not entry.get('english'):
+                continue
+
+            if '|' in entry['word'] or '•' in entry['word'] or '|' in entry['english'] or '•' in entry['english']:
+                continue
 
             norm   = normalise(entry['word'])
             en_key = entry['english'].lower()[:30]
@@ -130,7 +146,8 @@ def merge(lang, existing_grouped, extended_grouped):
 def main():
     print("Loading files …")
     existing = load_json(DEST)   # {"french": {cat: [...]}, "spanish": {cat: [...]}}
-    extended = load_json(SRC)    # {"french": {cat: [...]}, "spanish": {cat: [...]}}
+    src = SRC_CLEAN if os.path.exists(SRC_CLEAN) else SRC
+    extended = load_json(src)    # {"french": {cat: [...]}, "spanish": {cat: [...]}}
 
     result = {}
     for lang in ['french', 'spanish']:

@@ -70,19 +70,104 @@ ACCENT_FR  = re.compile(r'[àâäéèêëîïôùûüçœæÀÂÄÉÈÊËÎÏÔ�
 ACCENT_ES  = re.compile(r'[áàâäéèêëíîïóôúùûüñÁÀÂÄÉÈÊËÍÎÏÓÔÚÙÛÜÑ]')
 ACCENT_ANY = re.compile(r'[àâäéèêëîïôùûüçœæáíóúñÀÂÄÉÈÊËÎÏÔÙÛÜÇŒÆÁÍÓÚÑ]')
 
+PAGE_NUM_RE = re.compile(r'\b\d{1,4}\b')
+
+def _norm_line(s: str) -> str:
+    return (
+        (s or '')
+        .replace('\u00A0', ' ')
+        .replace('’', "'")
+        .replace('‘', "'")
+        .strip()
+    )
+
+def _strip_page_nums(s: str) -> str:
+    return PAGE_NUM_RE.sub('', s or '')
+
 def clean(word):
+    word = _norm_line(word)
     word = re.sub(r'\([^)]{0,30}\)', '', word)   # remove (c alternative) notes
-    word = re.sub(r'\s*\(v\)', '', word)           # remove verb markers
+    word = re.sub(r'\s*\(v\)', '', word)         # remove verb markers
+    word = word.replace('•', ' ').replace('|', ' ')
+    word = _strip_page_nums(word)
     word = re.sub(r'\s+', ' ', word).strip()
-    word = word.rstrip('.,;:')
+    word = word.strip('.,;:•|')
     return word
 
-def is_english(line):
-    """Heuristic: no accents, reasonable length, not all-caps."""
-    return (not ACCENT_ANY.search(line)
-            and len(line) <= 55
-            and not NOISE_RE.search(line)
-            and not line.isupper())
+def is_english(line, lang):
+    """Heuristic: likely English label, not a foreign word line."""
+    line = _norm_line(line)
+    if not line:
+        return False
+    if NOISE_RE.search(line) or line.isupper() or len(line) > 70:
+        return False
+    # Avoid misclassifying foreign lines that don't have accents (very common in FR/ES).
+    if lang == 'french' and FR_ARTICLE.match(line):
+        return False
+    if lang == 'spanish' and ES_ARTICLE.match(line):
+        return False
+    if '¿' in line or '¡' in line:
+        return False
+    return not ACCENT_ANY.search(line)
+
+def _looks_foreign(line, lang):
+    line = _norm_line(line)
+    if not line:
+        return False
+    if lang == 'french':
+        return (FR_ARTICLE.match(line) is not None) or (ACCENT_FR.search(line) is not None)
+    return (ES_ARTICLE.match(line) is not None) or (ACCENT_ES.search(line) is not None)
+
+def _extract_inline_pairs(line, lang):
+    """Extract one or more (foreign, english) pairs from a single mixed line.
+
+    Dictionaries sometimes render as:
+      "la pharmacie | pharmacy 108 le fleuriste | florist 110"
+    """
+    if '|' not in line:
+        return [], None
+
+    s = _norm_line(line)
+    s = s.replace('•', ' ').replace('·', ' ')
+    s = re.sub(r'\s+', ' ', s).strip()
+    s = _strip_page_nums(s)
+    s = re.sub(r'\s+', ' ', s).strip()
+
+    art = FR_ARTICLE if lang == 'french' else ES_ARTICLE
+    matches = list(art.finditer(s))
+
+    # If we can't find foreign-article anchors, fall back to first pipe split.
+    if not matches:
+        parts = [p.strip() for p in s.split('|') if p.strip()]
+        if len(parts) >= 2:
+            foreign = clean(parts[0])
+            english = clean(parts[1])
+            if foreign and english and foreign != english:
+                return [(foreign, english)], None
+        return [], None
+
+    # Split into chunks starting at each foreign article.
+    chunks = []
+    for idx, m in enumerate(matches):
+        start = m.start()
+        end = matches[idx + 1].start() if idx + 1 < len(matches) else len(s)
+        chunks.append(s[start:end].strip())
+
+    pairs = []
+    leftover = None
+    for chunk in chunks:
+        if '|' in chunk:
+            left, right = chunk.split('|', 1)
+            foreign = clean(left)
+            english = clean(right)
+            if foreign and english and foreign != english:
+                pairs.append((foreign, english))
+        else:
+            frag = clean(chunk)
+            if frag and art.match(frag):
+                leftover = frag
+
+    return pairs, leftover
 
 # ── PDF extraction ────────────────────────────────────────────────────────────
 def extract_from_pdf(pdf_path, lang):
@@ -107,6 +192,7 @@ def extract_from_pdf(pdf_path, lang):
         i = 0
         while i < len(lines):
             line = lines[i]
+            line = _norm_line(line)
 
             # --- detect section header ---
             sec = detect_section(line)
@@ -116,40 +202,49 @@ def extract_from_pdf(pdf_path, lang):
                 continue
 
             # --- skip pure noise ---
-            if NOISE_RE.search(line) or len(line) > 58:
+            if ('•' in line and '|' not in line) or NOISE_RE.search(line) or len(line) > 120:
+                i += 1
+                continue
+
+            # --- inline pairs on the same line ---
+            pairs, leftover = _extract_inline_pairs(line, lang)
+            if pairs:
+                for foreign, english in pairs:
+                    key = (foreign.lower(), english.lower())
+                    if foreign and english and foreign != english and key not in seen:
+                        seen.add(key)
+                        entries.append({'word': foreign, 'english': english, 'category': category})
+
+                # Sometimes the last foreign fragment has its English label on the next line.
+                if leftover and i + 1 < len(lines):
+                    nxt = _norm_line(lines[i + 1])
+                    if is_english(nxt, lang):
+                        foreign = clean(leftover)
+                        english = clean(nxt)
+                        key = (foreign.lower(), english.lower())
+                        if foreign and english and foreign != english and key not in seen:
+                            seen.add(key)
+                            entries.append({'word': foreign, 'english': english, 'category': category})
+                        i += 2
+                        continue
+
                 i += 1
                 continue
 
             # --- try to form a word pair with the next line ---
-            if i + 1 >= len(lines):
-                i += 1
-                continue
+            if i + 1 < len(lines):
+                nxt = _norm_line(lines[i + 1])
+                if _looks_foreign(line, lang) and is_english(nxt, lang):
+                    foreign = clean(line)
+                    english = clean(nxt)
+                    key = (foreign.lower(), english.lower())
+                    if foreign and english and foreign != english and key not in seen:
+                        seen.add(key)
+                        entries.append({'word': foreign, 'english': english, 'category': category})
+                    i += 2
+                    continue
 
-            nxt = lines[i + 1]
-
-            # Foreign word check
-            if lang == 'french':
-                is_foreign = (FR_ARTICLE.match(line) is not None
-                              or ACCENT_FR.search(line) is not None)
-            else:
-                is_foreign = (ES_ARTICLE.match(line) is not None
-                              or ACCENT_ES.search(line) is not None)
-
-            if is_foreign and is_english(nxt) and '•' not in nxt:
-                foreign = clean(line)
-                english = clean(nxt)
-                key = (foreign.lower(), english.lower())
-
-                if foreign and english and foreign != english and key not in seen:
-                    seen.add(key)
-                    entries.append({
-                        'word'    : foreign,
-                        'english' : english,
-                        'category': category,
-                    })
-                i += 2
-            else:
-                i += 1
+            i += 1
 
         if (pg_num + 1) % 60 == 0:
             print(f"  … page {pg_num+1}/{len(reader.pages)}  ({len(entries)} pairs)")
