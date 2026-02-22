@@ -16,7 +16,17 @@ from urllib.request import Request, urlopen
 from flask import Flask, render_template, jsonify, request, redirect, url_for, send_file, session
 
 app = Flask(__name__)
-app.secret_key = os.environ.get('SECRET_KEY', 'language_coach_dev')
+_secret_key = os.environ.get('SECRET_KEY', '').strip()
+if not _secret_key:
+    import warnings
+    warnings.warn(
+        "SECRET_KEY env var is not set — using an insecure dev key. "
+        "Run: python -c \"import secrets; print(secrets.token_hex(32))\" "
+        "and set SECRET_KEY in your environment or a .env file.",
+        stacklevel=1,
+    )
+    _secret_key = 'language_coach_dev_INSECURE'
+app.secret_key = _secret_key
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(BASE_DIR, 'data')
@@ -710,6 +720,22 @@ def init_db():
         'next_due': 'TEXT',
         'last_review': 'TEXT',
     })
+
+    # Performance indexes for SRS due-word queries (no-op if already present)
+    conn.executescript('''
+        CREATE INDEX IF NOT EXISTS idx_wp_lang_due
+            ON word_progress(language, next_due);
+        CREATE INDEX IF NOT EXISTS idx_wp_lang_word
+            ON word_progress(language, word);
+        CREATE INDEX IF NOT EXISTS idx_uwp_user_lang_due
+            ON user_word_progress(user_id, language, next_due);
+        CREATE INDEX IF NOT EXISTS idx_uwp_user_lang_word
+            ON user_word_progress(user_id, language, word);
+        CREATE INDEX IF NOT EXISTS idx_ulp_user_lang
+            ON user_lesson_progress(user_id, language);
+        CREATE INDEX IF NOT EXISTS idx_uda_user_date
+            ON user_daily_activity(user_id, date);
+    ''')
 
     conn.commit()
     conn.close()
@@ -1879,7 +1905,7 @@ def api_complete():
 def api_word_progress():
     data = request.json or {}
     lang    = data.get('language')
-    word    = data.get('word')
+    word    = (data.get('word') or '')[:300]   # guard against oversized input
     correct = int(data.get('correct', 0))
     source  = (data.get('source') or '').strip().lower()
     try:

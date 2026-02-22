@@ -118,6 +118,68 @@
   {% block content %}{% endblock %}
 </main>
 
+<!-- Keyboard Shortcuts Help Modal -->
+<div class="modal fade" id="shortcutsModal" tabindex="-1" aria-labelledby="shortcutsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title fw-bold" id="shortcutsModalLabel">⌨️ Keyboard Shortcuts</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body pt-2">
+        <div class="shortcuts-section mb-3" id="sc-flashcards" style="display:none">
+          <div class="fw-semibold small text-muted text-uppercase mb-2">🃏 Flashcards</div>
+          <table class="table table-sm table-borderless mb-0">
+            <tbody>
+              <tr><td><kbd>Space</kbd> / <kbd>Enter</kbd></td><td>Flip card</td></tr>
+              <tr><td><kbd>K</kbd></td><td>I know it ✓</td></tr>
+              <tr><td><kbd>J</kbd></td><td>Need review ↩</td></tr>
+              <tr><td><kbd>←</kbd> <kbd>→</kbd></td><td>Previous / Next</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="shortcuts-section mb-3" id="sc-quiz" style="display:none">
+          <div class="fw-semibold small text-muted text-uppercase mb-2">📝 Quiz</div>
+          <table class="table table-sm table-borderless mb-0">
+            <tbody>
+              <tr><td><kbd>1</kbd> – <kbd>4</kbd></td><td>Select answer</td></tr>
+              <tr><td><kbd>Enter</kbd></td><td>Next question</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="shortcuts-section mb-3" id="sc-practice" style="display:none">
+          <div class="fw-semibold small text-muted text-uppercase mb-2">🎯 Practice</div>
+          <table class="table table-sm table-borderless mb-0">
+            <tbody>
+              <tr><td><kbd>L</kbd></td><td>Listen / replay audio</td></tr>
+              <tr><td><kbd>1</kbd> – <kbd>4</kbd></td><td>Select MCQ answer</td></tr>
+              <tr><td><kbd>Enter</kbd></td><td>Submit / next</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="shortcuts-section" id="sc-dictation" style="display:none">
+          <div class="fw-semibold small text-muted text-uppercase mb-2">🎧 Dictation</div>
+          <table class="table table-sm table-borderless mb-0">
+            <tbody>
+              <tr><td><kbd>L</kbd></td><td>Listen / replay</td></tr>
+              <tr><td><kbd>Enter</kbd></td><td>Submit answer</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="text-muted small mt-2 border-top pt-2">
+          Press <kbd>?</kbd> anywhere on practice pages to show this.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Floating shortcut help button (shown only on interactive pages) -->
+<button id="shortcutsBtn" class="btn btn-sm btn-light border shadow-sm"
+        style="display:none; position:fixed; bottom:1.5rem; right:1.5rem; z-index:1040; border-radius:50%; width:2.4rem; height:2.4rem; font-size:1rem; padding:0; line-height:1;"
+        data-bs-toggle="modal" data-bs-target="#shortcutsModal"
+        title="Keyboard shortcuts (?)">?</button>
+
 <!-- Footer -->
 <footer class="py-4 mt-5">
   <div class="container text-center">
