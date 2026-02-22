@@ -2,6 +2,10 @@
 {% block title %}Progress — Language Coach{% endblock %}
 {% block body_class %}progress-page{% endblock %}
 
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+{% endblock %}
+
 {% block content %}
 <div class="lang-header lang-header-multi py-4">
   <div class="container">
@@ -13,6 +17,14 @@
 </div>
 
 <div class="container py-5">
+  {% if xp_history %}
+  <div class="card border-0 shadow-sm mb-5">
+    <div class="card-body p-4">
+      <h5 class="fw-bold mb-3">⭐ XP — Last {{ xp_history | length }} active days</h5>
+      <canvas id="xpChart" height="80"></canvas>
+    </div>
+  </div>
+  {% endif %}
   {% for lang, lessons in progress.items() %}
   {% set meta = lang_meta[lang] %}
   {% set done = lessons | selectattr('completed') | list | length %}
@@ -92,4 +104,46 @@
   </div>
   {% endfor %}
 </div>
+
+{% if xp_history %}
+<script>
+(function() {
+  const data = {{ xp_history | tojson }};
+  const labels = data.map(d => d.date.slice(5));   // MM-DD
+  const values = data.map(d => d.xp);
+  const ctx = document.getElementById('xpChart');
+  if (!ctx) return;
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'XP earned',
+        data: values,
+        backgroundColor: 'rgba(109,94,246,0.7)',
+        borderColor: '#6d5ef6',
+        borderWidth: 1,
+        borderRadius: 6,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            title: items => data[items[0].dataIndex].date,
+            label: item => `⭐ ${item.raw} XP`
+          }
+        }
+      },
+      scales: {
+        y: { beginAtZero: true, ticks: { stepSize: 10 } },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+})();
+</script>
+{% endif %}
 {% endblock %}
