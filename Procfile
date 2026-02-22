@@ -1,1 +1,1 @@
-web: gunicorn app:app
+web: TTS_PROVIDER=gtts gunicorn app:app
