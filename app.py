@@ -1028,6 +1028,7 @@ def _static_asset_version():
     paths = [
         os.path.join(BASE_DIR, 'static', 'css', 'style.css'),
         os.path.join(BASE_DIR, 'static', 'js', 'app.js'),
+        os.path.join(BASE_DIR, 'logo', 'AhsanSuny_Logo.png'),
     ]
     mtimes = []
     for p in paths:
