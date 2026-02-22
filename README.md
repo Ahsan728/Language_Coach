@@ -45,6 +45,18 @@ Then open your browser at **http://localhost:5000**
 
 ---
 
+## Online Deployment (Server TTS)
+
+To make pronunciation work for everyone online (even if a user has no Spanish/French voice installed), use server-side TTS:
+
+- Procfile deployments: server TTS is enabled by default (gTTS).
+- Other hosts: set `TTS_PROVIDER=gtts` in your environment variables.
+- Optional (recommended): set `TTS_CACHE_DIR` to a writable (or persistent) folder to cache generated MP3s.
+
+Notes:
+- gTTS requires outbound internet access from your server and sends text to Google to generate audio.
+- If server TTS fails, the app automatically falls back to browser TTS.
+
 ## Local Resources (PDFs + Links)
 
 - Add your learning PDFs/links into `French Resources/` and `Spanish Resources/` (kept local; ignored by Git).
