@@ -2361,16 +2361,6 @@
         "example_bn": "এটা কি সময় শেষ হয়?।"
       },
       {
-        "word": "Ça dure combien de",
-        "english": "temps?",
-        "bengali": "টেম্পস?",
-        "category": "reference",
-        "pronunciation": "",
-        "example": "Ça dure combien de.",
-        "example_en": "temps?.",
-        "example_bn": "টেম্পস?।"
-      },
-      {
         "word": "J'y arriverai bientôt",
         "english": "I'll be there soon",
         "bengali": "আমি শীঘ্রই সেখানে আসব",
@@ -2399,16 +2389,6 @@
         "example": "À tout à l'heure.",
         "example_en": "I'll see you later.",
         "example_bn": "পরে দেখা হবে।"
-      },
-      {
-        "word": "Ça commence à quelle",
-        "english": "heure?",
-        "bengali": "হেউরে?",
-        "category": "reference",
-        "pronunciation": "",
-        "example": "Ça commence à quelle.",
-        "example_en": "heure?.",
-        "example_bn": "হেউরে?।"
       },
       {
         "word": "l'après-midi",
@@ -3621,16 +3601,6 @@
         "example_bn": "কোথায়…?।"
       },
       {
-        "word": "Où est le/la…le/la",
-        "english": "plus proche?",
-        "bengali": "প্লাস proche?",
-        "category": "reference",
-        "pronunciation": "",
-        "example": "Où est le/la…le/la.",
-        "example_en": "plus proche?.",
-        "example_bn": "প্লাস proche?।"
-      },
-      {
         "word": "Où sont les toilettes?",
         "english": "Where are the restrooms?",
         "bengali": "বিশ্রামাগার কোথায়?",
@@ -3699,16 +3669,6 @@
         "example": "Riverains autorisés.",
         "example_en": "Residents only.",
         "example_bn": "শুধুমাত্র বাসিন্দারা।"
-      },
-      {
-        "word": "Où est la salle à",
-        "english": "manger?",
-        "bengali": "ম্যানেজার?",
-        "category": "reference",
-        "pronunciation": "",
-        "example": "Où est la salle à.",
-        "example_en": "manger?.",
-        "example_bn": "ম্যানেজার?।"
       },
       {
         "word": "Le numéro de ma",
@@ -3859,16 +3819,6 @@
         "example": "anesthésiste m.",
         "example_en": "aneth f.",
         "example_bn": "aneth চ।"
-      },
-      {
-        "word": "sappareils électriques",
-        "english": "m",
-        "bengali": "মি",
-        "category": "reference",
-        "pronunciation": "",
-        "example": "sappareils électriques.",
-        "example_en": "m.",
-        "example_bn": "মি।"
       },
       {
         "word": "appât m",
@@ -4729,16 +4679,6 @@
         "example": "chaudière f.",
         "example_en": "chauffeur de taxi m.",
         "example_bn": "ট্যাক্সি চালক।"
-      },
-      {
-        "word": "chaussure compensée",
-        "english": "f",
-        "bengali": "চ",
-        "category": "reference",
-        "pronunciation": "",
-        "example": "chaussure compensée.",
-        "example_en": "f.",
-        "example_bn": "চ।"
       },
       {
         "word": "chaussure lacée f",
@@ -8749,16 +8689,6 @@
         "example": "secrétariat m.",
         "example_en": "section f.",
         "example_bn": "বিভাগ চ।"
-      },
-      {
-        "word": "sédimentair",
-        "english": "e",
-        "bengali": "e",
-        "category": "reference",
-        "pronunciation": "",
-        "example": "sédimentair.",
-        "example_en": "e.",
-        "example_bn": "e।"
       },
       {
         "word": "Sénégal",
@@ -50768,16 +50698,6 @@
         "example_bn": "নিকটতম কোথায়...?।"
       },
       {
-        "word": "¿Dónde están los",
-        "english": "servicios?",
-        "bengali": "সেবা?",
-        "category": "reference",
-        "pronunciation": "",
-        "example": "¿Dónde están los.",
-        "example_en": "servicios?.",
-        "example_bn": "সেবা?।"
-      },
-      {
         "word": "¿Cómo voy a…?",
         "english": "How do I get to…?",
         "bengali": "আমি কিভাবে পেতে পারি...?",
@@ -50828,16 +50748,6 @@
         "example_bn": "সি টেংগো।"
       },
       {
-        "word": "¿A qué hora es el",
-        "english": "desayuno?",
-        "bengali": "desayuno?",
-        "category": "reference",
-        "pronunciation": "",
-        "example": "¿A qué hora es el.",
-        "example_en": "desayuno?.",
-        "example_bn": "desayuno?।"
-      },
-      {
         "word": "habitación es el …",
         "english": "My room number is …",
         "bengali": "আমার রুম নম্বর হল…",
@@ -50856,16 +50766,6 @@
         "example": "Volveré a las ….",
         "example_en": "I'll be back at … o'clock.",
         "example_bn": "আমি ... টায় ফিরে আসব।"
-      },
-      {
-        "word": "¿Dónde está el",
-        "english": "comedor?",
-        "bengali": "কৌতুককারী?",
-        "category": "reference",
-        "pronunciation": "",
-        "example": "¿Dónde está el.",
-        "example_en": "comedor?.",
-        "example_bn": "কৌতুককারী?।"
       },
       {
         "word": "Me marcho mañana",
