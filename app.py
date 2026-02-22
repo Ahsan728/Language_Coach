@@ -470,13 +470,55 @@ def get_activity_summary():
 # ---------- Helpers ----------
 def get_lesson_vocab(lang, lesson):
     words = []
-    vocab_data = get_vocab()
-    for cat in lesson.get('vocabulary_categories', []):
-        words.extend(vocab_data.get(lang, {}).get(cat, []))
+    vocab_by_cat = (get_vocab().get(lang) or {})
+    slices = lesson.get('vocabulary_slices') or {}
+    try:
+        default_limit = int(lesson.get('vocab_limit_per_category') or 60)
+    except (TypeError, ValueError):
+        default_limit = 60
+
+    for cat in (lesson.get('vocabulary_categories') or []):
+        cat_words = list(vocab_by_cat.get(cat, []) or [])
+        if not cat_words:
+            continue
+
+        sl = slices.get(cat) or {}
+        try:
+            offset = int(sl.get('offset') or 0)
+        except (TypeError, ValueError):
+            offset = 0
+
+        limit = sl.get('limit', None)
+        if limit is None:
+            limit = default_limit
+        try:
+            limit = int(limit)
+        except (TypeError, ValueError):
+            limit = default_limit
+
+        offset = max(0, offset)
+        if limit > 0:
+            cat_words = cat_words[offset: offset + limit]
+        else:
+            cat_words = cat_words[offset:]
+
+        words.extend(cat_words)
+
     return words
 
+_CEFR_ORDER = {'A1': 1, 'A2': 2, 'B1': 3, 'B2': 4, 'C1': 5, 'C2': 6}
+
+
+def _lesson_cefr(lesson) -> str:
+    return (lesson.get('cefr_level') or lesson.get('level') or '').strip().upper()
+
+
+def _cefr_rank(level: str) -> int:
+    return _CEFR_ORDER.get((level or '').strip().upper(), 99)
+
+
 def _sorted_lessons(lesson_list):
-    return sorted(lesson_list or [], key=lambda l: l.get('id', 0))
+    return sorted(lesson_list or [], key=lambda l: (_cefr_rank(_lesson_cefr(l)), l.get('id', 0)))
 
 
 def _find_lesson(lesson_list, lesson_id):
@@ -663,17 +705,35 @@ def flashcards_category(lang, category):
         return redirect(url_for('dashboard'))
 
     vocab_data = get_vocab().get(lang, {})
-    vocab = vocab_data.get(category, [])
-    if not vocab:
+    vocab_full = vocab_data.get(category, [])
+    if not vocab_full:
         return redirect(url_for('vocabulary_view', lang=lang))
+
+    try:
+        limit = max(10, min(200, int(request.args.get('n', 60))))
+    except (TypeError, ValueError):
+        limit = 60
+    try:
+        offset = max(0, int(request.args.get('offset', 0)))
+    except (TypeError, ValueError):
+        offset = 0
+
+    vocab = vocab_full[offset: offset + limit]
+    if not vocab:
+        return redirect(url_for('flashcards_category', lang=lang, category=category, n=limit, offset=0))
 
     title = category.replace('_', ' ').title()
     pseudo_lesson = {'id': 0, 'title_en': f"Category: {title}", 'title_bn': '', 'title_lang': ''}
+    total = len(vocab_full)
+    start = offset + 1
+    end = min(offset + limit, total)
+    subtitle = f"Showing {start}–{end} of {total} words"
     return render_template('flashcard.html', lang=lang, meta=LANG_META[lang],
                            lesson=pseudo_lesson, vocabulary=vocab,
                            vocab_json=json.dumps(vocab, ensure_ascii=False),
                            back_url=url_for('vocabulary_view', lang=lang, cat=category),
-                           show_quiz_link=False)
+                           show_quiz_link=False,
+                           header_subtitle=subtitle)
 
 
 @app.route('/review/<lang>')
@@ -785,6 +845,24 @@ def practice(lang):
     if not vocab_all:
         return redirect(url_for('language_home', lang=lang))
 
+    lesson_list = get_lessons().get(lang, [])
+    progress = load_progress(lang)
+    lesson_list_sorted = _sorted_lessons(lesson_list)
+    rec = _recommended_lesson(lesson_list_sorted, progress)
+    current_rank = _cefr_rank(_lesson_cefr(rec)) if rec else 99
+
+    unlocked = []
+    unlocked_words = set()
+    for lesson in lesson_list_sorted:
+        if _cefr_rank(_lesson_cefr(lesson)) > current_rank:
+            continue
+        for w in get_lesson_vocab(lang, lesson):
+            ww = (w.get('word') or '').strip()
+            if not ww or ww in unlocked_words:
+                continue
+            unlocked_words.add(ww)
+            unlocked.append(w)
+
     tts_lang = 'fr-FR' if lang == 'french' else 'es-ES'
     resource_sentences = get_resource_sentences().get(lang, []) or []
 
@@ -816,16 +894,17 @@ def practice(lang):
     selected = []
     for r in due_rows:
         entry = vocab_lookup.get(r['word'])
-        if entry:
+        if entry and (not unlocked_words or entry['word'] in unlocked_words):
             selected.append(entry)
 
     if len(selected) < total_q:
-        pool = [w for w in vocab_all if w['word'] not in {e['word'] for e in selected}]
+        base_pool = unlocked or vocab_all
+        pool = [w for w in base_pool if w.get('word') and w['word'] not in {e['word'] for e in selected}]
         random.shuffle(pool)
         selected.extend(pool[: max(0, total_q - len(selected))])
 
     # Build interactive exercises (Duolingo-like mix: listen, choice, type)
-    all_for_wrong = vocab_all[:]
+    all_for_wrong = (unlocked[:] if len(unlocked) >= 40 else vocab_all[:])
     random.shuffle(all_for_wrong)
 
     questions = []

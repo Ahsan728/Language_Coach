@@ -50,7 +50,7 @@
           <a id="practiceLink"
              class="btn btn-{{ 'french' if lang == 'french' else 'spanish' }} {% if selected_cat == 'all' %}disabled{% endif %}"
              {% if selected_cat == 'all' %}aria-disabled="true"{% endif %}
-             href="{% if selected_cat != 'all' %}{{ url_for('flashcards_category', lang=lang, category=selected_cat) }}{% else %}#{% endif %}">
+             href="{% if selected_cat != 'all' %}{{ url_for('flashcards_category', lang=lang, category=selected_cat, n=60) }}{% else %}#{% endif %}">
             🃏 Practice Flashcards
           </a>
           <small class="text-muted mt-1" id="vocabCount"></small>
@@ -76,6 +76,6 @@
 const VOCAB_ALL = {{ vocab_json | safe }};
 const LANG = '{{ lang }}';
 const DEFAULT_CAT = '{{ selected_cat }}';
-const PRACTICE_URL_TEMPLATE = "{{ url_for('flashcards_category', lang=lang, category='__CAT__') }}";
+const PRACTICE_URL_TEMPLATE = "{{ url_for('flashcards_category', lang=lang, category='__CAT__', n=60) }}";
 </script>
 {% endblock %}
