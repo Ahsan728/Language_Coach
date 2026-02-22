@@ -1,19 +1,23 @@
 #!/usr/bin/env python3
-"""Add `article` field to noun vocabulary entries in vocabulary.json.
+"""Add `article` field to all noun vocabulary entries in vocabulary.json.
 
-Adds definite articles (le/la/l'/el/la) to family, body, food, and transport
-words so learners see gender alongside each word — e.g. "le pain", "la tête".
+Pass 1 — Original categories (bare words): uses a hardcoded article map.
+Pass 2 — Extended categories (article already in word field like "le médecin"):
+          extracts the article prefix, stores it in `article`, and strips it
+          from `word` so display code can style them separately.
 
 Run from the project root:
     python scripts/add_articles.py
 """
 
 import json
+import re
 from pathlib import Path
 
 VOCAB_PATH = Path('data/vocabulary.json')
 
-# French definite articles — original noun categories (bare words, no article yet)
+# ── Pass 1: hardcoded articles for original bare-word categories ──────────────
+
 FR_ARTICLES = {
     # family
     'père': 'le', 'mère': 'la', 'frère': 'le', 'sœur': 'la',
@@ -36,9 +40,6 @@ FR_ARTICLES = {
     'aéroport': "l'", 'billet': 'le',
 }
 
-# Spanish definite articles — original noun categories
-# Note: "el agua" — agua is grammatically feminine but takes el in singular
-# "la mano" — mano is feminine despite -o ending
 ES_ARTICLES = {
     # family
     'padre': 'el', 'madre': 'la', 'hermano': 'el', 'hermana': 'la',
@@ -50,7 +51,7 @@ ES_ARTICLES = {
     'boca': 'la', 'oreja': 'la', 'cuello': 'el', 'hombro': 'el',
     'brazo': 'el', 'mano': 'la', 'espalda': 'la', 'pierna': 'la',
     'pie': 'el', 'rodilla': 'la', 'dedo': 'el',
-    # food (agua takes el despite being feminine)
+    # food ("el agua" — feminine but takes el; "la mano" — feminine despite -o)
     'pan': 'el', 'leche': 'la', 'agua': 'el', 'café': 'el',
     'té': 'el', 'arroz': 'el', 'carne': 'la', 'pollo': 'el',
     'pescado': 'el', 'fruta': 'la', 'verdura': 'la', 'huevo': 'el',
@@ -61,39 +62,74 @@ ES_ARTICLES = {
     'aeropuerto': 'el', 'billete': 'el',
 }
 
-NOUN_CATEGORIES = {'family', 'body', 'food', 'transport'}
-ARTICLES = {'french': FR_ARTICLES, 'spanish': ES_ARTICLES}
+HARDCODED_CATS = {'family', 'body', 'food', 'transport'}
+
+# ── Pass 2: extract article prefix from extended-category words ───────────────
+
+# Order matters: longer prefixes first so "les " doesn't match "le " early
+FR_PREFIXES = ["l'", "les ", "le ", "la "]
+ES_PREFIXES = ["los ", "las ", "el ", "la "]
+LANG_PREFIXES = {'french': FR_PREFIXES, 'spanish': ES_PREFIXES}
+
+# Categories to skip entirely (no articles for verbs, adjectives, phrases, etc.)
+SKIP_CATS = {
+    'greetings', 'numbers', 'colors', 'time', 'verbs',
+    'adjectives', 'phrases', 'nationalities', 'daily_activities',
+    'emotions', 'reference',
+}
+
+
+def _extract_article(word: str, prefixes: list[str]) -> tuple[str, str]:
+    """Return (article, bare_word) by stripping a leading article prefix.
+    Returns ('', word) if no article found.
+    """
+    low = word.lower()
+    for p in prefixes:
+        if low.startswith(p):
+            art = p.rstrip()   # "le", "la", "l'", "les", "el", "los", "las"
+            bare = word[len(p):]
+            return art, bare
+    return '', word
 
 
 def add_articles(vocab: dict) -> dict:
-    added = 0
-    skipped = 0
-    no_match = []
+    p1_added = p1_skipped = p1_no_match = 0
+    p2_added = p2_skipped = 0
 
     for lang in ('french', 'spanish'):
-        art_map = ARTICLES[lang]
         lang_data = vocab.get(lang, {})
-        for cat in NOUN_CATEGORIES:
-            for entry in lang_data.get(cat, []):
-                w = entry.get('word', '')
-                if 'article' in entry:
-                    skipped += 1
-                    continue
-                if w in art_map:
-                    entry['article'] = art_map[w]
-                    added += 1
-                else:
-                    no_match.append(f'{lang}/{cat}/{w!r}')
+        prefixes = LANG_PREFIXES[lang]
 
-    print(f'Added articles : {added}')
-    print(f'Already had    : {skipped}')
-    if no_match:
-        print(f'No match ({len(no_match)}):')
-        for m in no_match:
-            print(f'  {m}')
-    else:
-        print('All noun words matched — no gaps.')
+        for cat, words in lang_data.items():
+            # ── Pass 1: original bare-word categories ─────────────────────────
+            if cat in HARDCODED_CATS:
+                art_map = FR_ARTICLES if lang == 'french' else ES_ARTICLES
+                for entry in words:
+                    if 'article' in entry:
+                        p1_skipped += 1
+                        continue
+                    w = entry.get('word', '')
+                    if w in art_map:
+                        entry['article'] = art_map[w]
+                        p1_added += 1
+                    else:
+                        p1_no_match += 1
 
+            # ── Pass 2: extended categories with embedded article in word ─────
+            elif cat not in SKIP_CATS:
+                for entry in words:
+                    if 'article' in entry:
+                        p2_skipped += 1
+                        continue
+                    w = entry.get('word', '')
+                    art, bare = _extract_article(w, prefixes)
+                    if art:
+                        entry['article'] = art
+                        entry['word'] = bare   # store bare word only
+                        p2_added += 1
+
+    print(f'Pass 1 (hardcoded): added={p1_added}, skipped={p1_skipped}, unmatched={p1_no_match}')
+    print(f'Pass 2 (extracted): added={p2_added}, skipped={p2_skipped}')
     return vocab
 
 
