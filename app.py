@@ -9,11 +9,11 @@ import unicodedata
 import uuid
 from datetime import datetime, date, timedelta
 from collections import Counter
-from functools import lru_cache
+from functools import lru_cache, wraps
 from typing import Optional
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
-from flask import Flask, render_template, jsonify, request, redirect, url_for, send_file
+from flask import Flask, render_template, jsonify, request, redirect, url_for, send_file, session
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'language_coach_dev')
@@ -496,7 +496,7 @@ def _compute_resource_insights(lang, resource_sentences, vocab_by_cat, lesson_li
     }
 
 
-def _build_resource_drill_questions(lang, total_q, vocab_by_cat, vocab_all, resource_sentences, tts_lang):
+def _build_resource_drill_questions(lang, total_q, vocab_by_cat, vocab_all, resource_sentences, tts_lang, user_id=None):
     if not resource_sentences:
         return []
 
@@ -509,14 +509,25 @@ def _build_resource_drill_questions(lang, total_q, vocab_by_cat, vocab_all, reso
     # Prefer due words, but fall back to any vocab word if no SRS history exists.
     now_iso = datetime.now().isoformat(timespec='seconds')
     conn = get_db()
-    due_rows = conn.execute('''
-        SELECT word
-        FROM word_progress
-        WHERE language=?
-          AND (next_due IS NULL OR next_due <= ?)
-        ORDER BY COALESCE(next_due, '') ASC, box ASC, incorrect DESC
-        LIMIT ?
-    ''', (lang, now_iso, max(200, total_q * 12))).fetchall()
+    if user_id is None:
+        due_rows = conn.execute('''
+            SELECT word
+            FROM word_progress
+            WHERE language=?
+              AND (next_due IS NULL OR next_due <= ?)
+            ORDER BY COALESCE(next_due, '') ASC, box ASC, incorrect DESC
+            LIMIT ?
+        ''', (lang, now_iso, max(200, total_q * 12))).fetchall()
+    else:
+        due_rows = conn.execute('''
+            SELECT word
+            FROM user_word_progress
+            WHERE user_id=?
+              AND language=?
+              AND (next_due IS NULL OR next_due <= ?)
+            ORDER BY COALESCE(next_due, '') ASC, box ASC, incorrect DESC
+            LIMIT ?
+        ''', (user_id, lang, now_iso, max(200, total_q * 12))).fetchall()
     conn.close()
     due_set = {r['word'] for r in due_rows if r.get('word')}
 
@@ -615,6 +626,13 @@ def init_db():
     os.makedirs(DATA_DIR, exist_ok=True)
     conn = get_db()
     conn.executescript('''
+        CREATE TABLE IF NOT EXISTS users (
+            id          INTEGER PRIMARY KEY AUTOINCREMENT,
+            name        TEXT NOT NULL,
+            email       TEXT NOT NULL UNIQUE,
+            created_at  TEXT,
+            last_login  TEXT
+        );
         CREATE TABLE IF NOT EXISTS lesson_progress (
             id          INTEGER PRIMARY KEY AUTOINCREMENT,
             language    TEXT    NOT NULL,
@@ -625,6 +643,17 @@ def init_db():
             last_seen   TEXT,
             UNIQUE(language, lesson_id)
         );
+        CREATE TABLE IF NOT EXISTS user_lesson_progress (
+            id          INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id     INTEGER NOT NULL,
+            language    TEXT    NOT NULL,
+            lesson_id   INTEGER NOT NULL,
+            completed   INTEGER DEFAULT 0,
+            best_score  INTEGER DEFAULT 0,
+            attempts    INTEGER DEFAULT 0,
+            last_seen   TEXT,
+            UNIQUE(user_id, language, lesson_id)
+        );
         CREATE TABLE IF NOT EXISTS word_progress (
             id          INTEGER PRIMARY KEY AUTOINCREMENT,
             language    TEXT NOT NULL,
@@ -633,12 +662,33 @@ def init_db():
             incorrect   INTEGER DEFAULT 0,
             UNIQUE(language, word)
         );
+        CREATE TABLE IF NOT EXISTS user_word_progress (
+            id          INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id     INTEGER NOT NULL,
+            language    TEXT NOT NULL,
+            word        TEXT NOT NULL,
+            correct     INTEGER DEFAULT 0,
+            incorrect   INTEGER DEFAULT 0,
+            box         INTEGER DEFAULT 1,
+            next_due    TEXT,
+            last_review TEXT,
+            UNIQUE(user_id, language, word)
+        );
         CREATE TABLE IF NOT EXISTS daily_activity (
             date     TEXT PRIMARY KEY,
             xp       INTEGER DEFAULT 0,
             reviews  INTEGER DEFAULT 0,
             correct  INTEGER DEFAULT 0,
             wrong    INTEGER DEFAULT 0
+        );
+        CREATE TABLE IF NOT EXISTS user_daily_activity (
+            user_id  INTEGER NOT NULL,
+            date     TEXT NOT NULL,
+            xp       INTEGER DEFAULT 0,
+            reviews  INTEGER DEFAULT 0,
+            correct  INTEGER DEFAULT 0,
+            wrong    INTEGER DEFAULT 0,
+            PRIMARY KEY(user_id, date)
         );
     ''')
 
@@ -655,6 +705,11 @@ def init_db():
         'next_due': 'TEXT',
         'last_review': 'TEXT',
     })
+    _ensure_columns('user_word_progress', {
+        'box': 'INTEGER DEFAULT 1',
+        'next_due': 'TEXT',
+        'last_review': 'TEXT',
+    })
 
     conn.commit()
     conn.close()
@@ -662,27 +717,113 @@ def init_db():
 # Initialise DB at import time so gunicorn (production) also creates tables
 init_db()
 
-def load_progress(lang):
+_EMAIL_SIMPLE_RE = re.compile(r'^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$')
+
+
+def _normalize_email(value: str) -> str:
+    return (value or '').strip().lower()
+
+
+def _is_valid_email(value: str) -> bool:
+    v = _normalize_email(value)
+    if not v or len(v) > 320:
+        return False
+    return bool(_EMAIL_SIMPLE_RE.match(v))
+
+
+def get_user_by_id(user_id: int):
+    try:
+        user_id = int(user_id)
+    except (TypeError, ValueError):
+        return None
+
     conn = get_db()
-    rows = conn.execute(
-        'SELECT lesson_id, completed, best_score, attempts, last_seen FROM lesson_progress WHERE language=?', (lang,)
-    ).fetchall()
+    row = conn.execute(
+        'SELECT id, name, email, created_at, last_login FROM users WHERE id=?', (user_id,)
+    ).fetchone()
+    conn.close()
+    return dict(row) if row else None
+
+
+def get_user_by_email(email: str):
+    email = _normalize_email(email)
+    if not email:
+        return None
+    conn = get_db()
+    row = conn.execute(
+        'SELECT id, name, email, created_at, last_login FROM users WHERE email=?', (email,)
+    ).fetchone()
+    conn.close()
+    return dict(row) if row else None
+
+
+def upsert_user(name: str, email: str) -> int:
+    name = (name or '').strip()
+    email = _normalize_email(email)
+    if not name or not email:
+        raise ValueError('Missing name or email')
+
+    now_iso = datetime.now().isoformat(timespec='seconds')
+    conn = get_db()
+    row = conn.execute('SELECT id FROM users WHERE email=?', (email,)).fetchone()
+    if row:
+        user_id = int(row['id'])
+        conn.execute('UPDATE users SET name=?, last_login=? WHERE id=?', (name, now_iso, user_id))
+    else:
+        cur = conn.execute(
+            'INSERT INTO users (name, email, created_at, last_login) VALUES (?, ?, ?, ?)',
+            (name, email, now_iso, now_iso),
+        )
+        user_id = int(cur.lastrowid)
+    conn.commit()
+    conn.close()
+    return user_id
+
+
+def current_user_id():
+    try:
+        uid = session.get('user_id')
+        return int(uid) if uid is not None else None
+    except (TypeError, ValueError):
+        return None
+
+
+def load_progress(lang, user_id=None):
+    conn = get_db()
+    if user_id is None:
+        rows = conn.execute(
+            'SELECT lesson_id, completed, best_score, attempts, last_seen FROM lesson_progress WHERE language=?', (lang,)
+        ).fetchall()
+    else:
+        rows = conn.execute(
+            'SELECT lesson_id, completed, best_score, attempts, last_seen FROM user_lesson_progress WHERE user_id=? AND language=?',
+            (user_id, lang),
+        ).fetchall()
     conn.close()
     return {r['lesson_id']: dict(r) for r in rows}
 
-def touch_lesson(lang, lesson_id):
+def touch_lesson(lang, lesson_id, user_id=None):
     """Update last_seen for a lesson even if the user doesn't finish a quiz."""
     conn = get_db()
-    conn.execute('''
-        INSERT INTO lesson_progress (language, lesson_id, completed, best_score, attempts, last_seen)
-        VALUES (?, ?, 0, 0, 0, ?)
-        ON CONFLICT(language, lesson_id) DO UPDATE SET
-            last_seen = excluded.last_seen
-    ''', (lang, lesson_id, datetime.now().isoformat()))
+    now_iso = datetime.now().isoformat(timespec='seconds')
+    if user_id is None:
+        conn.execute('''
+            INSERT INTO lesson_progress (language, lesson_id, completed, best_score, attempts, last_seen)
+            VALUES (?, ?, 0, 0, 0, ?)
+            ON CONFLICT(language, lesson_id) DO UPDATE SET
+                last_seen = excluded.last_seen
+        ''', (lang, lesson_id, now_iso))
+    else:
+        conn.execute('''
+            INSERT INTO user_lesson_progress (user_id, language, lesson_id, completed, best_score, attempts, last_seen)
+            VALUES (?, ?, ?, 0, 0, 0, ?)
+            ON CONFLICT(user_id, language, lesson_id) DO UPDATE SET
+                last_seen = excluded.last_seen
+        ''', (user_id, lang, lesson_id, now_iso))
     conn.commit()
     conn.close()
 
-def add_activity(xp=0, reviews=0, correct=0, wrong=0):
+def add_activity(xp=0, reviews=0, correct=0, wrong=0, user_id=None):
     xp = int(xp or 0)
     reviews = int(reviews or 0)
     correct = int(correct or 0)
@@ -692,30 +833,49 @@ def add_activity(xp=0, reviews=0, correct=0, wrong=0):
 
     today = date.today().isoformat()
     conn = get_db()
-    conn.execute('''
-        INSERT INTO daily_activity (date, xp, reviews, correct, wrong)
-        VALUES (?, ?, ?, ?, ?)
-        ON CONFLICT(date) DO UPDATE SET
-            xp = xp + excluded.xp,
-            reviews = reviews + excluded.reviews,
-            correct = correct + excluded.correct,
-            wrong = wrong + excluded.wrong
-    ''', (today, xp, reviews, correct, wrong))
+    if user_id is None:
+        conn.execute('''
+            INSERT INTO daily_activity (date, xp, reviews, correct, wrong)
+            VALUES (?, ?, ?, ?, ?)
+            ON CONFLICT(date) DO UPDATE SET
+                xp = xp + excluded.xp,
+                reviews = reviews + excluded.reviews,
+                correct = correct + excluded.correct,
+                wrong = wrong + excluded.wrong
+        ''', (today, xp, reviews, correct, wrong))
+    else:
+        conn.execute('''
+            INSERT INTO user_daily_activity (user_id, date, xp, reviews, correct, wrong)
+            VALUES (?, ?, ?, ?, ?, ?)
+            ON CONFLICT(user_id, date) DO UPDATE SET
+                xp = xp + excluded.xp,
+                reviews = reviews + excluded.reviews,
+                correct = correct + excluded.correct,
+                wrong = wrong + excluded.wrong
+        ''', (user_id, today, xp, reviews, correct, wrong))
     conn.commit()
     conn.close()
 
 
-def get_activity_summary():
+def get_activity_summary(user_id=None):
     today = date.today()
     today_key = today.isoformat()
 
     conn = get_db()
-    row = conn.execute(
-        'SELECT xp, reviews, correct, wrong FROM daily_activity WHERE date=?', (today_key,)
-    ).fetchone()
-    rows = conn.execute(
-        'SELECT date, xp FROM daily_activity WHERE xp > 0 ORDER BY date DESC LIMIT 60'
-    ).fetchall()
+    if user_id is None:
+        row = conn.execute(
+            'SELECT xp, reviews, correct, wrong FROM daily_activity WHERE date=?', (today_key,)
+        ).fetchone()
+        rows = conn.execute(
+            'SELECT date, xp FROM daily_activity WHERE xp > 0 ORDER BY date DESC LIMIT 60'
+        ).fetchall()
+    else:
+        row = conn.execute(
+            'SELECT xp, reviews, correct, wrong FROM user_daily_activity WHERE user_id=? AND date=?', (user_id, today_key)
+        ).fetchone()
+        rows = conn.execute(
+            'SELECT date, xp FROM user_daily_activity WHERE user_id=? AND xp > 0 ORDER BY date DESC LIMIT 60', (user_id,)
+        ).fetchall()
     conn.close()
 
     xp_today = int(row['xp']) if row else 0
@@ -857,10 +1017,13 @@ def _static_asset_version():
 @app.context_processor
 def inject_globals():
     ui_theme = 'lime'
+    uid = current_user_id()
+    auth_user = get_user_by_id(uid) if uid is not None else None
     return {
         'lang_meta': LANG_META,
         'tts_provider': app.config.get('TTS_PROVIDER', 'auto'),
         'ui_theme': ui_theme,
+        'auth_user': auth_user,
         'current_year': datetime.now().year,
         'static_version': _static_asset_version(),
     }
@@ -868,10 +1031,11 @@ def inject_globals():
 # ---------- Routes ----------
 @app.route('/')
 def dashboard():
+    uid = current_user_id()
     lessons_all = get_lessons()
     vocab_all = get_vocab()
     resource_all = get_resource_sentences()
-    activity = get_activity_summary()
+    activity = get_activity_summary(user_id=uid)
 
     cefr_counts = Counter()
     canon = lessons_all.get('french', []) or next(iter(lessons_all.values()), [])
@@ -881,7 +1045,7 @@ def dashboard():
 
     stats = {}
     for lang in LANGS:
-        prog = load_progress(lang)
+        prog = load_progress(lang, user_id=uid)
         lesson_list = lessons_all.get(lang, [])
         total = len(lesson_list)
         completed = sum(1 for v in prog.values() if v.get('completed'))
@@ -900,12 +1064,48 @@ def dashboard():
 def resources_view():
     return render_template('resources.html')
 
+def _safe_next_url(next_url: str) -> str:
+    if not next_url:
+        return url_for('dashboard')
+    next_url = str(next_url)
+    return next_url if next_url.startswith('/') else url_for('dashboard')
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    next_url = request.args.get('next') or request.form.get('next') or url_for('dashboard')
+    name = (request.form.get('name') or '').strip() if request.method == 'POST' else ''
+    email = _normalize_email(request.form.get('email')) if request.method == 'POST' else ''
+    error = None
+
+    if request.method == 'POST':
+        if not name:
+            error = 'Name is required.'
+        elif not _is_valid_email(email):
+            error = 'Please enter a valid email address.'
+        else:
+            user_id = upsert_user(name, email)
+            session['user_id'] = user_id
+            return redirect(_safe_next_url(next_url))
+
+    return render_template('login.html', error=error, next=_safe_next_url(next_url), name=name, email=email)
+
+
+@app.route('/logout')
+def logout():
+    try:
+        session.pop('user_id', None)
+    except Exception:
+        pass
+    return redirect(url_for('dashboard'))
+
+
 @app.route('/language/<lang>')
 def language_home(lang):
     if lang not in LANG_META:
         return redirect(url_for('dashboard'))
     lessons = get_lessons().get(lang, [])
-    progress = load_progress(lang)
+    progress = load_progress(lang, user_id=current_user_id())
     resume = _recommended_lesson(lessons, progress)
     return render_template('language.html', lang=lang, meta=LANG_META[lang],
                            lessons=lessons, progress=progress, resume_lesson=resume)
@@ -919,7 +1119,7 @@ def lesson_view(lang, lesson_id):
     if not lesson:
         return redirect(url_for('language_home', lang=lang))
 
-    touch_lesson(lang, lesson_id)
+    touch_lesson(lang, lesson_id, user_id=current_user_id())
     vocab   = get_lesson_vocab(lang, lesson)
     grammar = lesson.get('grammar')
     # next lesson for navigation
@@ -939,7 +1139,7 @@ def flashcards(lang, lesson_id):
     lesson = _find_lesson(lesson_list, lesson_id)
     if not lesson:
         return redirect(url_for('language_home', lang=lang))
-    touch_lesson(lang, lesson_id)
+    touch_lesson(lang, lesson_id, user_id=current_user_id())
     vocab = get_lesson_vocab(lang, lesson)
     return render_template('flashcard.html', lang=lang, meta=LANG_META[lang],
                            lesson=lesson, vocabulary=vocab,
@@ -1023,6 +1223,7 @@ def review_flashcards(lang):
     except (TypeError, ValueError):
         limit = 40
 
+    uid = current_user_id()
     vocab_by_cat = get_vocab().get(lang, {})
     vocab_lookup = {}
     for cat, words in vocab_by_cat.items():
@@ -1042,14 +1243,25 @@ def review_flashcards(lang):
     if mode == 'due':
         now_iso = datetime.now().isoformat(timespec='seconds')
         conn = get_db()
-        rows = conn.execute('''
-            SELECT word
-            FROM word_progress
-            WHERE language=?
-              AND (next_due IS NULL OR next_due <= ?)
-            ORDER BY COALESCE(next_due, '') ASC, box ASC, incorrect DESC
-            LIMIT ?
-        ''', (lang, now_iso, limit)).fetchall()
+        if uid is None:
+            rows = conn.execute('''
+                SELECT word
+                FROM word_progress
+                WHERE language=?
+                  AND (next_due IS NULL OR next_due <= ?)
+                ORDER BY COALESCE(next_due, '') ASC, box ASC, incorrect DESC
+                LIMIT ?
+            ''', (lang, now_iso, limit)).fetchall()
+        else:
+            rows = conn.execute('''
+                SELECT word
+                FROM user_word_progress
+                WHERE user_id=?
+                  AND language=?
+                  AND (next_due IS NULL OR next_due <= ?)
+                ORDER BY COALESCE(next_due, '') ASC, box ASC, incorrect DESC
+                LIMIT ?
+            ''', (uid, lang, now_iso, limit)).fetchall()
         conn.close()
 
         for r in rows:
@@ -1059,9 +1271,14 @@ def review_flashcards(lang):
 
     if mode == 'weak' and not review_words:
         conn = get_db()
-        rows = conn.execute(
-            'SELECT word, correct, incorrect FROM word_progress WHERE language=?', (lang,)
-        ).fetchall()
+        if uid is None:
+            rows = conn.execute(
+                'SELECT word, correct, incorrect FROM word_progress WHERE language=?', (lang,)
+            ).fetchall()
+        else:
+            rows = conn.execute(
+                'SELECT word, correct, incorrect FROM user_word_progress WHERE user_id=? AND language=?', (uid, lang)
+            ).fetchall()
         conn.close()
 
         scored = []
@@ -1122,7 +1339,7 @@ def practice(lang):
         return redirect(url_for('language_home', lang=lang))
 
     lesson_list = get_lessons().get(lang, [])
-    progress = load_progress(lang)
+    progress = load_progress(lang, user_id=current_user_id())
     lesson_list_sorted = _sorted_lessons(lesson_list)
     rec = _recommended_lesson(lesson_list_sorted, progress)
     current_rank = _cefr_rank(_lesson_cefr(rec)) if rec else 99
@@ -1145,7 +1362,9 @@ def practice(lang):
     if mode in {'resources', 'resource'}:
         if not resource_sentences:
             return redirect(url_for('practice', lang=lang))
-        questions = _build_resource_drill_questions(lang, total_q, vocab_by_cat, vocab_all, resource_sentences, tts_lang)
+        questions = _build_resource_drill_questions(
+            lang, total_q, vocab_by_cat, vocab_all, resource_sentences, tts_lang, user_id=current_user_id()
+        )
         if questions:
             return render_template('practice.html',
                                    lang=lang, meta=LANG_META[lang],
@@ -1154,16 +1373,28 @@ def practice(lang):
         return redirect(url_for('practice', lang=lang))
 
     # Prefer due words (spaced repetition); otherwise pick random vocabulary.
+    uid = current_user_id()
     now_iso = datetime.now().isoformat(timespec='seconds')
     conn = get_db()
-    due_rows = conn.execute('''
-        SELECT word
-        FROM word_progress
-        WHERE language=?
-          AND (next_due IS NULL OR next_due <= ?)
-        ORDER BY COALESCE(next_due, '') ASC, box ASC, incorrect DESC
-        LIMIT ?
-    ''', (lang, now_iso, total_q)).fetchall()
+    if uid is None:
+        due_rows = conn.execute('''
+            SELECT word
+            FROM word_progress
+            WHERE language=?
+              AND (next_due IS NULL OR next_due <= ?)
+            ORDER BY COALESCE(next_due, '') ASC, box ASC, incorrect DESC
+            LIMIT ?
+        ''', (lang, now_iso, total_q)).fetchall()
+    else:
+        due_rows = conn.execute('''
+            SELECT word
+            FROM user_word_progress
+            WHERE user_id=?
+              AND language=?
+              AND (next_due IS NULL OR next_due <= ?)
+            ORDER BY COALESCE(next_due, '') ASC, box ASC, incorrect DESC
+            LIMIT ?
+        ''', (uid, lang, now_iso, total_q)).fetchall()
     conn.close()
 
     vocab_lookup = {w['word']: w for w in vocab_all}
@@ -1349,7 +1580,7 @@ def dictation(lang, lesson_id):
     lesson = _find_lesson(lesson_list, lesson_id)
     if not lesson:
         return redirect(url_for('language_home', lang=lang))
-    touch_lesson(lang, lesson_id)
+    touch_lesson(lang, lesson_id, user_id=current_user_id())
     vocab = get_lesson_vocab(lang, lesson)
     if not vocab:
         return redirect(url_for('lesson_view', lang=lang, lesson_id=lesson_id))
@@ -1383,7 +1614,7 @@ def quiz(lang, lesson_id):
     lesson = _find_lesson(lesson_list, lesson_id)
     if not lesson:
         return redirect(url_for('language_home', lang=lang))
-    touch_lesson(lang, lesson_id)
+    touch_lesson(lang, lesson_id, user_id=current_user_id())
 
     vocab = get_lesson_vocab(lang, lesson)
     grammar = lesson.get('grammar')
@@ -1458,10 +1689,11 @@ def quiz(lang, lesson_id):
 
 @app.route('/progress')
 def progress_view():
+    uid = current_user_id()
     lessons_all = get_lessons()
     all_prog = {}
     for lang in LANGS:
-        prog = load_progress(lang)
+        prog = load_progress(lang, user_id=uid)
         lesson_list = _sorted_lessons(lessons_all.get(lang, []))
         enriched = []
         for l in lesson_list:
@@ -1615,16 +1847,30 @@ def api_complete():
         lesson_id = int(lesson_id)
     except (TypeError, ValueError):
         return jsonify({'ok': False}), 400
+
+    uid = current_user_id()
+    now_iso = datetime.now().isoformat(timespec='seconds')
     conn = get_db()
-    conn.execute('''
-        INSERT INTO lesson_progress (language, lesson_id, completed, best_score, attempts, last_seen)
-        VALUES (?, ?, 1, ?, 1, ?)
-        ON CONFLICT(language, lesson_id) DO UPDATE SET
-            completed  = 1,
-            best_score = MAX(best_score, excluded.best_score),
-            attempts   = attempts + 1,
-            last_seen  = excluded.last_seen
-    ''', (lang, lesson_id, score, datetime.now().isoformat()))
+    if uid is None:
+        conn.execute('''
+            INSERT INTO lesson_progress (language, lesson_id, completed, best_score, attempts, last_seen)
+            VALUES (?, ?, 1, ?, 1, ?)
+            ON CONFLICT(language, lesson_id) DO UPDATE SET
+                completed  = 1,
+                best_score = MAX(best_score, excluded.best_score),
+                attempts   = attempts + 1,
+                last_seen  = excluded.last_seen
+        ''', (lang, lesson_id, score, now_iso))
+    else:
+        conn.execute('''
+            INSERT INTO user_lesson_progress (user_id, language, lesson_id, completed, best_score, attempts, last_seen)
+            VALUES (?, ?, ?, 1, ?, 1, ?)
+            ON CONFLICT(user_id, language, lesson_id) DO UPDATE SET
+                completed  = 1,
+                best_score = MAX(best_score, excluded.best_score),
+                attempts   = attempts + 1,
+                last_seen  = excluded.last_seen
+        ''', (uid, lang, lesson_id, score, now_iso))
     conn.commit()
     conn.close()
     return jsonify({'ok': True})
@@ -1650,58 +1896,107 @@ def api_word_progress():
     box_intervals_days = {1: 1, 2: 2, 3: 4, 4: 7, 5: 14}
     fail_retry_hours = 6
 
+    uid = current_user_id()
     conn = get_db()
-    row = conn.execute(
-        'SELECT id, box FROM word_progress WHERE language=? AND word=?', (lang, word)
-    ).fetchone()
+    if uid is None:
+        row = conn.execute(
+            'SELECT id, box FROM word_progress WHERE language=? AND word=?', (lang, word)
+        ).fetchone()
+    else:
+        row = conn.execute(
+            'SELECT id, box FROM user_word_progress WHERE user_id=? AND language=? AND word=?', (uid, lang, word)
+        ).fetchone()
     old_box = int(row['box'] or 1) if row else 1
 
     if correct:
         new_box = min(old_box + 1, 5)
         next_due = (now + timedelta(days=box_intervals_days[new_box])).isoformat(timespec='seconds')
         if row:
-            conn.execute('''
-                UPDATE word_progress
-                SET correct = correct + 1,
-                    box = ?,
-                    next_due = ?,
-                    last_review = ?
-                WHERE language=? AND word=?
-            ''', (new_box, next_due, now_iso, lang, word))
+            if uid is None:
+                conn.execute('''
+                    UPDATE word_progress
+                    SET correct = correct + 1,
+                        box = ?,
+                        next_due = ?,
+                        last_review = ?
+                    WHERE language=? AND word=?
+                ''', (new_box, next_due, now_iso, lang, word))
+            else:
+                conn.execute('''
+                    UPDATE user_word_progress
+                    SET correct = correct + 1,
+                        box = ?,
+                        next_due = ?,
+                        last_review = ?
+                    WHERE user_id=? AND language=? AND word=?
+                ''', (new_box, next_due, now_iso, uid, lang, word))
         else:
-            conn.execute('''
-                INSERT INTO word_progress (language, word, correct, incorrect, box, next_due, last_review)
-                VALUES (?,?,?,?,?,?,?)
-            ''', (lang, word, 1, 0, new_box, next_due, now_iso))
+            if uid is None:
+                conn.execute('''
+                    INSERT INTO word_progress (language, word, correct, incorrect, box, next_due, last_review)
+                    VALUES (?,?,?,?,?,?,?)
+                ''', (lang, word, 1, 0, new_box, next_due, now_iso))
+            else:
+                conn.execute('''
+                    INSERT INTO user_word_progress (user_id, language, word, correct, incorrect, box, next_due, last_review)
+                    VALUES (?,?,?,?,?,?,?,?)
+                ''', (uid, lang, word, 1, 0, new_box, next_due, now_iso))
     else:
         new_box = 1
         next_due = (now + timedelta(hours=fail_retry_hours)).isoformat(timespec='seconds')
         if row:
-            conn.execute('''
-                UPDATE word_progress
-                SET incorrect = incorrect + 1,
-                    box = ?,
-                    next_due = ?,
-                    last_review = ?
-                WHERE language=? AND word=?
-            ''', (new_box, next_due, now_iso, lang, word))
+            if uid is None:
+                conn.execute('''
+                    UPDATE word_progress
+                    SET incorrect = incorrect + 1,
+                        box = ?,
+                        next_due = ?,
+                        last_review = ?
+                    WHERE language=? AND word=?
+                ''', (new_box, next_due, now_iso, lang, word))
+            else:
+                conn.execute('''
+                    UPDATE user_word_progress
+                    SET incorrect = incorrect + 1,
+                        box = ?,
+                        next_due = ?,
+                        last_review = ?
+                    WHERE user_id=? AND language=? AND word=?
+                ''', (new_box, next_due, now_iso, uid, lang, word))
         else:
-            conn.execute('''
-                INSERT INTO word_progress (language, word, correct, incorrect, box, next_due, last_review)
-                VALUES (?,?,?,?,?,?,?)
-            ''', (lang, word, 0, 1, new_box, next_due, now_iso))
+            if uid is None:
+                conn.execute('''
+                    INSERT INTO word_progress (language, word, correct, incorrect, box, next_due, last_review)
+                    VALUES (?,?,?,?,?,?,?)
+                ''', (lang, word, 0, 1, new_box, next_due, now_iso))
+            else:
+                conn.execute('''
+                    INSERT INTO user_word_progress (user_id, language, word, correct, incorrect, box, next_due, last_review)
+                    VALUES (?,?,?,?,?,?,?,?)
+                ''', (uid, lang, word, 0, 1, new_box, next_due, now_iso))
 
     # Log daily activity for streak/XP (client can pass xp per action)
     today = date.today().isoformat()
-    conn.execute('''
-        INSERT INTO daily_activity (date, xp, reviews, correct, wrong)
-        VALUES (?, ?, 1, ?, ?)
-        ON CONFLICT(date) DO UPDATE SET
-            xp = xp + excluded.xp,
-            reviews = reviews + excluded.reviews,
-            correct = correct + excluded.correct,
-            wrong = wrong + excluded.wrong
-    ''', (today, xp, 1 if correct else 0, 0 if correct else 1))
+    if uid is None:
+        conn.execute('''
+            INSERT INTO daily_activity (date, xp, reviews, correct, wrong)
+            VALUES (?, ?, 1, ?, ?)
+            ON CONFLICT(date) DO UPDATE SET
+                xp = xp + excluded.xp,
+                reviews = reviews + excluded.reviews,
+                correct = correct + excluded.correct,
+                wrong = wrong + excluded.wrong
+        ''', (today, xp, 1 if correct else 0, 0 if correct else 1))
+    else:
+        conn.execute('''
+            INSERT INTO user_daily_activity (user_id, date, xp, reviews, correct, wrong)
+            VALUES (?, ?, ?, 1, ?, ?)
+            ON CONFLICT(user_id, date) DO UPDATE SET
+                xp = xp + excluded.xp,
+                reviews = reviews + excluded.reviews,
+                correct = correct + excluded.correct,
+                wrong = wrong + excluded.wrong
+        ''', (uid, today, xp, 1 if correct else 0, 0 if correct else 1))
     conn.commit()
     conn.close()
     return jsonify({'ok': True})
