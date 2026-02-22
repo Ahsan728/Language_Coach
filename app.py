@@ -9,7 +9,10 @@ import unicodedata
 import uuid
 from datetime import datetime, date, timedelta
 from collections import Counter
+from functools import lru_cache
 from typing import Optional
+from urllib.parse import urlencode
+from urllib.request import Request, urlopen
 from flask import Flask, render_template, jsonify, request, redirect, url_for, send_file
 
 app = Flask(__name__)
@@ -25,6 +28,11 @@ if _TTS_PROVIDER not in {'browser', 'gtts', 'auto'}:
     _TTS_PROVIDER = 'auto'
 app.config['TTS_PROVIDER'] = _TTS_PROVIDER
 app.config['TTS_CACHE_DIR'] = TTS_CACHE_DIR
+
+_TRANSLATE_PROVIDER = (os.environ.get('TRANSLATE_PROVIDER') or 'hybrid').strip().lower()
+if _TRANSLATE_PROVIDER not in {'local', 'mymemory', 'hybrid'}:
+    _TRANSLATE_PROVIDER = 'hybrid'
+app.config['TRANSLATE_PROVIDER'] = _TRANSLATE_PROVIDER
 
 # ---------- Content loading (auto-reload when JSON changes) ----------
 VOCAB_PATH = os.path.join(DATA_DIR, 'vocabulary.json')
@@ -108,6 +116,266 @@ def _word_match_variants(word: str):
 
     return sorted({_norm_match(v) for v in variants if v.strip()})
 
+
+def _has_bengali_script(text: str) -> bool:
+    for ch in (text or ''):
+        if '\u0980' <= ch <= '\u09FF':
+            return True
+    return False
+
+
+def _norm_bn(text: str) -> str:
+    s = unicodedata.normalize('NFC', (text or '').strip())
+    s = re.sub(r'\s+', ' ', s)
+    return s
+
+
+def _primary_gloss(english: str) -> str:
+    """Pick a single English gloss from entries like 'hello / good morning'."""
+    parts = _split_english_glosses(english)
+    return parts[0] if parts else ''
+
+
+def _split_english_glosses(english: str):
+    s = (english or '').strip()
+    if not s:
+        return []
+    parts = re.split(r'\s*(?:/|;|,|\||·|•)\s*', s)
+    return [p.strip() for p in parts if p and p.strip()]
+
+
+def _best_vocab_match_word(vocab_by_cat, q_norm: str):
+    if not q_norm:
+        return None, 0
+
+    best = None
+    best_score = 0
+    for words in (vocab_by_cat or {}).values():
+        for w in (words or []):
+            word = (w or {}).get('word') or ''
+            nw = _norm_match(word)
+            if not nw:
+                continue
+            if q_norm == nw:
+                score = 100
+            elif nw.startswith(q_norm):
+                score = 80
+            elif q_norm in nw:
+                score = 60
+            else:
+                score = 0
+            if score > best_score:
+                best = w
+                best_score = score
+                if best_score >= 100:
+                    return best, best_score
+    return best, best_score
+
+
+def _best_vocab_match_english(vocab_by_cat, q_norm: str):
+    if not q_norm:
+        return None, 0
+
+    q_tokens = q_norm.split()
+    q_single = len(q_tokens) == 1
+
+    best = None
+    best_score = 0
+    for words in (vocab_by_cat or {}).values():
+        for w in (words or []):
+            eng = (w or {}).get('english') or ''
+            glosses = _split_english_glosses(eng)
+            if not glosses:
+                continue
+
+            score = 0
+            for g in glosses:
+                ng = _norm_match(g)
+                if not ng:
+                    continue
+
+                if q_norm == ng:
+                    score = max(score, 100)
+                    continue
+
+                if q_single:
+                    g_tokens = ng.split()
+                    if g_tokens and g_tokens[0] == q_norm:
+                        score = max(score, 88)
+                        continue
+                    if q_norm in g_tokens:
+                        score = max(score, 55)
+                        continue
+                    if ng.startswith(q_norm):
+                        score = max(score, 60)
+                        continue
+                    if q_norm in ng:
+                        score = max(score, 45)
+                        continue
+                else:
+                    if ng.startswith(q_norm):
+                        score = max(score, 85)
+                        continue
+                    if q_norm in ng:
+                        score = max(score, 70)
+                        continue
+
+            if score > best_score:
+                best = w
+                best_score = score
+    return best, best_score
+
+
+def _best_vocab_match_bengali(vocab_by_cat, q_bn: str):
+    if not q_bn:
+        return None, 0
+
+    best = None
+    best_score = 0
+    for words in (vocab_by_cat or {}).values():
+        for w in (words or []):
+            bn = _norm_bn((w or {}).get('bengali') or '')
+            if not bn:
+                continue
+
+            if q_bn == bn:
+                score = 100
+            elif q_bn in bn:
+                score = 80
+            else:
+                score = 0
+
+            if score > best_score:
+                best = w
+                best_score = score
+    return best, best_score
+
+
+@lru_cache(maxsize=4096)
+def _mymemory_translate(text: str, source: str, target: str) -> str:
+    q = (text or '').strip()
+    if not q:
+        return ''
+
+    url = 'https://api.mymemory.translated.net/get?' + urlencode({
+        'q': q,
+        'langpair': f'{source}|{target}',
+    })
+    req = Request(url, headers={'User-Agent': 'LanguageCoach/1.0'})
+
+    with urlopen(req, timeout=8) as resp:
+        payload = json.loads(resp.read().decode('utf-8', errors='replace') or '{}')
+
+    status = str(payload.get('responseStatus', ''))
+    if status != '200':
+        detail = (payload.get('responseDetails') or '').strip()
+        raise RuntimeError(detail or f'MyMemory error (status {status})')
+
+    translated = (((payload.get('responseData') or {}) or {}).get('translatedText') or '').strip()
+    return translated
+
+
+def _local_translate_lookup(text: str, source_hint: str):
+    vocab_all = get_vocab()
+    fr_vocab = vocab_all.get('french', {}) or {}
+    es_vocab = vocab_all.get('spanish', {}) or {}
+
+    has_bn = _has_bengali_script(text)
+    q_norm = _norm_match(text) if not has_bn else ''
+    q_bn = _norm_bn(text) if has_bn else ''
+
+    fr_word, fr_word_score = _best_vocab_match_word(fr_vocab, q_norm)
+    es_word, es_word_score = _best_vocab_match_word(es_vocab, q_norm)
+
+    detected = (source_hint or 'auto').strip().lower()
+    if detected not in {'auto', 'en', 'fr', 'es', 'bn'}:
+        detected = 'auto'
+
+    if detected == 'auto':
+        if has_bn:
+            detected = 'bn'
+        elif fr_word_score >= 90 and fr_word_score > es_word_score:
+            detected = 'fr'
+        elif es_word_score >= 90 and es_word_score > fr_word_score:
+            detected = 'es'
+        else:
+            detected = 'en'
+
+    results = {'en': None, 'fr': None, 'es': None, 'bn': None}
+
+    if detected == 'fr':
+        if fr_word:
+            results['fr'] = (fr_word.get('word') or '').strip() or None
+            results['en'] = (fr_word.get('english') or '').strip() or None
+            results['bn'] = (fr_word.get('bengali') or '').strip() or None
+            pivot = _primary_gloss(results['en'] or '')
+            es_by_en, _ = _best_vocab_match_english(es_vocab, _norm_match(pivot)) if pivot else (None, 0)
+            if es_by_en:
+                results['es'] = (es_by_en.get('word') or '').strip() or None
+        else:
+            results['fr'] = text
+
+    elif detected == 'es':
+        if es_word:
+            results['es'] = (es_word.get('word') or '').strip() or None
+            results['en'] = (es_word.get('english') or '').strip() or None
+            results['bn'] = (es_word.get('bengali') or '').strip() or None
+            pivot = _primary_gloss(results['en'] or '')
+            fr_by_en, _ = _best_vocab_match_english(fr_vocab, _norm_match(pivot)) if pivot else (None, 0)
+            if fr_by_en:
+                results['fr'] = (fr_by_en.get('word') or '').strip() or None
+        else:
+            results['es'] = text
+
+    elif detected == 'bn':
+        fr_by_bn, fr_bn_score = _best_vocab_match_bengali(fr_vocab, q_bn)
+        es_by_bn, es_bn_score = _best_vocab_match_bengali(es_vocab, q_bn)
+
+        best = fr_by_bn if fr_bn_score >= es_bn_score else es_by_bn
+        if best:
+            results['en'] = (best.get('english') or '').strip() or None
+        if fr_by_bn:
+            results['fr'] = (fr_by_bn.get('word') or '').strip() or None
+        if es_by_bn:
+            results['es'] = (es_by_bn.get('word') or '').strip() or None
+        results['bn'] = text
+
+        pivot = _primary_gloss(results['en'] or '')
+        pivot_norm = _norm_match(pivot) if pivot else ''
+        if pivot_norm:
+            if not results['fr']:
+                fr_by_en, _ = _best_vocab_match_english(fr_vocab, pivot_norm)
+                if fr_by_en:
+                    results['fr'] = (fr_by_en.get('word') or '').strip() or None
+            if not results['es']:
+                es_by_en, _ = _best_vocab_match_english(es_vocab, pivot_norm)
+                if es_by_en:
+                    results['es'] = (es_by_en.get('word') or '').strip() or None
+
+    else:  # detected == 'en'
+        fr_by_en, fr_score = _best_vocab_match_english(fr_vocab, q_norm)
+        es_by_en, es_score = _best_vocab_match_english(es_vocab, q_norm)
+
+        results['en'] = text
+
+        min_score = 90  # Avoid overly-specific matches like "wine glass" for "glass"
+        best_bn_score = 0
+
+        if fr_by_en and fr_score >= min_score:
+            results['fr'] = (fr_by_en.get('word') or '').strip() or None
+            bn = (fr_by_en.get('bengali') or '').strip()
+            if bn and fr_score > best_bn_score:
+                results['bn'] = bn
+                best_bn_score = fr_score
+
+        if es_by_en and es_score >= min_score:
+            results['es'] = (es_by_en.get('word') or '').strip() or None
+            bn = (es_by_en.get('bengali') or '').strip()
+            if bn and es_score > best_bn_score:
+                results['bn'] = bn
+                best_bn_score = es_score
+
+    return detected, results
 
 _SENT_TOKEN_RE = re.compile(r"[A-Za-zÀ-ÿ]+(?:'[A-Za-zÀ-ÿ]+)?")
 
@@ -590,9 +858,14 @@ def _static_asset_version():
 
 @app.context_processor
 def inject_globals():
+    allowed_themes = {'purple', 'lime'}
+    ui_theme = (os.environ.get('LC_THEME') or 'purple').strip().lower()
+    if ui_theme not in allowed_themes:
+        ui_theme = 'purple'
     return {
         'lang_meta': LANG_META,
         'tts_provider': app.config.get('TTS_PROVIDER', 'auto'),
+        'ui_theme': ui_theme,
         'current_year': datetime.now().year,
         'static_version': _static_asset_version(),
     }
@@ -1221,8 +1494,12 @@ def api_tts():
         tts_lang = 'fr'
     elif lang_tag.startswith('es'):
         tts_lang = 'es'
+    elif lang_tag.startswith('en'):
+        tts_lang = 'en'
+    elif lang_tag.startswith('bn'):
+        tts_lang = 'bn'
     else:
-        return ('Unsupported language (use fr-FR or es-ES)', 400)
+        return ('Unsupported language (use en-US, fr-FR, es-ES, bn-BD)', 400)
 
     # Normalize whitespace to improve cache hit rate and avoid odd linebreak reads.
     norm_text = ' '.join(text.split())
@@ -1248,6 +1525,10 @@ def api_tts():
             tld = (os.environ.get('GTTS_TLD_ES') or tld_default).strip() or tld_default
         elif tts_lang == 'fr':
             tld = (os.environ.get('GTTS_TLD_FR') or tld_default).strip() or tld_default
+        elif tts_lang == 'bn':
+            tld = (os.environ.get('GTTS_TLD_BN') or tld_default).strip() or tld_default
+        elif tts_lang == 'en':
+            tld = (os.environ.get('GTTS_TLD_EN') or tld_default).strip() or tld_default
 
         tmp_path = os.path.join(cache_dir, f'.{cache_key}.{uuid.uuid4().hex}.tmp.mp3')
         try:
@@ -1263,6 +1544,69 @@ def api_tts():
     resp = send_file(final_path, mimetype='audio/mpeg', conditional=True)
     resp.headers['Cache-Control'] = 'public, max-age=31536000, immutable'
     return resp
+
+@app.route('/api/translate', methods=['POST'])
+def api_translate():
+    data = request.json or {}
+    text = (data.get('text') or '').strip()
+    source_hint = (data.get('source') or 'auto').strip().lower()
+    if source_hint not in {'auto', 'en', 'fr', 'es', 'bn'}:
+        source_hint = 'auto'
+
+    if not text:
+        return jsonify({'ok': False, 'error': 'Missing \"text\"'}), 400
+    if len(text) > 200:
+        return jsonify({'ok': False, 'error': 'Text too long (max 200 chars)'}), 400
+
+    provider = (app.config.get('TRANSLATE_PROVIDER') or 'hybrid').strip().lower()
+    if provider not in {'local', 'mymemory', 'hybrid'}:
+        provider = 'hybrid'
+
+    detected, local_results = _local_translate_lookup(text, source_hint)
+
+    results = dict(local_results or {})
+    used_provider = 'local'
+    warnings = []
+
+    if provider == 'mymemory':
+        # Ignore local results; translate everything from the detected source language.
+        results = {'en': None, 'fr': None, 'es': None, 'bn': None}
+        results[detected] = text
+        used_provider = 'mymemory'
+    elif provider == 'hybrid':
+        used_provider = 'hybrid'
+
+    if provider in {'mymemory', 'hybrid'}:
+        src_code = {'en': 'en', 'fr': 'fr', 'es': 'es', 'bn': 'bn-BD'}.get(detected, 'en')
+        for code in ['en', 'fr', 'es', 'bn']:
+            if results.get(code):
+                continue
+            tgt_code = {'en': 'en', 'fr': 'fr', 'es': 'es', 'bn': 'bn-BD'}[code]
+            if src_code == tgt_code:
+                results[code] = text
+                continue
+            try:
+                results[code] = _mymemory_translate(text, src_code, tgt_code) or None
+            except Exception as exc:
+                warnings.append(str(exc))
+
+    lang_tags = {'en': 'en-US', 'fr': 'fr-FR', 'es': 'es-ES', 'bn': 'bn-BD'}
+    payload_results = {}
+    for code in ['en', 'fr', 'es', 'bn']:
+        t = results.get(code)
+        payload_results[code] = {
+            'text': (t.strip() if isinstance(t, str) and t.strip() else None),
+            'lang_tag': lang_tags[code],
+        }
+
+    return jsonify({
+        'ok': True,
+        'query': text,
+        'source': detected,
+        'provider': used_provider,
+        'warnings': warnings[:3],
+        'results': payload_results,
+    })
 
 @app.route('/api/complete', methods=['POST'])
 def api_complete():
