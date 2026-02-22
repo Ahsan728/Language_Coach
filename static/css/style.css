@@ -446,6 +446,18 @@ footer .text-muted { color: var(--lc-footer-muted) !important; }
 footer a { color: var(--lc-footer-text); }
 footer a:hover { color: var(--lc-footer-text); }
 
+/* Diacritics helper bar */
+.diacritic-bar { display: flex; flex-wrap: wrap; gap: 4px; min-height: 2rem; }
+.diacritic-btn {
+  padding: 2px 8px !important;
+  font-size: 1rem !important;
+  border-radius: 6px !important;
+  min-width: 2.2rem;
+  font-family: 'Poppins', sans-serif;
+  opacity: 0.75;
+}
+.diacritic-btn:hover { opacity: 1; transform: scale(1.1); }
+
 /* Keyboard shortcut keys */
 kbd {
   display: inline-block;

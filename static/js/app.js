@@ -1386,6 +1386,45 @@ function attachQuizShortcuts() {
 }
 
 /* ===============================================
+   DIACRITICS INPUT HELPER
+   =============================================== */
+const DIACRITICS_FR = ['à','â','ä','é','è','ê','ë','î','ï','ô','ù','û','ü','ç','œ','æ'];
+const DIACRITICS_ES = ['á','é','í','ó','ú','ü','ñ','¿','¡'];
+
+function buildDiacriticBar(barEl, inputEl, lang) {
+  if (!barEl || !inputEl) return;
+  const chars = lang === 'french' ? DIACRITICS_FR : DIACRITICS_ES;
+  barEl.innerHTML = '';
+  chars.forEach(ch => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'btn btn-sm btn-outline-secondary diacritic-btn';
+    btn.textContent = ch;
+    btn.title = 'Insert ' + ch;
+    btn.addEventListener('mousedown', e => {
+      e.preventDefault(); // keep focus in input
+      const start = inputEl.selectionStart;
+      const end   = inputEl.selectionEnd;
+      inputEl.value = inputEl.value.slice(0, start) + ch + inputEl.value.slice(end);
+      inputEl.selectionStart = inputEl.selectionEnd = start + ch.length;
+      inputEl.focus();
+    });
+    barEl.appendChild(btn);
+  });
+}
+
+function initDiacriticBars() {
+  const lang = (typeof LANG !== 'undefined') ? LANG : '';
+  if (!lang) return;
+  buildDiacriticBar(
+    document.getElementById('practiceDiacriticBar'),
+    document.getElementById('practiceTypeInput'), lang);
+  buildDiacriticBar(
+    document.getElementById('dictationDiacriticBar'),
+    document.getElementById('dictationInput'), lang);
+}
+
+/* ===============================================
    KEYBOARD SHORTCUTS HELP
    =============================================== */
 function initShortcutsHelp() {
@@ -1442,6 +1481,8 @@ document.addEventListener('DOMContentLoaded', () => {
   filterLessonVocab();
   // Vocabulary explorer page
   initVocabExplorer();
+  // Diacritics input helper (practice + dictation pages)
+  initDiacriticBars();
   // Keyboard shortcuts (only activate on relevant pages)
   attachFlashcardShortcuts();
   attachQuizShortcuts();
