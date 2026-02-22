@@ -1386,6 +1386,45 @@ function attachQuizShortcuts() {
 }
 
 /* ===============================================
+   KEYBOARD SHORTCUTS HELP
+   =============================================== */
+function initShortcutsHelp() {
+  const btn = document.getElementById('shortcutsBtn');
+  if (!btn) return;
+
+  // Detect which interactive page we're on
+  const isFlashcard  = typeof VOCAB !== 'undefined';
+  const isQuiz       = typeof QUESTIONS !== 'undefined' && QUESTIONS.length > 0;
+  const isPractice   = typeof PRACTICE_ITEMS !== 'undefined';
+  const isDictation  = typeof DICTATION_ITEMS !== 'undefined';
+
+  if (!isFlashcard && !isQuiz && !isPractice && !isDictation) return;
+
+  // Show the floating ? button
+  btn.style.display = 'flex';
+  btn.style.alignItems = 'center';
+  btn.style.justifyContent = 'center';
+
+  // Show relevant shortcut sections in the modal
+  if (isFlashcard) {
+    const el = document.getElementById('sc-flashcards');
+    if (el) el.style.display = '';
+  }
+  if (isQuiz) {
+    const el = document.getElementById('sc-quiz');
+    if (el) el.style.display = '';
+  }
+  if (isPractice) {
+    const el = document.getElementById('sc-practice');
+    if (el) el.style.display = '';
+  }
+  if (isDictation) {
+    const el = document.getElementById('sc-dictation');
+    if (el) el.style.display = '';
+  }
+}
+
+/* ===============================================
    INIT on page load
    =============================================== */
 document.addEventListener('DOMContentLoaded', () => {
@@ -1406,10 +1445,19 @@ document.addEventListener('DOMContentLoaded', () => {
   // Keyboard shortcuts (only activate on relevant pages)
   attachFlashcardShortcuts();
   attachQuizShortcuts();
+  initShortcutsHelp();
 
   // Lesson page vocab TTS buttons (data-tts / data-lang attributes)
   document.querySelectorAll('.lesson-page .btn-listen[data-tts]').forEach(btn => {
     btn.addEventListener('click', () => speakText(btn.dataset.tts, btn.dataset.lang || ''));
+  });
+
+  // Global ? key → open shortcuts modal
+  document.addEventListener('keydown', e => {
+    if (e.key === '?' && !['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) {
+      const btn = document.getElementById('shortcutsBtn');
+      if (btn && btn.style.display !== 'none') btn.click();
+    }
   });
 
   // Animate progress bars on dashboard
