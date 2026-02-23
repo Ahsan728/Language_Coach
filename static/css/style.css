@@ -53,7 +53,11 @@
   --lc-page-bg:    #fbf6e6;
   --lc-bg-light:   #fbf6e6;
   --lc-nav-bg:     #caff4a;
-  --lc-hero-bg:    #caff4a;
+  /* Aurora-style hero background (light + readable) */
+  --lc-hero-bg:    radial-gradient(1200px circle at 15% 0%, rgba(202, 255, 74, 0.40) 0%, rgba(255,255,255,0) 60%),
+                   radial-gradient(1200px circle at 85% 10%, rgba(0, 214, 189, 0.22) 0%, rgba(255,255,255,0) 55%),
+                   radial-gradient(950px circle at 55% 12%, rgba(109, 94, 246, 0.16) 0%, rgba(255,255,255,0) 60%),
+                   linear-gradient(180deg, #fbf6e6 0%, #ffffff 72%);
 
   --lc-footer-bg:   #fbf6e6;
   --lc-footer-text: var(--lc-ink);
