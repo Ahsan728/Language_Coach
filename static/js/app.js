@@ -303,6 +303,8 @@ function _speechRecognitionCtor() {
   return window.SpeechRecognition || window.webkitSpeechRecognition || null;
 }
 
+let _lcMicPreflightOk = false;
+
 function speechSupportStatus() {
   const Ctor = _speechRecognitionCtor();
   if (!Ctor) return { ok: false, reason: 'unsupported' };
@@ -375,6 +377,15 @@ function speechToTextOnce(langTag, timeoutMs = 9000) {
     rec.interimResults = false;
     rec.maxAlternatives = 3;
 
+    const mapGumErrorCode = (e) => {
+      const name = String((e && e.name) ? e.name : '').toLowerCase();
+      if (name.includes('notallowed') || name.includes('permissiondenied')) return 'not-allowed';
+      if (name.includes('notfound') || name.includes('devicesnotfound')) return 'audio-capture';
+      if (name.includes('notreadable') || name.includes('trackstart')) return 'audio-capture';
+      if (name.includes('overconstrained')) return 'audio-capture';
+      return 'error';
+    };
+
     const finish = (fn, arg) => {
       if (done) return;
       done = true;
@@ -410,6 +421,24 @@ function speechToTextOnce(langTag, timeoutMs = 9000) {
       err.hasSpeech = hasSpeech;
       finish(reject, err);
     };
+
+    // Preflight mic permission/device selection via getUserMedia (helps when SpeechRecognition doesn't prompt).
+    try {
+      if (!_lcMicPreflightOk && navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({ audio: true })
+          .then(stream => {
+            _lcMicPreflightOk = true;
+            try { stream.getTracks().forEach(t => t.stop()); } catch { /* noop */ }
+          })
+          .catch(e => {
+            if (done) return;
+            const err = new Error('getUserMedia-failed');
+            err.code = mapGumErrorCode(e);
+            finish(reject, err);
+            try { rec.abort(); } catch { /* noop */ }
+          });
+      }
+    } catch { /* noop */ }
 
     try {
       rec.start();
