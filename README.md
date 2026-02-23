@@ -190,7 +190,7 @@ The app **auto-reloads JSON** when files change — edit content while the serve
 - Open any lesson card to view **Vocabulary + Grammar** (Bengali + English explanations).
 - Use the **PDF download** button to export the lesson.
 
-### 3. Daily Practice ⚡ (Duolingo-like)
+### 3. Daily Practice 
 - Click **⚡ Practice** from the lesson list or dashboard
 - Mixed exercises drawn from your spaced-repetition due words:
   - 🔊 **Listening** — TTS auto-plays, choose the correct meaning
