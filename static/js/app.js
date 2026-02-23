@@ -344,6 +344,91 @@ function initThemeMenu() {
   });
 }
 
+const HERO_BG_STORAGE_KEY = 'lc_hero_bg';
+const HERO_BG_PRESETS = [
+  { key: 'theme', name: 'Default', value: null },
+  {
+    key: 'aurora',
+    name: 'Aurora',
+    value:
+      'radial-gradient(1200px circle at 15% 0%, rgba(0, 214, 189, 0.22) 0%, rgba(255,255,255,0) 55%),' +
+      'radial-gradient(1200px circle at 85% 10%, rgba(109, 94, 246, 0.20) 0%, rgba(255,255,255,0) 55%),' +
+      'linear-gradient(180deg, #ffffff 0%, #f6fbff 60%, #ffffff 100%)'
+  },
+  {
+    key: 'sunset',
+    name: 'Sunset',
+    value:
+      'radial-gradient(1000px circle at 20% 0%, rgba(255, 145, 110, 0.20) 0%, rgba(255,255,255,0) 55%),' +
+      'radial-gradient(900px circle at 80% 10%, rgba(255, 120, 180, 0.18) 0%, rgba(255,255,255,0) 55%),' +
+      'linear-gradient(180deg, #fff7f3 0%, #ffffff 70%)'
+  },
+  {
+    key: 'ocean',
+    name: 'Ocean Mist',
+    value:
+      'radial-gradient(1100px circle at 20% 0%, rgba(0, 167, 255, 0.18) 0%, rgba(255,255,255,0) 55%),' +
+      'radial-gradient(900px circle at 80% 12%, rgba(0, 214, 189, 0.16) 0%, rgba(255,255,255,0) 55%),' +
+      'linear-gradient(180deg, #f2fbff 0%, #ffffff 70%)'
+  },
+  {
+    key: 'lavender',
+    name: 'Lavender',
+    value:
+      'radial-gradient(1000px circle at 18% 0%, rgba(182, 118, 255, 0.20) 0%, rgba(255,255,255,0) 55%),' +
+      'radial-gradient(900px circle at 82% 12%, rgba(255, 120, 180, 0.14) 0%, rgba(255,255,255,0) 55%),' +
+      'linear-gradient(180deg, #fbf7ff 0%, #ffffff 70%)'
+  },
+  {
+    key: 'mint',
+    name: 'Mint',
+    value:
+      'radial-gradient(1000px circle at 20% 0%, rgba(112, 255, 214, 0.18) 0%, rgba(255,255,255,0) 55%),' +
+      'linear-gradient(180deg, #f2fffb 0%, #ffffff 70%)'
+  }
+];
+
+function _getHeroBgPreset(key) {
+  const k = String(key || '').trim().toLowerCase();
+  const found = HERO_BG_PRESETS.find(p => p.key === k);
+  return found || HERO_BG_PRESETS[0];
+}
+
+function _applyHeroBgPreset(key) {
+  const preset = _getHeroBgPreset(key);
+  const root = document.documentElement;
+  if (!root) return preset;
+
+  if (!preset.value) {
+    try { root.style.removeProperty('--lc-hero-bg'); } catch { /* noop */ }
+    try { localStorage.removeItem(HERO_BG_STORAGE_KEY); } catch { /* noop */ }
+    return preset;
+  }
+
+  try { root.style.setProperty('--lc-hero-bg', preset.value); } catch { /* noop */ }
+  try { localStorage.setItem(HERO_BG_STORAGE_KEY, preset.key); } catch { /* noop */ }
+  return preset;
+}
+
+function initHeroBgToggle() {
+  const btn = document.getElementById('heroBgToggle');
+  if (!btn) return;
+
+  const label = document.getElementById('heroBgLabel');
+  let stored = '';
+  try { stored = String(localStorage.getItem(HERO_BG_STORAGE_KEY) || ''); } catch { /* noop */ }
+
+  let current = _applyHeroBgPreset(stored);
+  if (label) label.textContent = current.key === 'theme' ? '' : `\u2022 ${current.name}`;
+
+  btn.addEventListener('click', () => {
+    const idx = HERO_BG_PRESETS.findIndex(p => p.key === current.key);
+    const next = HERO_BG_PRESETS[(idx >= 0 ? idx + 1 : 0) % HERO_BG_PRESETS.length];
+    current = _applyHeroBgPreset(next.key);
+    if (label) label.textContent = current.key === 'theme' ? '' : `\u2022 ${current.name}`;
+  });
+}
+
 /* ===============================================
    FLASHCARD MODULE
    =============================================== */
@@ -1468,6 +1553,7 @@ function initShortcutsHelp() {
    =============================================== */
 document.addEventListener('DOMContentLoaded', () => {
   initThemeMenu();
+  initHeroBgToggle();
   initTtsProviderMenu();
   // Flashcards page
   if (typeof VOCAB !== 'undefined') initFlashcards();

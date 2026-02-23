@@ -169,6 +169,7 @@ body { font-family: var(--lc-font-ui); color: var(--text-dark); background: var(
 /* ---- Hero ---- */
 .hero-section {
   background: var(--lc-hero-bg);
+  transition: background 240ms ease;
   border-bottom: 2px solid var(--lc-outline-strong);
   position: relative;
   overflow: hidden;
