@@ -135,8 +135,29 @@ function doPost(e) {
 
 Set these environment variables where you run the Flask app:
 
-- `SHEETS_WEBHOOK_URL` = *(your Apps Script “Web app URL”)*
-- `SHEETS_WEBHOOK_TOKEN` = *(the same TOKEN you set in Apps Script properties)*
+- `SHEETS_WEBHOOK_URL` = *(your Apps Script “Web app URL”)* (keep it private)
+- `SHEETS_WEBHOOK_TOKEN` = *(the same TOKEN you set in Apps Script properties)* (keep it private)
+
+### Option A — PowerShell (temporary)
+
+Important: these variables must be set **in the same terminal session where you start the server**. If the server is already running, restart it. If you start the server using `start.bat` by double‑clicking, it won’t inherit the variables from your PowerShell window — use Option B instead.
+
+```powershell
+$env:SHEETS_WEBHOOK_URL="PASTE_WEB_APP_URL_HERE"
+$env:SHEETS_WEBHOOK_TOKEN="PASTE_TOKEN_HERE"
+python app.py
+```
+
+### Option B — `.env` file (recommended for local)
+
+Create a file named `.env` in the project root (same folder as `app.py`). You can copy `.env.example` if present:
+
+```env
+SHEETS_WEBHOOK_URL=PASTE_WEB_APP_URL_HERE
+SHEETS_WEBHOOK_TOKEN=PASTE_TOKEN_HERE
+```
+
+Then start the app normally (the app auto-loads `.env`). **Do not commit** your `.env` file.
 
 Optional (defaults shown):
 
@@ -152,4 +173,3 @@ Restart the server after setting env vars.
 - **Users sheet**: upsert by email on login + lesson completion (latest snapshot only).
 - **Events sheet**: append rows for login, lesson completion, feedback.
 - **Feedback sheet**: append rows for feedback messages.
-

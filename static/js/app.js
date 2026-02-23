@@ -2157,7 +2157,19 @@ function initFeedbackForm() {
         showError((data && data.error) ? String(data.error) : 'Failed to send feedback.');
         return;
       }
-      showOk('Thanks! Your message has been received.');
+
+      const sheets = (data && typeof data === 'object') ? data.sheets : null;
+      if (sheets && sheets.enabled && sheets.ok === false) {
+        const err = sheets.error ? String(sheets.error) : 'unknown error';
+        showError(`Saved, but Google Sheets sync failed (${err}). Please try again later.`);
+        return;
+      }
+
+      if (sheets && sheets.enabled === false) {
+        showOk('Thanks! Your message has been received. (Note: Google Sheets sync is not configured on the server yet.)');
+      } else {
+        showOk('Thanks! Your message has been received.');
+      }
       if (messageEl) messageEl.value = '';
       setTimeout(() => {
         try {

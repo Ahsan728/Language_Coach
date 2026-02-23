@@ -41,6 +41,11 @@ data/resource_sentences.json
 .idea/
 *.suo
 
+# Local secrets/config
+.env
+.env.*
+!.env.example
+
 # OS
 .DS_Store
 Thumbs.db

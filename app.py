@@ -17,6 +17,40 @@ from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 from flask import Flask, render_template, jsonify, request, redirect, url_for, send_file, session
 
+
+def _load_env_file(path: str) -> None:
+    """Load KEY=VALUE lines from a local .env file (optional).
+
+    This keeps secrets/config out of git while allowing easy local setup.
+    Existing environment variables are not overwritten.
+    """
+    try:
+        with open(path, 'r', encoding='utf-8') as f:
+            for raw in f:
+                line = (raw or '').strip()
+                if not line or line.startswith('#'):
+                    continue
+                if line.lower().startswith('export '):
+                    line = line[7:].strip()
+                if '=' not in line:
+                    continue
+                key, val = line.split('=', 1)
+                key = (key or '').strip()
+                if not key:
+                    continue
+                val = (val or '').strip()
+                if (val.startswith('"') and val.endswith('"')) or (val.startswith("'") and val.endswith("'")):
+                    val = val[1:-1]
+                if key not in os.environ or not os.environ.get(key):
+                    os.environ[key] = val
+    except FileNotFoundError:
+        return
+    except OSError:
+        return
+
+
+_load_env_file(os.path.join(os.path.dirname(os.path.abspath(__file__)), '.env'))
+
 app = Flask(__name__)
 _secret_key = os.environ.get('SECRET_KEY', '').strip()
 if not _secret_key:
@@ -823,6 +857,44 @@ def _sheets_send(action: str, sheet: str, row: dict):
     except Exception:
         # As a last resort, just skip (don't crash the app).
         return
+
+
+def _sheets_send_sync(action: str, sheet: str, row: dict):
+    """Send a row to Google Sheets and return status (for UX / debugging)."""
+    if not SHEETS_WEBHOOK_URL:
+        return {'enabled': False, 'ok': False, 'error': 'not_configured'}
+
+    payload = {
+        'action': (action or '').strip() or 'append_row',
+        'sheet': (sheet or '').strip() or SHEETS_EVENTS_SHEET,
+        'row': row or {},
+    }
+    if SHEETS_WEBHOOK_TOKEN:
+        payload['token'] = SHEETS_WEBHOOK_TOKEN
+
+    body = json.dumps(payload, ensure_ascii=False).encode('utf-8')
+    req = Request(
+        SHEETS_WEBHOOK_URL,
+        data=body,
+        headers={'Content-Type': 'application/json; charset=utf-8'},
+    )
+    try:
+        with urlopen(req, timeout=SHEETS_WEBHOOK_TIMEOUT) as resp:
+            raw = (resp.read(8192) or b'')
+    except Exception as exc:
+        return {'enabled': True, 'ok': False, 'error': str(exc) or type(exc).__name__}
+
+    try:
+        parsed = json.loads(raw.decode('utf-8', 'replace') or '{}')
+    except Exception:
+        return {'enabled': True, 'ok': False, 'error': 'non_json_response'}
+
+    if isinstance(parsed, dict):
+        ok = bool(parsed.get('ok'))
+        err = parsed.get('error')
+        return {'enabled': True, 'ok': ok, 'error': err or None}
+
+    return {'enabled': True, 'ok': False, 'error': 'invalid_response'}
 
 
 def _user_snapshot(user_id: int):
@@ -3013,7 +3085,7 @@ def api_feedback():
     _emit_event_to_sheets('feedback', user={'id': user.get('id') if user else '', 'name': name, 'email': email, 'last_login': user.get('last_login') if user else ''},
                           language=language, category=category, message=message, page=page)
 
-    _sheets_send('append_row', SHEETS_FEEDBACK_SHEET, {
+    feedback_row = {
         'timestamp': now_iso,
         'user_id': (user.get('id') if user else '') or '',
         'name': name,
@@ -3022,12 +3094,14 @@ def api_feedback():
         'language': language,
         'message': message,
         'page': page,
-    })
+    }
+    # For feedback, try a synchronous send so the UI can show a useful message if Sheets isn't configured.
+    sheets_status = _sheets_send_sync('append_row', SHEETS_FEEDBACK_SHEET, feedback_row)
 
     if user and user.get('id') is not None:
         _emit_user_snapshot_to_sheets(user, last_event='feedback', language=language, page=page)
 
-    return jsonify({'ok': True})
+    return jsonify({'ok': True, 'sheets': sheets_status})
 
 @app.route('/api/word_progress', methods=['POST'])
 def api_word_progress():
