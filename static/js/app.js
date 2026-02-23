@@ -338,8 +338,11 @@ function speechErrorHint(err) {
   if (code.includes('network')) {
     return 'Network error — speech recognition needs internet access.';
   }
+  if (code.includes('no-audio')) {
+    return 'No audio input detected — check your mic is selected/unmuted (Windows Sound settings + browser site settings).';
+  }
   if (code.includes('no-speech')) {
-    return 'No speech detected — try again (speak closer / louder).';
+    return 'No speech detected — try again (speak closer / louder). If it still fails, check mic is selected/unmuted.';
   }
   if (code.includes('timeout')) {
     return 'Timed out — try again.';
@@ -363,10 +366,12 @@ function speechToTextOnce(langTag, timeoutMs = 9000) {
     let done = false;
     let timer = null;
     let gotResult = false;
+    let hasAudio = false;
+    let hasSpeech = false;
 
     const rec = new Ctor();
     rec.lang = String(langTag || 'en-US');
-    rec.continuous = false;
+    rec.continuous = true;
     rec.interimResults = false;
     rec.maxAlternatives = 3;
 
@@ -374,9 +379,13 @@ function speechToTextOnce(langTag, timeoutMs = 9000) {
       if (done) return;
       done = true;
       if (timer) clearTimeout(timer);
-      try { rec.onresult = rec.onerror = rec.onend = null; } catch { /* noop */ }
+      try { rec.onresult = rec.onerror = rec.onend = rec.onaudiostart = rec.onspeechstart = null; } catch { /* noop */ }
+      try { rec.stop(); } catch { /* noop */ }
       fn(arg);
     };
+
+    rec.onaudiostart = () => { hasAudio = true; };
+    rec.onspeechstart = () => { hasSpeech = true; };
 
     rec.onresult = (e) => {
       gotResult = true;
@@ -395,8 +404,10 @@ function speechToTextOnce(langTag, timeoutMs = 9000) {
     rec.onend = () => {
       if (done) return;
       if (gotResult) return;
-      const err = new Error('speech-recognition-no-speech');
-      err.code = 'no-speech';
+      const err = new Error(hasAudio ? 'speech-recognition-no-speech' : 'speech-recognition-no-audio');
+      err.code = hasAudio ? 'no-speech' : 'no-audio';
+      err.hasAudio = hasAudio;
+      err.hasSpeech = hasSpeech;
       finish(reject, err);
     };
 
