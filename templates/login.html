@@ -9,7 +9,7 @@
         <div class="d-flex align-items-start justify-content-between flex-wrap gap-2 mb-3">
           <div>
             <h1 class="h4 fw-bold mb-1">Sign in</h1>
-            <div class="text-muted">Enter your name and email to track your practice progress.</div>
+            <div class="text-muted">Enter your email to track your learning progress.</div>
           </div>
           {% if auth_user %}
           <div class="small text-muted">
@@ -24,11 +24,6 @@
 
         <form method="post" action="{{ url_for('login', next=next) }}" class="mt-3">
           <input type="hidden" name="next" value="{{ next }}">
-
-          <div class="mb-3">
-            <label for="name" class="form-label fw-semibold">Name</label>
-            <input id="name" name="name" class="form-control" value="{{ name or '' }}" autocomplete="name" required>
-          </div>
 
           <div class="mb-3">
             <label for="email" class="form-label fw-semibold">Email</label>

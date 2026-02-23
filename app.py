@@ -818,6 +818,21 @@ def _is_valid_email(value: str) -> bool:
     return bool(_EMAIL_SIMPLE_RE.match(v))
 
 
+def _default_name_from_email(email: str) -> str:
+    """Derive a reasonable display name from an email address."""
+    email = _normalize_email(email)
+    local = email.split('@', 1)[0] if '@' in email else email
+    local = re.sub(r'[^a-z0-9._-]+', ' ', local, flags=re.IGNORECASE).strip()
+    local = re.sub(r'[._-]+', ' ', local).strip()
+    local = re.sub(r'\s+', ' ', local).strip()
+    if not local:
+        return 'Learner'
+    # Title-case only if it's mostly latin letters/numbers (avoid mangling other scripts).
+    if re.fullmatch(r'[a-z0-9 ]+', local, flags=re.IGNORECASE):
+        return local.title()
+    return local
+
+
 def _sheets_send(action: str, sheet: str, row: dict):
     """Send a row to Google Sheets via an Apps Script webhook (optional).
 
@@ -1021,16 +1036,22 @@ def get_user_by_email(email: str):
 def upsert_user(name: str, email: str) -> int:
     name = (name or '').strip()
     email = _normalize_email(email)
-    if not name or not email:
-        raise ValueError('Missing name or email')
+    if not email:
+        raise ValueError('Missing email')
 
     now_iso = datetime.now().isoformat(timespec='seconds')
     conn = get_db()
-    row = conn.execute('SELECT id FROM users WHERE email=?', (email,)).fetchone()
+    row = conn.execute('SELECT id, name FROM users WHERE email=?', (email,)).fetchone()
     if row:
         user_id = int(row['id'])
-        conn.execute('UPDATE users SET name=?, last_login=? WHERE id=?', (name, now_iso, user_id))
+        # Preserve the existing name unless a non-empty name was provided.
+        if name:
+            conn.execute('UPDATE users SET name=?, last_login=? WHERE id=?', (name, now_iso, user_id))
+        else:
+            conn.execute('UPDATE users SET last_login=? WHERE id=?', (now_iso, user_id))
     else:
+        if not name:
+            name = _default_name_from_email(email)
         cur = conn.execute(
             'INSERT INTO users (name, email, created_at, last_login) VALUES (?, ?, ?, ?)',
             (name, email, now_iso, now_iso),
@@ -2043,6 +2064,24 @@ def _safe_next_url(next_url: str) -> str:
     return next_url if next_url.startswith('/') else url_for('dashboard')
 
 
+def _request_path_with_query() -> str:
+    """Return the current request path including query string (for login redirects)."""
+    try:
+        qs = (request.query_string or b'').decode('utf-8', 'ignore')
+    except Exception:
+        qs = ''
+    return request.path + (('?' + qs) if qs else '')
+
+
+def login_required(view_func):
+    @wraps(view_func)
+    def _wrapped(*args, **kwargs):
+        if current_user_id() is None:
+            return redirect(url_for('login', next=_request_path_with_query()))
+        return view_func(*args, **kwargs)
+    return _wrapped
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     next_url = request.args.get('next') or request.form.get('next') or url_for('dashboard')
@@ -2051,9 +2090,7 @@ def login():
     error = None
 
     if request.method == 'POST':
-        if not name:
-            error = 'Name is required.'
-        elif not _is_valid_email(email):
+        if not _is_valid_email(email):
             error = 'Please enter a valid email address.'
         else:
             user_id = upsert_user(name, email)
@@ -2111,6 +2148,7 @@ def language_home(lang):
 
 
 @app.route('/placement/<lang>')
+@login_required
 def placement_test(lang):
     if lang not in LANG_META:
         return redirect(url_for('dashboard'))
@@ -2144,6 +2182,7 @@ def placement_test(lang):
 
 
 @app.route('/lesson/<lang>/<int:lesson_id>')
+@login_required
 def lesson_view(lang, lesson_id):
     if lang not in LANG_META:
         return redirect(url_for('dashboard'))
@@ -2187,6 +2226,7 @@ def lesson_view(lang, lesson_id):
 
 
 @app.route('/lesson/<lang>/<int:lesson_id>/download.pdf')
+@login_required
 def lesson_download_pdf(lang, lesson_id):
     if lang not in LANG_META:
         return redirect(url_for('dashboard'))
@@ -2229,6 +2269,7 @@ def lesson_download_pdf(lang, lesson_id):
     )
 
 @app.route('/flashcards/<lang>/<int:lesson_id>')
+@login_required
 def flashcards(lang, lesson_id):
     if lang not in LANG_META:
         return redirect(url_for('dashboard'))
@@ -2670,6 +2711,7 @@ def practice(lang):
                            questions_json=json.dumps(questions, ensure_ascii=False))
 
 @app.route('/dictation/<lang>/<int:lesson_id>')
+@login_required
 def dictation(lang, lesson_id):
     if lang not in LANG_META:
         return redirect(url_for('dashboard'))
@@ -2704,6 +2746,7 @@ def dictation(lang, lesson_id):
 
 
 @app.route('/speaking/<lang>/<int:lesson_id>')
+@login_required
 def speaking(lang, lesson_id):
     if lang not in LANG_META:
         return redirect(url_for('dashboard'))
@@ -2749,6 +2792,7 @@ def speaking(lang, lesson_id):
 
 
 @app.route('/quiz/<lang>/<int:lesson_id>')
+@login_required
 def quiz(lang, lesson_id):
     if lang not in LANG_META:
         return redirect(url_for('dashboard'))
