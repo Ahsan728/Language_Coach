@@ -364,12 +364,28 @@ const HERO_BG_PRESETS = [
       'linear-gradient(180deg, #fff7f3 0%, #ffffff 70%)'
   },
   {
+    key: 'citrus',
+    name: 'Citrus',
+    value:
+      'radial-gradient(1000px circle at 18% 0%, rgba(255, 217, 61, 0.26) 0%, rgba(255,255,255,0) 55%),' +
+      'radial-gradient(900px circle at 82% 12%, rgba(112, 255, 214, 0.16) 0%, rgba(255,255,255,0) 55%),' +
+      'linear-gradient(180deg, #fffceb 0%, #ffffff 70%)'
+  },
+  {
     key: 'ocean',
     name: 'Ocean Mist',
     value:
       'radial-gradient(1100px circle at 20% 0%, rgba(0, 167, 255, 0.18) 0%, rgba(255,255,255,0) 55%),' +
       'radial-gradient(900px circle at 80% 12%, rgba(0, 214, 189, 0.16) 0%, rgba(255,255,255,0) 55%),' +
       'linear-gradient(180deg, #f2fbff 0%, #ffffff 70%)'
+  },
+  {
+    key: 'sky',
+    name: 'Sky',
+    value:
+      'radial-gradient(1100px circle at 20% 0%, rgba(120, 190, 255, 0.22) 0%, rgba(255,255,255,0) 55%),' +
+      'radial-gradient(900px circle at 78% 10%, rgba(109, 94, 246, 0.14) 0%, rgba(255,255,255,0) 55%),' +
+      'linear-gradient(180deg, #f2f8ff 0%, #ffffff 70%)'
   },
   {
     key: 'lavender',
@@ -380,11 +396,59 @@ const HERO_BG_PRESETS = [
       'linear-gradient(180deg, #fbf7ff 0%, #ffffff 70%)'
   },
   {
+    key: 'berry',
+    name: 'Berry Cream',
+    value:
+      'radial-gradient(1050px circle at 18% 0%, rgba(255, 90, 165, 0.20) 0%, rgba(255,255,255,0) 55%),' +
+      'radial-gradient(950px circle at 82% 12%, rgba(109, 94, 246, 0.15) 0%, rgba(255,255,255,0) 55%),' +
+      'linear-gradient(180deg, #fff4fa 0%, #ffffff 70%)'
+  },
+  {
     key: 'mint',
     name: 'Mint',
     value:
       'radial-gradient(1000px circle at 20% 0%, rgba(112, 255, 214, 0.18) 0%, rgba(255,255,255,0) 55%),' +
       'linear-gradient(180deg, #f2fffb 0%, #ffffff 70%)'
+  },
+  {
+    key: 'peach',
+    name: 'Peach',
+    value:
+      'radial-gradient(1000px circle at 18% 0%, rgba(255, 170, 125, 0.22) 0%, rgba(255,255,255,0) 55%),' +
+      'radial-gradient(900px circle at 82% 10%, rgba(255, 120, 180, 0.12) 0%, rgba(255,255,255,0) 55%),' +
+      'linear-gradient(180deg, #fff6f0 0%, #ffffff 70%)'
+  },
+  {
+    key: 'champagne',
+    name: 'Champagne',
+    value:
+      'radial-gradient(1000px circle at 20% 0%, rgba(255, 204, 140, 0.18) 0%, rgba(255,255,255,0) 55%),' +
+      'radial-gradient(900px circle at 80% 12%, rgba(255, 255, 255, 0.0) 0%, rgba(255,255,255,0) 55%),' +
+      'linear-gradient(180deg, #fffaf2 0%, #ffffff 72%)'
+  },
+  {
+    key: 'matcha',
+    name: 'Matcha',
+    value:
+      'radial-gradient(1050px circle at 18% 0%, rgba(126, 247, 96, 0.16) 0%, rgba(255,255,255,0) 55%),' +
+      'radial-gradient(900px circle at 82% 14%, rgba(0, 214, 189, 0.12) 0%, rgba(255,255,255,0) 55%),' +
+      'linear-gradient(180deg, #f3fff3 0%, #ffffff 70%)'
+  },
+  {
+    key: 'sand',
+    name: 'Sand',
+    value:
+      'radial-gradient(1000px circle at 18% 0%, rgba(210, 180, 140, 0.22) 0%, rgba(255,255,255,0) 55%),' +
+      'radial-gradient(900px circle at 82% 12%, rgba(255, 170, 125, 0.14) 0%, rgba(255,255,255,0) 55%),' +
+      'linear-gradient(180deg, #fff8ef 0%, #ffffff 70%)'
+  },
+  {
+    key: 'glacier',
+    name: 'Glacier',
+    value:
+      'radial-gradient(1100px circle at 20% 0%, rgba(160, 230, 255, 0.20) 0%, rgba(255,255,255,0) 55%),' +
+      'radial-gradient(900px circle at 80% 12%, rgba(182, 118, 255, 0.10) 0%, rgba(255,255,255,0) 55%),' +
+      'linear-gradient(180deg, #f4fdff 0%, #ffffff 70%)'
   }
 ];
 
