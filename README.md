@@ -20,10 +20,14 @@ A fully local language learning web application built in Python (Flask). Designe
 | 🧠 Quizzes | Multiple-choice with instant feedback + scoring |
 | ⚡ Daily Practice | Duolingo-like mix: 🔊 listening, ✅ MCQ, ⌨️ typing, 🧩 sentence ordering |
 | 🎧 Dictation | Hear a word → type what you heard (accent-tolerant) |
+| 🎯 Placement Test | Quick CEFR-based test to estimate your level (A1–B2) |
+| 🗣️ Speaking | Speak into your mic and match words/phrases (browser speech recognition) |
 | 🔁 Spaced Repetition | Leitner box SRS: due-words review, weak-word review |
-| 🔊 Pronunciation | Browser Text-to-Speech — no server API, works offline |
+| 📄 Lesson PDFs | Download any lesson as a PDF (Bengali font-safe) |
+| 🔊 Pronunciation | Browser TTS by default + optional server TTS (gTTS) for consistent accent online |
 | 🔥 Streak + XP | Daily activity tracking with streak counter |
 | 📊 Progress | Saved locally in SQLite (auto-created on first run) |
+| 🔐 Login | You can browse freely, but lessons + placement test require email-only sign-in (no password) |
 
 ---
 
@@ -235,7 +239,9 @@ The app **auto-reloads JSON** when files change — edit content while the serve
  cryptography>=3.1
  gunicorn>=21.0.0
  gTTS>=2.5.0
- ```
+ reportlab>=4.0.0
+ playwright>=1.42.0
+```
 
 ---
 
@@ -243,9 +249,25 @@ The app **auto-reloads JSON** when files change — edit content while the serve
 
 The app runs on `http://localhost:5000` by default.
 
+### Recommended: use a `.env` file (local)
+
+Create `.env` in the project root (same folder as `app.py`). See `.env.example`.
+
+```env
+# Security (required for real deployments)
+SECRET_KEY=PASTE_A_RANDOM_SECRET_HERE
+
+# Optional: Google Sheets logging (Apps Script webhook)
+# SHEETS_WEBHOOK_URL=PASTE_WEB_APP_URL_HERE
+# SHEETS_WEBHOOK_TOKEN=PASTE_TOKEN_HERE
+
+# Optional: PDF engine ("chromium" or "reportlab")
+# PDF_ENGINE=chromium
+```
+
  - Change port: set the `PORT` environment variable.
-   - PowerShell: `$env:PORT=8000`
-   - cmd.exe: `set PORT=8000`
+    - PowerShell: `$env:PORT=8000`
+    - cmd.exe: `set PORT=8000`
 
  - Server-side TTS (same pronunciation for everyone): set `TTS_PROVIDER=gtts`.
    - PowerShell: `$env:TTS_PROVIDER='gtts'`
@@ -276,6 +298,7 @@ git clone https://github.com/Ahsan728/Language_Coach.git
 cd Language_Coach
 pip install -r requirements.txt --user
 ```
+> If your repo is private, you must use a GitHub PAT/SSH so PythonAnywhere can clone it.
 
 #### Step 4 — Create the Web App
 Dashboard → **Web** → **Add a new web app** → **Manual configuration** → **Python 3.10**
@@ -291,7 +314,16 @@ from app import app as application
 ```
 > ⚠️ Replace `ahsan728` with your actual PythonAnywhere username
 
-#### Step 6 — Reload & visit
+#### Step 6 — Set environment variables (important)
+Web tab → **Environment variables**:
+
+- `SECRET_KEY` = *(required)* random long string (keeps login sessions secure)
+- Optional:
+  - `SHEETS_WEBHOOK_URL`, `SHEETS_WEBHOOK_TOKEN` (Google Sheets logging)
+  - `TTS_PROVIDER=gtts` (server voice for everyone)
+  - `PDF_ENGINE=reportlab` *(recommended on PythonAnywhere)* for lesson PDFs
+
+#### Step 7 — Reload & visit
 Web tab → green **Reload** button → your app is live at `https://ahsan728.pythonanywhere.com`
 
 ---
@@ -299,14 +331,18 @@ Web tab → green **Reload** button → your app is live at `https://ahsan728.py
 ### 🥈 Option B — Render (Easy GitHub Auto-Deploy)
 
 **Why:** Pushes to GitHub auto-deploy · Free · Sleeps after 15 min inactivity (30–50s to wake)
-> ⚠️ SQLite resets on sleep — vocabulary and lessons work perfectly; quiz scores don't persist between sessions.
+> ⚠️ On free tiers, storage may be ephemeral — vocabulary and lessons work perfectly, but quiz scores may not persist unless you add persistent storage or a real database.
 
 | Setting | Value |
 |---------|-------|
 | **Runtime** | Python 3 |
-| **Build Command** | `pip install -r requirements.txt` |
+| **Build Command** | `pip install -r requirements.txt && python -m playwright install chromium --with-deps` |
 | **Start Command** | `gunicorn app:app` |
 | **Instance Type** | Free |
+
+Environment variables (Render dashboard):
+- `SECRET_KEY` *(required)*
+- Optional: `SHEETS_WEBHOOK_URL`, `SHEETS_WEBHOOK_TOKEN`, `TTS_PROVIDER=gtts`, `PDF_ENGINE=chromium|reportlab`
 
 Every `git push` triggers an automatic redeploy.
 
