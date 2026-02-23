@@ -43,12 +43,12 @@
         {% if (fr and fr.completed > 0) or (es and es.completed > 0) %}
         <div class="d-flex gap-2 flex-wrap mt-3">
           {% if fr and fr.completed > 0 %}
-          <a href="{{ url_for('review', lang='french') }}" class="btn btn-outline-secondary btn-sm">
+          <a href="{{ url_for('review_flashcards', lang='french') }}" class="btn btn-outline-secondary btn-sm">
             🔁 Review French (SRS)
           </a>
           {% endif %}
           {% if es and es.completed > 0 %}
-          <a href="{{ url_for('review', lang='spanish') }}" class="btn btn-outline-secondary btn-sm">
+          <a href="{{ url_for('review_flashcards', lang='spanish') }}" class="btn btn-outline-secondary btn-sm">
             🔁 Review Spanish (SRS)
           </a>
           {% endif %}

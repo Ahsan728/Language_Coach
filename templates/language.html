@@ -29,6 +29,9 @@
             ▶ Resume Lesson {{ resume_lesson.id }}
           </a>
           {% endif %}
+          <a href="{{ url_for('placement_test', lang=lang) }}" class="btn btn-outline-light btn-sm">
+            🎯 Placement Test
+          </a>
           <a href="{{ url_for('practice', lang=lang) }}" class="btn btn-light btn-sm">
             ⚡ Daily Practice
           </a>

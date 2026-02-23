@@ -40,7 +40,7 @@
 
         {% for code, m in lang_meta.items() %}
         <li class="nav-item">
-          <a class="nav-link flag-link {% if current_lang == code and request.endpoint in ['language_home','lesson_view','flashcards','quiz','dictation','speaking','vocabulary_view','review_flashcards','flashcards_category','practice'] %}active{% endif %}"
+          <a class="nav-link flag-link {% if current_lang == code and request.endpoint in ['language_home','lesson_view','flashcards','quiz','dictation','speaking','vocabulary_view','review_flashcards','flashcards_category','practice','placement_test'] %}active{% endif %}"
              href="{{ url_for('language_home', lang=code) }}">
             {{ m.flag }} <span>{{ m.name_native or m.name }}</span>
           </a>
@@ -48,7 +48,7 @@
         {% endfor %}
 
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle {% if request.endpoint in ['vocabulary_view', 'review_flashcards', 'flashcards_category', 'practice'] %}active{% endif %}"
+          <a class="nav-link dropdown-toggle {% if request.endpoint in ['vocabulary_view', 'review_flashcards', 'flashcards_category', 'practice', 'placement_test'] %}active{% endif %}"
              href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="fas fa-dumbbell me-1"></i> Practice
           </a>
@@ -58,6 +58,11 @@
             <li>
               <a class="dropdown-item" href="{{ url_for('practice', lang=code) }}">
                 <i class="fas fa-bolt me-2"></i> Daily Practice
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="{{ url_for('placement_test', lang=code) }}">
+                <i class="fas fa-bullseye me-2"></i> Placement Test
               </a>
             </li>
             <li>

@@ -956,6 +956,7 @@ let practiceTtsText = null;
 let practiceTtsLang = null;
 let practiceAnswered = false;
 let practiceOrderAnswer = [];
+let practicePlacementLog = [];
 
 function practiceListen() {
   speakText(practiceTtsText, practiceTtsLang);
@@ -1094,22 +1095,30 @@ function practiceShowFeedback(isCorrect, correctAnswer) {
 
 function practiceRecord(isCorrect) {
   const q = currentPracticeQuestion || {};
+  const placementMode = (typeof PLACEMENT_MODE !== 'undefined') && !!PLACEMENT_MODE;
   const lang = (typeof PRACTICE_LANG !== 'undefined') ? PRACTICE_LANG : null;
   const xpCorrect = Number.isFinite(q.xp_correct) ? q.xp_correct : 10;
   const xpWrong = Number.isFinite(q.xp_wrong) ? q.xp_wrong : 2;
   const xpDelta = isCorrect ? xpCorrect : xpWrong;
+
+  if (placementMode) {
+    const lvl = String(q.cefr || '').trim().toUpperCase();
+    practicePlacementLog.push({cefr: lvl, correct: !!isCorrect});
+  }
 
   if (isCorrect) {
     practiceCorrect++;
     practiceXp += xpDelta;
   } else {
     practiceWrong++;
-    practiceHearts = Math.max(0, practiceHearts - 1);
+    if (!placementMode) practiceHearts = Math.max(0, practiceHearts - 1);
     practiceXp += xpDelta;
   }
 
-  document.getElementById('practiceXp').textContent = `XP: ${practiceXp}`;
-  document.getElementById('practiceHearts').textContent = '♥'.repeat(Math.max(0, practiceHearts));
+  const xpEl = document.getElementById('practiceXp');
+  if (xpEl) xpEl.textContent = `XP: ${practiceXp}`;
+  const heartsEl = document.getElementById('practiceHearts');
+  if (heartsEl) heartsEl.textContent = '♥'.repeat(Math.max(0, practiceHearts));
 
   if (lang && q.word) {
     fetch('/api/word_progress', {
@@ -1221,8 +1230,79 @@ function showPracticeResults() {
   res.style.display = 'block';
   res.scrollIntoView({behavior: 'smooth', block: 'start'});
 
+  const placementMode = (typeof PLACEMENT_MODE !== 'undefined') && !!PLACEMENT_MODE;
   const total = practiceCorrect + practiceWrong;
   const pct = total > 0 ? Math.round((practiceCorrect / total) * 100) : 0;
+
+  if (placementMode) {
+    const levels = ['A1', 'A2', 'B1', 'B2'];
+    const stats = {};
+    levels.forEach(l => { stats[l] = {correct: 0, total: 0, pct: 0}; });
+
+    (practicePlacementLog || []).forEach(r => {
+      const lvl = String((r && r.cefr) || '').toUpperCase();
+      if (!stats[lvl]) return;
+      stats[lvl].total += 1;
+      if (r.correct) stats[lvl].correct += 1;
+    });
+    levels.forEach(l => {
+      stats[l].pct = stats[l].total > 0 ? Math.round((stats[l].correct / stats[l].total) * 100) : 0;
+    });
+
+    const threshold = 65;
+    let recommended = levels[levels.length - 1];
+    for (const l of levels) {
+      if (stats[l].total === 0 || stats[l].pct < threshold) { recommended = l; break; }
+    }
+
+    const levelBn = {
+      A1: 'A1 — প্রাথমিক (শুরু থেকে শুরু করুন)',
+      A2: 'A2 — প্রি-ইন্টারমিডিয়েট (A1 জানা থাকলে এখান থেকে শুরু করুন)',
+      B1: 'B1 — ইন্টারমিডিয়েট (কথোপকথন ও ব্যাকরণ শক্ত করুন)',
+      B2: 'B2 — আপার ইন্টারমিডিয়েট (উন্নত ব্যাকরণ ও সাবলীলতা)',
+    };
+
+    document.getElementById('practiceResultEmoji').textContent = '🎯';
+    document.getElementById('practiceResultTitle').textContent = `Recommended starting level: ${recommended}`;
+    document.getElementById('practiceResultBn').textContent = 'স্কোর দেখে আপনার শেখা শুরু করার লেভেল নির্বাচন করা হয়েছে।';
+    document.getElementById('practiceResultScore').innerHTML =
+      `<span class="${pct >= 70 ? 'text-success' : pct >= 50 ? 'text-warning' : 'text-danger'}">${pct}%</span>` +
+      `<div class="small text-muted mt-2">${practiceCorrect}/${total} correct</div>`;
+
+    const badgeEl = document.getElementById('placementLevelBadge');
+    if (badgeEl) badgeEl.textContent = recommended;
+    const bnEl = document.getElementById('placementLevelBn');
+    if (bnEl) bnEl.textContent = levelBn[recommended] || '';
+
+    const breakdownEl = document.getElementById('placementBreakdown');
+    if (breakdownEl) {
+      breakdownEl.innerHTML = levels
+        .map(l => `• <strong>${l}</strong>: ${stats[l].correct}/${stats[l].total} (${stats[l].pct}%)`)
+        .join('<br>');
+    }
+
+    const wrap = document.getElementById('placementRecoWrap');
+    if (wrap) wrap.style.display = '';
+
+    const startBtn = document.getElementById('placementStartBtn');
+    if (startBtn && typeof PLACEMENT_START_URLS !== 'undefined' && PLACEMENT_START_URLS) {
+      startBtn.href = PLACEMENT_START_URLS[recommended] || startBtn.href;
+    }
+
+    const lang = (typeof PRACTICE_LANG !== 'undefined') ? PRACTICE_LANG : '';
+    try {
+      if (lang) {
+        localStorage.setItem(`placement_${lang}`, JSON.stringify({
+          level: recommended,
+          overall_pct: pct,
+          breakdown: Object.fromEntries(levels.map(l => [l, {pct: stats[l].pct, correct: stats[l].correct, total: stats[l].total}])),
+          at: new Date().toISOString(),
+        }));
+      }
+    } catch (e) { /* ignore */ }
+
+    return;
+  }
 
   let emoji = '🎉';
   let title = 'Great job!';
@@ -1256,6 +1336,7 @@ function initPractice() {
   practiceCorrect = 0;
   practiceWrong = 0;
   currentPracticeQuestion = null;
+  practicePlacementLog = [];
   renderPractice(0);
 
   document.addEventListener('keydown', (e) => {
@@ -2069,7 +2150,10 @@ function buildDiacriticBar(barEl, inputEl, lang) {
 }
 
 function initDiacriticBars() {
-  const lang = (typeof LANG !== 'undefined') ? LANG : '';
+  const lang =
+    ((typeof LANG !== 'undefined' && LANG) ? LANG : '') ||
+    ((typeof PRACTICE_LANG !== 'undefined' && PRACTICE_LANG) ? PRACTICE_LANG : '') ||
+    ((typeof DICTATION_LANG !== 'undefined' && DICTATION_LANG) ? DICTATION_LANG : '');
   if (!lang) return;
   buildDiacriticBar(
     document.getElementById('practiceDiacriticBar'),
@@ -2089,7 +2173,7 @@ function initShortcutsHelp() {
   // Detect which interactive page we're on
   const isFlashcard  = typeof VOCAB !== 'undefined';
   const isQuiz       = typeof QUESTIONS !== 'undefined' && QUESTIONS.length > 0;
-  const isPractice   = typeof PRACTICE_ITEMS !== 'undefined';
+  const isPractice   = typeof PRACTICE_QUESTIONS !== 'undefined' && PRACTICE_QUESTIONS.length > 0;
   const isDictation  = typeof DICTATION_ITEMS !== 'undefined';
 
   if (!isFlashcard && !isQuiz && !isPractice && !isDictation) return;

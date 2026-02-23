@@ -1370,6 +1370,326 @@ def _find_lesson(lesson_list, lesson_id):
     return next((l for l in lesson_list if l.get('id') == lesson_id), None)
 
 
+def _build_placement_questions(lang: str, per_level: int = 10):
+    """Build a CEFR placement test question set for a language.
+
+    Uses existing lesson grammar/vocabulary (resources) plus a few curated questions.
+    Output format matches the existing Practice engine (templates/practice.html + initPractice()).
+    """
+    lang = (lang or '').strip().lower()
+    if lang not in LANG_META:
+        return []
+
+    levels = ['A1', 'A2', 'B1', 'B2']
+    per_level = max(6, min(16, int(per_level or 10)))
+    lessons_all = _sorted_lessons(get_lessons().get(lang, []) or [])
+    tts_lang = 'fr-FR' if lang == 'french' else 'es-ES'
+
+    # Curated extras (small set so the test isn't only "in-app" content).
+    curated = {
+        'french': {
+            'A1': [
+                {
+                    'question_en': "Choose the correct French for: Good evening.",
+                    'question_bn': "সঠিক ফরাসি বাছাই করুন: Good evening।",
+                    'correct': 'Bonsoir',
+                    'choices': ['Bonjour', 'Bonsoir', 'Bonne nuit', 'Salut'],
+                },
+                {
+                    'question_en': "Which pronoun means we?",
+                    'question_bn': "we কোন সর্বনাম?",
+                    'correct': 'nous',
+                    'choices': ['nous', 'vous', 'ils', 'tu'],
+                },
+            ],
+            'A2': [
+                {
+                    'question_en': "Choose the correct form: Je ___ manger. (I'm going to eat)",
+                    'question_bn': "সঠিক রূপ: Je ___ manger. (আমি খেতে যাচ্ছি)",
+                    'correct': 'vais',
+                    'choices': ['vais', 'vas', 'va', 'allez'],
+                },
+            ],
+            'B1': [
+                {
+                    'question_en': "Complete: J'___ vais. (I'm going there)",
+                    'question_bn': "পূর্ণ করুন: J'___ vais. (আমি সেখানে যাচ্ছি)",
+                    'correct': 'y',
+                    'choices': ['y', 'en', 'le', 'la'],
+                },
+            ],
+            'B2': [
+                {
+                    'question_en': "Choose the correct mood: Il faut que tu ___ (venir).",
+                    'question_bn': "সঠিক রূপ: Il faut que tu ___ (venir)।",
+                    'correct': 'viennes',
+                    'choices': ['viens', 'viendras', 'viennes', 'venir'],
+                },
+            ],
+        },
+        'spanish': {
+            'A1': [
+                {
+                    'question_en': "Choose the correct Spanish for: I am from Bangladesh.",
+                    'question_bn': "সঠিক স্প্যানিশ বাছাই করুন: I am from Bangladesh।",
+                    'correct': 'Soy de Bangladesh.',
+                    'choices': ['Estoy de Bangladesh.', 'Soy de Bangladesh.', 'Soy en Bangladesh.', 'Estoy en Bangladesh.'],
+                },
+            ],
+            'A2': [
+                {
+                    'question_en': "Choose the correct form: Ayer yo ___ (comer).",
+                    'question_bn': "সঠিক রূপ: Ayer yo ___ (comer)।",
+                    'correct': 'comí',
+                    'choices': ['como', 'comía', 'comí', 'comer'],
+                },
+            ],
+            'B1': [
+                {
+                    'question_en': "Choose the best option: Cuando era niño, yo ___ en Dhaka.",
+                    'question_bn': "সঠিকটি বাছাই করুন: Cuando era niño, yo ___ en Dhaka।",
+                    'correct': 'vivía',
+                    'choices': ['viví', 'vivía', 'he vivido', 'vivir'],
+                },
+            ],
+            'B2': [
+                {
+                    'question_en': "Complete: Espero que tú ___ (venir).",
+                    'question_bn': "পূর্ণ করুন: Espero que tú ___ (venir)।",
+                    'correct': 'vengas',
+                    'choices': ['vienes', 'vendrás', 'vengas', 'venir'],
+                },
+            ],
+        },
+    }
+
+    def _strip_punct(s: str) -> str:
+        return re.sub(r'[\\.,;:!?¿¡"“”()\\[\\]]+', '', (s or '')).strip()
+
+    def _mk_mcq(level: str, mode_label: str, prompt_en: str, prompt_bn: str, choices, answer: str, tts_text: str = None):
+        ch = [str(c) for c in (choices or []) if str(c).strip()]
+        # Ensure answer is included.
+        if answer and answer not in ch:
+            ch = [answer] + ch
+        # Limit to 4 choices for UI consistency.
+        if len(ch) > 4:
+            # Keep answer + 3 others
+            others = [c for c in ch if c != answer]
+            random.shuffle(others)
+            ch = [answer] + others[:3]
+        random.shuffle(ch)
+        return {
+            'kind': 'mcq',
+            'mode': 'placement',
+            'mode_label': mode_label,
+            'prompt_en': prompt_en,
+            'prompt_bn': prompt_bn,
+            'choices': ch,
+            'answer': answer,
+            'tts_text': tts_text,
+            'tts_lang': tts_lang,
+            'cefr': level,
+            # Keep XP tiny (hidden in UI for placement).
+            'xp_correct': 1,
+            'xp_wrong': 0,
+        }
+
+    def _mk_type(level: str, mode_label: str, prompt_en: str, prompt_bn: str, answer: str, hint_bn: str = ''):
+        return {
+            'kind': 'type',
+            'mode': 'placement',
+            'mode_label': mode_label,
+            'prompt_en': prompt_en,
+            'prompt_bn': prompt_bn,
+            'answer': answer,
+            'hint_bn': hint_bn or '',
+            'tts_text': answer,
+            'tts_lang': tts_lang,
+            'cefr': level,
+            'xp_correct': 1,
+            'xp_wrong': 0,
+        }
+
+    def _mk_order(level: str, mode_label: str, prompt_en: str, prompt_bn: str, sentence: str, tokens):
+        tokens = [t for t in (tokens or []) if str(t).strip()]
+        return {
+            'kind': 'order',
+            'mode': 'placement',
+            'mode_label': mode_label,
+            'prompt_en': prompt_en,
+            'prompt_bn': prompt_bn,
+            'tokens': tokens,
+            'answer': sentence,
+            'tts_text': sentence,
+            'tts_lang': tts_lang,
+            'cefr': level,
+            'xp_correct': 1,
+            'xp_wrong': 0,
+        }
+
+    questions = []
+
+    for lvl in levels:
+        lvl_lessons = [l for l in lessons_all if _lesson_cefr(l) == lvl]
+
+        grammar_pool = []
+        vocab_pool = []
+        example_pool = []
+        for lesson in lvl_lessons:
+            gr = lesson.get('grammar') or {}
+            for gq in (gr.get('quiz_questions') or []):
+                if not isinstance(gq, dict):
+                    continue
+                if not gq.get('question_en') or not gq.get('correct') or not gq.get('choices'):
+                    continue
+                grammar_pool.append(gq)
+
+            for w in get_lesson_vocab(lang, lesson) or []:
+                if not isinstance(w, dict):
+                    continue
+                if not w.get('word') or not w.get('english'):
+                    continue
+                vocab_pool.append(w)
+                if w.get('example') and w.get('example_en'):
+                    example_pool.append(w)
+
+        # Mix: grammar + vocab + one sentence task (when available)
+        lvl_q = []
+
+        # 1) Curated questions (optional)
+        extra = curated.get(lang, {}).get(lvl, []) or []
+        random.shuffle(extra)
+        for x in extra[:2]:
+            lvl_q.append(_mk_mcq(
+                lvl,
+                f"Placement • {lvl} • Grammar",
+                x.get('question_en', ''),
+                x.get('question_bn', ''),
+                x.get('choices', []),
+                x.get('correct', ''),
+            ))
+
+        # 2) Grammar from lesson resources
+        random.shuffle(grammar_pool)
+        for gq in grammar_pool[: max(2, per_level // 3)]:
+            lvl_q.append(_mk_mcq(
+                lvl,
+                f"Placement • {lvl} • Grammar",
+                gq.get('question_en', ''),
+                gq.get('question_bn', ''),
+                gq.get('choices', []),
+                gq.get('correct', ''),
+            ))
+
+        # 3) Sentence tasks (cloze or order)
+        if example_pool:
+            ex = random.choice(example_pool)
+            sent = _strip_punct(ex.get('example') or '')
+            if sent:
+                tokens = sent.split()
+                random.shuffle(tokens)
+                lvl_q.append(_mk_order(
+                    lvl,
+                    f"Placement • {lvl} • Sentence",
+                    ex.get('example_en') or 'Order the sentence',
+                    ex.get('example_bn') or 'শব্দগুলো সাজান',
+                    sent,
+                    tokens,
+                ))
+
+        # 4) Vocab questions
+        random.shuffle(vocab_pool)
+        vocab_words = [w for w in vocab_pool if w.get('word') and w.get('english')]
+        if vocab_words:
+            # Build a wrong-pool for distractors
+            wrong_pool = vocab_words[:]
+            random.shuffle(vocab_words)
+            used_words = set()
+            for w in vocab_words:
+                if len(lvl_q) >= per_level:
+                    break
+                word = (w.get('word') or '').strip()
+                english = (w.get('english') or '').strip()
+                bengali = (w.get('bengali') or '').strip()
+
+                if not word or not english:
+                    continue
+                if word in used_words:
+                    continue
+                used_words.add(word)
+
+                qtype = random.choice(['word_to_english', 'english_to_word', 'type_english_to_word', 'listen_to_word'])
+                others = [x for x in wrong_pool if (x.get('word') or '').strip() != word]
+                random.shuffle(others)
+
+                if qtype == 'english_to_word':
+                    choices = [word] + [(x.get('word') or '') for x in others[:3]]
+                    lvl_q.append(_mk_mcq(
+                        lvl,
+                        f"Placement • {lvl} • Vocabulary",
+                        f"How do you say “{english}” in {LANG_META[lang]['name_native'] or LANG_META[lang]['name']}?",
+                        f"“{english}” {LANG_META[lang]['name_bn']} ভাষায় কীভাবে বলে?",
+                        choices,
+                        word,
+                        tts_text=word,
+                    ))
+                elif qtype == 'type_english_to_word':
+                    lvl_q.append(_mk_type(
+                        lvl,
+                        f"Placement • {lvl} • Type",
+                        f"Type the {LANG_META[lang]['name']} word for: {english}",
+                        f"{english} — লিখুন ({LANG_META[lang]['name_bn']} শব্দ)",
+                        word,
+                        hint_bn=bengali,
+                    ))
+                elif qtype == 'listen_to_word':
+                    # Listen (TTS) then choose the spelling.
+                    choices = [word] + [(x.get('word') or '') for x in others[:3]]
+                    lvl_q.append(_mk_mcq(
+                        lvl,
+                        f"Placement • {lvl} • Listening",
+                        "Listen and choose what you hear.",
+                        "শুনুন এবং যা শুনেছেন তা বাছাই করুন।",
+                        choices,
+                        word,
+                        tts_text=word,
+                    ))
+                else:
+                    # word_to_english
+                    choices = [english] + [(x.get('english') or '') for x in others[:3]]
+                    lvl_q.append(_mk_mcq(
+                        lvl,
+                        f"Placement • {lvl} • Vocabulary",
+                        f"What does “{word}” mean in English?",
+                        f"“{word}” ইংরেজিতে কী?",
+                        choices,
+                        english,
+                        tts_text=word,
+                    ))
+
+        # Ensure we have exactly per_level
+        lvl_q = [q for q in lvl_q if q.get('answer') and (q.get('choices') if q.get('kind') == 'mcq' else True)]
+        if len(lvl_q) > per_level:
+            lvl_q = lvl_q[:per_level]
+        while len(lvl_q) < per_level and grammar_pool:
+            gq = grammar_pool.pop()
+            lvl_q.append(_mk_mcq(
+                lvl,
+                f"Placement • {lvl} • Grammar",
+                gq.get('question_en', ''),
+                gq.get('question_bn', ''),
+                gq.get('choices', []),
+                gq.get('correct', ''),
+            ))
+
+        # Tag IDs and append in level order.
+        for q in lvl_q:
+            q['id'] = len(questions) + 1
+            questions.append(q)
+
+    return questions
+
+
 def _next_incomplete_lesson(lesson_list, progress):
     for lesson in _sorted_lessons(lesson_list):
         p = (progress or {}).get(lesson['id'])
@@ -1552,6 +1872,40 @@ def language_home(lang):
     resume = _recommended_lesson(lessons, progress)
     return render_template('language.html', lang=lang, meta=LANG_META[lang],
                            lessons=lessons, progress=progress, resume_lesson=resume)
+
+
+@app.route('/placement/<lang>')
+def placement_test(lang):
+    if lang not in LANG_META:
+        return redirect(url_for('dashboard'))
+
+    try:
+        per_level = int((request.args.get('per') or request.args.get('n') or 10))
+    except (TypeError, ValueError):
+        per_level = 10
+
+    questions = _build_placement_questions(lang, per_level=per_level)
+    if not questions:
+        return redirect(url_for('language_home', lang=lang))
+
+    lesson_list = _sorted_lessons(get_lessons().get(lang, []) or [])
+    start_urls = {}
+    for lvl in ['A1', 'A2', 'B1', 'B2']:
+        l = next((x for x in lesson_list if _lesson_cefr(x) == lvl), None)
+        if l:
+            start_urls[lvl] = url_for('lesson_view', lang=lang, lesson_id=int(l.get('id') or 0))
+        else:
+            start_urls[lvl] = url_for('language_home', lang=lang)
+
+    return render_template(
+        'placement.html',
+        lang=lang,
+        meta=LANG_META[lang],
+        questions=questions,
+        questions_json=json.dumps(questions, ensure_ascii=False),
+        start_urls_json=json.dumps(start_urls, ensure_ascii=False),
+    )
+
 
 @app.route('/lesson/<lang>/<int:lesson_id>')
 def lesson_view(lang, lesson_id):
