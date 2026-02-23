@@ -1219,7 +1219,9 @@ def get_lesson_vocab(lang, lesson):
 _PDF_FONT_LOCK = threading.Lock()
 _PDF_FONT_READY = False
 _PDF_FONT_NAME = 'LC-NotoSerifBengali'
+_PDF_FONT_BOLD_NAME = 'LC-NotoSerifBengali-Bold'
 _PDF_FONT_PATH = os.path.join(BASE_DIR, 'static', 'fonts', 'NotoSerifBengali-Regular.ttf')
+_PDF_FONT_BOLD_PATH = os.path.join(BASE_DIR, 'static', 'fonts', 'NotoSerifBengali-Bold.ttf')
 
 
 def _ensure_pdf_font_registered() -> bool:
@@ -1244,6 +1246,11 @@ def _ensure_pdf_font_registered() -> bool:
         try:
             if _PDF_FONT_NAME not in pdfmetrics.getRegisteredFontNames():
                 pdfmetrics.registerFont(TTFont(_PDF_FONT_NAME, _PDF_FONT_PATH))
+            if os.path.exists(_PDF_FONT_BOLD_PATH) and _PDF_FONT_BOLD_NAME not in pdfmetrics.getRegisteredFontNames():
+                try:
+                    pdfmetrics.registerFont(TTFont(_PDF_FONT_BOLD_NAME, _PDF_FONT_BOLD_PATH))
+                except Exception as exc:
+                    print(f"WARNING: Could not register PDF font {_PDF_FONT_BOLD_NAME}: {exc}")
         except Exception as exc:
             print(f"WARNING: Could not register PDF font {_PDF_FONT_NAME}: {exc}")
             return False
@@ -1265,6 +1272,8 @@ def _build_lesson_pdf_bytes_reportlab(lang: str, meta: dict, lesson: dict, vocab
     try:
         from reportlab.lib import colors
         from reportlab.lib.pagesizes import A4
+        from reportlab.lib.utils import ImageReader
+        from reportlab.pdfbase import pdfmetrics
         from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
         from reportlab.lib.styles import ParagraphStyle
     except Exception as exc:
@@ -1274,9 +1283,11 @@ def _build_lesson_pdf_bytes_reportlab(lang: str, meta: dict, lesson: dict, vocab
         raise RuntimeError(f"Missing PDF font file: {_PDF_FONT_PATH}")
 
     font_name = _PDF_FONT_NAME
+    font_bold = _PDF_FONT_BOLD_NAME if _PDF_FONT_BOLD_NAME in pdfmetrics.getRegisteredFontNames() else font_name
     page_w, page_h = A4
     left = right = 36
-    top = bottom = 40
+    # Leave space for a simple header+footer (logo/title + footer text)
+    top = bottom = 72
     content_width = page_w - left - right
 
     def para(text: str, style: ParagraphStyle) -> Paragraph:
@@ -1474,10 +1485,92 @@ def _build_lesson_pdf_bytes_reportlab(lang: str, meta: dict, lesson: dict, vocab
         author="Language Coach",
     )
 
+    # Prepare logo (optional)
+    logo_reader = None
+    logo_w = logo_h = 0
+    try:
+        logo_path = _logo_file_path()
+        if logo_path and os.path.exists(logo_path):
+            logo_reader = ImageReader(logo_path)
+            logo_w, logo_h = logo_reader.getSize()
+    except Exception:
+        logo_reader = None
+        logo_w = logo_h = 0
+
     def on_page(canvas, doc_):
         canvas.saveState()
-        canvas.setFont(font_name, 9)
+        # ----- Header (logo + title) -----
+        header_line_y = page_h - top + 12
+        header_content_y = page_h - top + 34
+
+        canvas.setStrokeColor(colors.HexColor('#e5e5e5'))
+        canvas.setLineWidth(0.8)
+        canvas.line(left, header_line_y, page_w - right, header_line_y)
+
+        x = left
+        if logo_reader and logo_w and logo_h:
+            d = 22
+            r = d / 2
+            y = header_content_y - r
+            # Clip the logo to a circle (like the website avatar)
+            canvas.saveState()
+            path = canvas.beginPath()
+            path.circle(x + r, y + r, r)
+            canvas.clipPath(path, stroke=0, fill=0)
+
+            # "Cover" fit: scale to fill the square, then center-crop.
+            scale = max(d / float(logo_w), d / float(logo_h))
+            dw = logo_w * scale
+            dh = logo_h * scale
+            dx = x + r - dw / 2
+            dy = y + r - dh / 2
+            canvas.drawImage(logo_reader, dx, dy, width=dw, height=dh, mask='auto')
+            canvas.restoreState()
+
+            # Circle border
+            canvas.setStrokeColor(colors.HexColor('#e5e5e5'))
+            canvas.setLineWidth(1)
+            canvas.circle(x + r, y + r, r, stroke=1, fill=0)
+            x = x + d + 10
+
+        canvas.setFillColor(colors.HexColor('#111111'))
+        canvas.setFont(font_bold, 10)
+        canvas.drawString(x, header_content_y + 4, "Language Coach")
+
+        lang_name = (meta.get('name') or lang or '').strip()
+        subtitle = f"{lang_name} · Lesson {lesson_no}"
         canvas.setFillColor(colors.HexColor('#666666'))
+        canvas.setFont(font_name, 9)
+        canvas.drawString(x, header_content_y - 8, subtitle)
+
+        # Right-side lesson title (truncate a bit so it doesn't wrap)
+        right_title = title_en or f"Lesson {lesson_no}"
+        right_title = re.sub(r'\s+', ' ', right_title).strip()
+        if len(right_title) > 46:
+            right_title = right_title[:45].rstrip() + "…"
+        canvas.setFillColor(colors.HexColor('#666666'))
+        canvas.setFont(font_name, 9)
+        canvas.drawRightString(page_w - right, header_content_y - 2, right_title)
+
+        # ----- Footer (website footer text + page number) -----
+        footer_line_y = bottom - 18
+        canvas.setStrokeColor(colors.HexColor('#e5e5e5'))
+        canvas.setLineWidth(0.8)
+        canvas.line(left, footer_line_y, page_w - right, footer_line_y)
+
+        year = datetime.now().year
+        footer_center_x = (left + (page_w - right)) / 2
+        canvas.setFillColor(colors.HexColor('#111111'))
+        canvas.setFont(font_bold, 9)
+        canvas.drawCentredString(footer_center_x, footer_line_y - 12, "Language Coach")
+        canvas.setFillColor(colors.HexColor('#666666'))
+        canvas.setFont(font_name, 8.5)
+        canvas.drawCentredString(footer_center_x, footer_line_y - 24, "mentors.career.abroad26@gmail.com")
+        canvas.drawCentredString(footer_center_x, footer_line_y - 35, "An initiative from : Career Abroad Mentor")
+        canvas.drawCentredString(footer_center_x, footer_line_y - 46, f"© {year} Ahsan Suny. All rights reserved")
+
+        canvas.setFillColor(colors.HexColor('#666666'))
+        canvas.setFont(font_name, 9)
         canvas.drawRightString(page_w - right, 18, f"Page {doc_.page}")
         canvas.restoreState()
 
