@@ -94,6 +94,12 @@
           </a>
         </li>
 
+        <li class="nav-item">
+          <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#feedbackModal">
+            <i class="fas fa-comment-dots me-1"></i> Feedback
+          </a>
+        </li>
+
         {% if auth_user %}
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle {% if request.endpoint in ['login'] %}active{% endif %}"
@@ -189,15 +195,72 @@
         data-bs-toggle="modal" data-bs-target="#shortcutsModal"
         title="Keyboard shortcuts (?)">?</button>
 
+<!-- Feedback Modal -->
+<div class="modal fade" id="feedbackModal" tabindex="-1" aria-labelledby="feedbackModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title fw-bold" id="feedbackModalLabel">💬 Feedback</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body pt-2">
+        {% set fb_lang = request.view_args.get('lang') if request.view_args else '' %}
+        <form id="feedbackForm">
+          <div class="row g-2">
+            <div class="col-md-6">
+              <label class="form-label small text-muted mb-1">Name</label>
+              <input id="feedbackName" class="form-control" type="text" maxlength="120" required
+                     value="{{ auth_user.name if auth_user else '' }}" placeholder="Your name">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small text-muted mb-1">Email</label>
+              <input id="feedbackEmail" class="form-control" type="email" maxlength="320" required
+                     value="{{ auth_user.email if auth_user else '' }}" placeholder="you@example.com">
+            </div>
+          </div>
+
+          <div class="mt-3">
+            <label class="form-label small text-muted mb-1">Category</label>
+            <select id="feedbackCategory" class="form-select">
+              <option value="experience">Experience / Suggestion</option>
+              <option value="problem">Problem / Bug</option>
+              <option value="feature">Feature request</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div class="mt-3">
+            <label class="form-label small text-muted mb-1">Message</label>
+            <textarea id="feedbackMessage" class="form-control" rows="4" maxlength="2000" required
+                      placeholder="Write your experience, problem, or suggestion…"></textarea>
+            <div class="small text-muted bengali-text mt-1">আপনার অভিজ্ঞতা, সমস্যা বা পরামর্শ লিখুন…</div>
+          </div>
+
+          <input type="hidden" id="feedbackLanguage" value="{{ fb_lang }}">
+          <input type="hidden" id="feedbackPage" value="{{ request.path }}">
+
+          <div class="alert alert-danger mt-3" id="feedbackError" style="display:none"></div>
+          <div class="alert alert-success mt-3" id="feedbackOk" style="display:none"></div>
+
+          <div class="d-flex justify-content-end gap-2 mt-3">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary" id="feedbackSubmitBtn">Send</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Footer -->
-<footer class="py-4 mt-5">
+<footer class="lc-footer py-2 mt-4">
   <div class="container text-center">
-    <p class="mb-1 fw-semibold">Language Coach</p>
-    <small class="text-muted">📧mentors.career.abroad26@gmail.com</small>
-    <div class="small mt-2 text-muted">
+    <div class="fw-semibold">Language Coach</div>
+    <div class="small text-muted mt-1">📧 mentors.career.abroad26@gmail.com</div>
+    <div class="small text-muted mt-1">
       An initiative from : <a class="text-muted fw-semibold text-decoration-none" href="https://www.ahsansuny.com" target="_blank" rel="noopener">Career Abroad Mentor</a>
     </div>
-    <div class="small mt-1 text-muted">© {{ current_year }} Ahsan Suny. All rights reserved</div>
+    <div class="small text-muted mt-0">© {{ current_year }} Ahsan Suny. All rights reserved</div>
   </div>
 </footer>
 

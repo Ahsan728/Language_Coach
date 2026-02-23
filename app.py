@@ -44,6 +44,18 @@ if _TRANSLATE_PROVIDER not in {'local', 'mymemory', 'hybrid'}:
     _TRANSLATE_PROVIDER = 'hybrid'
 app.config['TRANSLATE_PROVIDER'] = _TRANSLATE_PROVIDER
 
+# ---------- Optional: Google Sheets logging (via Apps Script webhook) ----------
+SHEETS_WEBHOOK_URL = (os.environ.get('SHEETS_WEBHOOK_URL') or '').strip()
+SHEETS_WEBHOOK_TOKEN = (os.environ.get('SHEETS_WEBHOOK_TOKEN') or '').strip()
+try:
+    SHEETS_WEBHOOK_TIMEOUT = float(os.environ.get('SHEETS_WEBHOOK_TIMEOUT', '3.0') or 3.0)
+except (TypeError, ValueError):
+    SHEETS_WEBHOOK_TIMEOUT = 3.0
+SHEETS_WEBHOOK_TIMEOUT = max(1.0, min(15.0, SHEETS_WEBHOOK_TIMEOUT))
+SHEETS_USERS_SHEET = (os.environ.get('SHEETS_USERS_SHEET') or 'LanguageCoach_Users').strip() or 'LanguageCoach_Users'
+SHEETS_EVENTS_SHEET = (os.environ.get('SHEETS_EVENTS_SHEET') or 'LanguageCoach_Events').strip() or 'LanguageCoach_Events'
+SHEETS_FEEDBACK_SHEET = (os.environ.get('SHEETS_FEEDBACK_SHEET') or 'LanguageCoach_Feedback').strip() or 'LanguageCoach_Feedback'
+
 # ---------- Content loading (auto-reload when JSON changes) ----------
 VOCAB_PATH = os.path.join(DATA_DIR, 'vocabulary.json')
 LESSONS_PATH = os.path.join(DATA_DIR, 'lessons.json')
@@ -702,6 +714,17 @@ def init_db():
             wrong    INTEGER DEFAULT 0,
             PRIMARY KEY(user_id, date)
         );
+        CREATE TABLE IF NOT EXISTS feedback (
+            id         INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id    INTEGER,
+            name       TEXT,
+            email      TEXT,
+            category   TEXT,
+            language   TEXT,
+            message    TEXT,
+            page       TEXT,
+            created_at TEXT
+        );
     ''')
 
     # Lightweight migrations (for evolving DB schema over time)
@@ -737,6 +760,8 @@ def init_db():
             ON user_lesson_progress(user_id, language);
         CREATE INDEX IF NOT EXISTS idx_uda_user_date
             ON user_daily_activity(user_id, date);
+        CREATE INDEX IF NOT EXISTS idx_feedback_created_at
+            ON feedback(created_at);
     ''')
 
     conn.commit()
@@ -757,6 +782,142 @@ def _is_valid_email(value: str) -> bool:
     if not v or len(v) > 320:
         return False
     return bool(_EMAIL_SIMPLE_RE.match(v))
+
+
+def _sheets_send(action: str, sheet: str, row: dict):
+    """Send a row to Google Sheets via an Apps Script webhook (optional).
+
+    This is best-effort: failures are swallowed so the learning app remains usable.
+    Configure via env vars:
+      - SHEETS_WEBHOOK_URL
+      - SHEETS_WEBHOOK_TOKEN (optional but recommended)
+    """
+    if not SHEETS_WEBHOOK_URL:
+        return
+
+    payload = {
+        'action': (action or '').strip() or 'append_row',
+        'sheet': (sheet or '').strip() or SHEETS_EVENTS_SHEET,
+        'row': row or {},
+    }
+    if SHEETS_WEBHOOK_TOKEN:
+        payload['token'] = SHEETS_WEBHOOK_TOKEN
+
+    body = json.dumps(payload, ensure_ascii=False).encode('utf-8')
+    req = Request(
+        SHEETS_WEBHOOK_URL,
+        data=body,
+        headers={'Content-Type': 'application/json; charset=utf-8'},
+    )
+
+    def _do_post():
+        try:
+            with urlopen(req, timeout=SHEETS_WEBHOOK_TIMEOUT) as resp:
+                # Read a tiny amount to ensure the request completes.
+                resp.read(256)
+        except Exception:
+            return
+
+    try:
+        threading.Thread(target=_do_post, daemon=True).start()
+    except Exception:
+        # As a last resort, just skip (don't crash the app).
+        return
+
+
+def _user_snapshot(user_id: int):
+    """Return per-language progress + today's activity for a user (or empty)."""
+    try:
+        user_id = int(user_id)
+    except (TypeError, ValueError):
+        return {}, {'xp_today': 0, 'reviews_today': 0, 'correct_today': 0, 'wrong_today': 0}
+
+    lessons_all = get_lessons()
+    out = {}
+    for lang in LANGS:
+        prog = load_progress(lang, user_id=user_id)
+        total = len(lessons_all.get(lang, []) or [])
+        completed = sum(1 for v in (prog or {}).values() if v.get('completed'))
+        out[lang] = {
+            'completed': int(completed),
+            'total': int(total),
+            'percent': int(completed / total * 100) if total else 0,
+        }
+
+    activity = get_activity_summary(user_id=user_id) or {}
+    return out, activity
+
+
+def _emit_user_snapshot_to_sheets(user: dict, last_event: str = '', language: str = '', lesson_id=None, score=None, page: str = ''):
+    if not user or not user.get('email'):
+        return
+    uid = user.get('id')
+    progress, activity = _user_snapshot(uid)
+    now_iso = datetime.now().isoformat(timespec='seconds')
+
+    fr = progress.get('french') or {}
+    es = progress.get('spanish') or {}
+
+    row = {
+        'updated_at': now_iso,
+        'user_id': uid or '',
+        'name': user.get('name') or '',
+        'email': user.get('email') or '',
+        'last_login': user.get('last_login') or '',
+        'last_event': last_event or '',
+        'last_lang': language or '',
+        'last_lesson_id': lesson_id if lesson_id is not None else '',
+        'last_score': score if score is not None else '',
+        'french_completed': fr.get('completed', ''),
+        'french_total': fr.get('total', ''),
+        'french_percent': fr.get('percent', ''),
+        'spanish_completed': es.get('completed', ''),
+        'spanish_total': es.get('total', ''),
+        'spanish_percent': es.get('percent', ''),
+        'xp_today': activity.get('xp_today', 0),
+        'reviews_today': activity.get('reviews_today', 0),
+        'correct_today': activity.get('correct_today', 0),
+        'wrong_today': activity.get('wrong_today', 0),
+        'page': page or '',
+    }
+
+    _sheets_send('upsert_user', SHEETS_USERS_SHEET, row)
+
+
+def _emit_event_to_sheets(event: str, user: dict = None, language: str = '', lesson_id=None, score=None,
+                          category: str = '', message: str = '', page: str = ''):
+    now_iso = datetime.now().isoformat(timespec='seconds')
+    user = user or {}
+    uid = user.get('id')
+    progress, activity = _user_snapshot(uid) if uid is not None else ({}, {})
+    fr = progress.get('french') or {}
+    es = progress.get('spanish') or {}
+
+    row = {
+        'timestamp': now_iso,
+        'event': (event or '').strip(),
+        'user_id': uid or '',
+        'name': user.get('name') or '',
+        'email': user.get('email') or '',
+        'language': language or '',
+        'lesson_id': lesson_id if lesson_id is not None else '',
+        'score': score if score is not None else '',
+        'category': category or '',
+        'message': (message or '')[:2000],
+        'page': page or '',
+        'french_completed': fr.get('completed', ''),
+        'french_total': fr.get('total', ''),
+        'french_percent': fr.get('percent', ''),
+        'spanish_completed': es.get('completed', ''),
+        'spanish_total': es.get('total', ''),
+        'spanish_percent': es.get('percent', ''),
+        'xp_today': activity.get('xp_today', 0) if activity else '',
+        'reviews_today': activity.get('reviews_today', 0) if activity else '',
+        'correct_today': activity.get('correct_today', 0) if activity else '',
+        'wrong_today': activity.get('wrong_today', 0) if activity else '',
+    }
+
+    _sheets_send('append_row', SHEETS_EVENTS_SHEET, row)
 
 
 def get_user_by_id(user_id: int):
@@ -1825,6 +1986,9 @@ def login():
         else:
             user_id = upsert_user(name, email)
             session['user_id'] = user_id
+            user = get_user_by_id(user_id)
+            _emit_event_to_sheets('login', user=user, page=_safe_next_url(next_url))
+            _emit_user_snapshot_to_sheets(user, last_event='login', page=_safe_next_url(next_url))
             return redirect(_safe_next_url(next_url))
 
     return render_template('login.html', error=error, next=_safe_next_url(next_url), name=name, email=email)
@@ -2794,6 +2958,75 @@ def api_complete():
         ''', (uid, lang, lesson_id, score, now_iso))
     conn.commit()
     conn.close()
+    if uid is not None:
+        user = get_user_by_id(uid)
+        quiz_url = url_for('quiz', lang=lang, lesson_id=lesson_id)
+        _emit_event_to_sheets('lesson_complete', user=user, language=lang, lesson_id=lesson_id, score=score, page=quiz_url)
+        _emit_user_snapshot_to_sheets(user, last_event='lesson_complete', language=lang, lesson_id=lesson_id, score=score, page=quiz_url)
+    return jsonify({'ok': True})
+
+
+@app.route('/api/feedback', methods=['POST'])
+def api_feedback():
+    data = request.json or {}
+    name = (data.get('name') or '').strip()
+    email = _normalize_email(data.get('email') or '')
+    category = (data.get('category') or '').strip()
+    language = (data.get('language') or '').strip().lower()
+    message = (data.get('message') or '').strip()
+    page = (data.get('page') or '').strip()
+
+    if not name:
+        return jsonify({'ok': False, 'error': 'Name is required.'}), 400
+    if len(name) > 120:
+        name = name[:120]
+    if not _is_valid_email(email):
+        return jsonify({'ok': False, 'error': 'Please enter a valid email address.'}), 400
+    if not message:
+        return jsonify({'ok': False, 'error': 'Message is required.'}), 400
+    if len(message) > 2000:
+        message = message[:2000]
+    if len(category) > 80:
+        category = category[:80]
+    if language and language not in LANG_META:
+        language = ''
+    if len(page) > 300:
+        page = page[:300]
+
+    uid = current_user_id()
+    now_iso = datetime.now().isoformat(timespec='seconds')
+
+    conn = get_db()
+    conn.execute(
+        'INSERT INTO feedback (user_id, name, email, category, language, message, page, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+        (uid, name, email, category, language, message, page, now_iso),
+    )
+    conn.commit()
+    conn.close()
+
+    # If the user is logged in, prefer the canonical stored name/email.
+    user = get_user_by_id(uid) if uid is not None else {'id': '', 'name': name, 'email': email, 'last_login': ''}
+    if user and user.get('email'):
+        name = user.get('name') or name
+        email = user.get('email') or email
+
+    _emit_event_to_sheets('feedback', user={'id': user.get('id') if user else '', 'name': name, 'email': email, 'last_login': user.get('last_login') if user else ''},
+                          language=language, category=category, message=message, page=page)
+
+    _sheets_send('append_row', SHEETS_FEEDBACK_SHEET, {
+        'timestamp': now_iso,
+        'user_id': (user.get('id') if user else '') or '',
+        'name': name,
+        'email': email,
+        'category': category,
+        'language': language,
+        'message': message,
+        'page': page,
+    })
+
+    if user and user.get('id') is not None:
+        _emit_user_snapshot_to_sheets(user, last_event='feedback', language=language, page=page)
+
     return jsonify({'ok': True})
 
 @app.route('/api/word_progress', methods=['POST'])

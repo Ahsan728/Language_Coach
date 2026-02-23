@@ -2065,6 +2065,194 @@ function initVocabExplorer() {
 }
 
 /* ===============================================
+   FEEDBACK MODAL
+   =============================================== */
+function initFeedbackForm() {
+  const modalEl = document.getElementById('feedbackModal');
+  const form = document.getElementById('feedbackForm');
+  if (!modalEl || !form) return;
+
+  const nameEl = document.getElementById('feedbackName');
+  const emailEl = document.getElementById('feedbackEmail');
+  const categoryEl = document.getElementById('feedbackCategory');
+  const messageEl = document.getElementById('feedbackMessage');
+  const langEl = document.getElementById('feedbackLanguage');
+  const pageEl = document.getElementById('feedbackPage');
+  const errEl = document.getElementById('feedbackError');
+  const okEl = document.getElementById('feedbackOk');
+  const submitBtn = document.getElementById('feedbackSubmitBtn');
+
+  function showError(text) {
+    if (okEl) okEl.style.display = 'none';
+    if (errEl) {
+      errEl.textContent = text || 'Something went wrong.';
+      errEl.style.display = '';
+    }
+  }
+
+  function showOk(text) {
+    if (errEl) errEl.style.display = 'none';
+    if (okEl) {
+      okEl.textContent = text || 'Thanks!';
+      okEl.style.display = '';
+    }
+  }
+
+  function clearAlerts() {
+    if (errEl) { errEl.textContent = ''; errEl.style.display = 'none'; }
+    if (okEl) { okEl.textContent = ''; okEl.style.display = 'none'; }
+  }
+
+  function prefillFromStorage() {
+    try {
+      const savedName = localStorage.getItem('lc_fb_name') || '';
+      const savedEmail = localStorage.getItem('lc_fb_email') || '';
+      if (nameEl && !nameEl.value.trim() && savedName) nameEl.value = savedName;
+      if (emailEl && !emailEl.value.trim() && savedEmail) emailEl.value = savedEmail;
+    } catch (e) { /* ignore */ }
+  }
+
+  function saveToStorage() {
+    try {
+      const n = nameEl ? nameEl.value.trim() : '';
+      const e = emailEl ? emailEl.value.trim() : '';
+      if (n) localStorage.setItem('lc_fb_name', n);
+      if (e) localStorage.setItem('lc_fb_email', e);
+    } catch (e) { /* ignore */ }
+  }
+
+  // Bootstrap modal lifecycle
+  modalEl.addEventListener('show.bs.modal', () => {
+    clearAlerts();
+    prefillFromStorage();
+    if (messageEl) setTimeout(() => messageEl.focus(), 120);
+  });
+
+  form.addEventListener('submit', async (ev) => {
+    ev.preventDefault();
+    clearAlerts();
+
+    const name = nameEl ? nameEl.value.trim() : '';
+    const email = emailEl ? emailEl.value.trim() : '';
+    const category = categoryEl ? categoryEl.value : '';
+    const message = messageEl ? messageEl.value.trim() : '';
+    const language = langEl ? (langEl.value || '') : '';
+    const page = pageEl ? (pageEl.value || '') : '';
+
+    if (!name) return showError('Name is required.');
+    if (!email || !email.includes('@')) return showError('Please enter a valid email.');
+    if (!message) return showError('Message is required.');
+
+    saveToStorage();
+
+    if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Sending…'; }
+    try {
+      const res = await fetch('/api/feedback', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({name, email, category, language, message, page}),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data || !data.ok) {
+        showError((data && data.error) ? String(data.error) : 'Failed to send feedback.');
+        return;
+      }
+      showOk('Thanks! Your message has been received.');
+      if (messageEl) messageEl.value = '';
+      setTimeout(() => {
+        try {
+          if (window.bootstrap) {
+            const inst = window.bootstrap.Modal.getInstance(modalEl);
+            if (inst) inst.hide();
+          }
+        } catch (e) { /* ignore */ }
+      }, 900);
+    } catch (e) {
+      showError('Network error — please try again.');
+    } finally {
+      if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Send'; }
+    }
+  });
+}
+
+/* ===============================================
+   PLACEMENT PROMO (Language page)
+   =============================================== */
+function initPlacementPromo() {
+  const startLink = document.getElementById('placementStartLink');
+  if (!startLink) return;
+
+  const baseHref = startLink.dataset.baseHref || startLink.getAttribute('href') || '';
+  const estimateEl = document.getElementById('placementEstimate');
+  const estimateBnEl = document.getElementById('placementEstimateBn');
+  const lastEl = document.getElementById('placementLastResult');
+  const resumeLink = document.getElementById('placementResumeLink');
+
+  const lang = (startLink.dataset.lang || '').trim().toLowerCase();
+  const key = lang ? `placement_${lang}` : '';
+
+  function getSelectedPer() {
+    const sel = document.querySelector('input[name="placementPer"]:checked');
+    const n = sel ? parseInt(sel.value, 10) : 10;
+    if (!Number.isFinite(n) || n <= 0) return 10;
+    return Math.max(6, Math.min(16, n));
+  }
+
+  function updateEstimateAndLink() {
+    const per = getSelectedPer();
+    const total = per * 4; // A1–B2
+    const minMins = Math.max(6, Math.round(total * 0.25));
+    const maxMins = Math.max(minMins + 2, Math.round(total * 0.375));
+
+    if (estimateEl) estimateEl.textContent = `≈ ${total} questions • ${minMins}–${maxMins} minutes`;
+    if (estimateBnEl) estimateBnEl.textContent = `≈ ${total}টি প্রশ্ন • ${minMins}–${maxMins} মিনিট`;
+
+    const href = per ? `${baseHref}?per=${per}` : baseHref;
+    startLink.href = href;
+  }
+
+  // Attach radio listeners
+  document.querySelectorAll('input[name="placementPer"]').forEach(r => {
+    r.addEventListener('change', updateEstimateAndLink);
+  });
+  updateEstimateAndLink();
+
+  // Show last placement result if available
+  if (key && lastEl && resumeLink) {
+    try {
+      const raw = localStorage.getItem(key);
+      if (raw) {
+        const data = JSON.parse(raw);
+        const level = String((data && data.level) || '').toUpperCase();
+        const pct = Number.isFinite(data && data.overall_pct) ? Math.round(data.overall_pct) : null;
+        const at = (data && data.at) ? new Date(data.at) : null;
+        const atStr = (at && !Number.isNaN(at.getTime())) ? at.toLocaleDateString() : '';
+
+        const levelOk = ['A1','A2','B1','B2'].includes(level);
+        if (levelOk) {
+          const href =
+            level === 'A1' ? resumeLink.dataset.startA1 :
+            level === 'A2' ? resumeLink.dataset.startA2 :
+            level === 'B1' ? resumeLink.dataset.startB1 :
+            level === 'B2' ? resumeLink.dataset.startB2 :
+            '';
+          if (href) resumeLink.href = href;
+
+          resumeLink.style.display = '';
+          lastEl.style.display = '';
+
+          const pctTxt = (pct === null) ? '' : ` (${pct}%)`;
+          const dateTxt = atStr ? ` • ${atStr}` : '';
+          lastEl.innerHTML =
+            `<div>Last result: <strong>${escapeHtml(level)}</strong>${escapeHtml(pctTxt)}${escapeHtml(dateTxt)}</div>` +
+            `<div class="bengali-text">শেষ ফলাফল: <strong>${escapeHtml(level)}</strong>${escapeHtml(pctTxt)}${escapeHtml(dateTxt)}</div>`;
+        }
+      }
+    } catch (e) { /* ignore */ }
+  }
+}
+
+/* ===============================================
    KEYBOARD SHORTCUTS
    =============================================== */
 function attachFlashcardShortcuts() {
@@ -2218,6 +2406,10 @@ document.addEventListener('DOMContentLoaded', () => {
   initDictation();
   // Speaking test page
   initSpeakingTest();
+  // Feedback modal
+  initFeedbackForm();
+  // Placement promo on language page
+  initPlacementPromo();
   // Lesson vocab filter
   filterLessonVocab();
   // Lesson speak & match

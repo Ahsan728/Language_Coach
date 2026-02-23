@@ -81,6 +81,18 @@ Notes:
 - Requires your GitHub auth to be set up for `git push` (HTTPS token or SSH).
 - Resource folders and generated caches are ignored by default (see `.gitignore`).
 
+## Google Sheets (Optional: Users + Feedback)
+
+If you want to keep a live Google Spreadsheet of:
+
+- Users (name/email + progress snapshot)
+- Lesson completion events
+- Feedback / problem reports
+
+Set up the Apps Script webhook and env vars described in:
+
+- `docs/google_sheets.md`
+
 ## 🗂️ Project Structure
 
 ```

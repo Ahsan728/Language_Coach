@@ -29,9 +29,6 @@
             ▶ Resume Lesson {{ resume_lesson.id }}
           </a>
           {% endif %}
-          <a href="{{ url_for('placement_test', lang=lang) }}" class="btn btn-outline-light btn-sm">
-            🎯 Placement Test
-          </a>
           <a href="{{ url_for('practice', lang=lang) }}" class="btn btn-light btn-sm">
             ⚡ Daily Practice
           </a>
@@ -48,8 +45,89 @@
 </div>
 
 <div class="container py-5">
-  <!-- CEFR Level sections -->
   {% set level_order = ['A1', 'A2', 'B1', 'B2'] %}
+
+  {# Start links for “resume from my level” in the placement promo #}
+  {% set a1_first = (lessons | selectattr('cefr_level', 'equalto', 'A1') | list | sort(attribute='id') | first) %}
+  {% set a2_first = (lessons | selectattr('cefr_level', 'equalto', 'A2') | list | sort(attribute='id') | first) %}
+  {% set b1_first = (lessons | selectattr('cefr_level', 'equalto', 'B1') | list | sort(attribute='id') | first) %}
+  {% set b2_first = (lessons | selectattr('cefr_level', 'equalto', 'B2') | list | sort(attribute='id') | first) %}
+
+  <!-- Placement Test (recommended before starting) -->
+  <div class="card border-0 shadow-sm placement-promo mb-5" id="placementPromo">
+    <div class="card-body p-4 p-md-5">
+      <div class="d-flex align-items-start justify-content-between gap-3 flex-wrap">
+        <div class="flex-grow-1">
+          <div class="d-flex align-items-center gap-2 flex-wrap">
+            <span class="badge bg-dark-subtle text-dark border">New</span>
+            <span class="badge bg-light text-dark border">CEFR A1–B2</span>
+          </div>
+          <h3 class="fw-bold mt-2 mb-1">🎯 Placement Test — find your level</h3>
+          <p class="text-muted mb-2">
+            Take a short test (listening, vocabulary, grammar) and we’ll recommend where to start.
+          </p>
+          <p class="text-muted bengali-text mb-0">
+            ছোট্ট একটি টেস্ট দিন (লিসেনিং, শব্দভান্ডার, ব্যাকরণ) — আমরা আপনার জন্য শুরুর লেভেল সাজেস্ট করবো।
+          </p>
+        </div>
+        <div class="text-end">
+          <div class="d-flex gap-2 justify-content-end flex-wrap">
+            <span class="badge cefr-A1">A1</span>
+            <span class="badge cefr-A2">A2</span>
+            <span class="badge cefr-B1">B1</span>
+            <span class="badge cefr-B2">B2</span>
+          </div>
+        </div>
+      </div>
+
+      <hr class="my-4">
+
+      <div class="row g-4 align-items-end">
+        <div class="col-md-7">
+          <div class="small text-muted fw-semibold text-uppercase mb-2">Choose test length</div>
+          <div class="btn-group w-100" role="group" aria-label="Placement test length">
+            <input type="radio" class="btn-check" name="placementPer" id="placementPer8" autocomplete="off" value="8">
+            <label class="btn btn-outline-secondary" for="placementPer8">Quick</label>
+
+            <input type="radio" class="btn-check" name="placementPer" id="placementPer10" autocomplete="off" value="10" checked>
+            <label class="btn btn-outline-secondary" for="placementPer10">Standard</label>
+
+            <input type="radio" class="btn-check" name="placementPer" id="placementPer12" autocomplete="off" value="12">
+            <label class="btn btn-outline-secondary" for="placementPer12">Full</label>
+          </div>
+          <div class="mt-2 small text-muted" id="placementEstimate">≈ 40 questions • 10–15 minutes</div>
+          <div class="small text-muted bengali-text" id="placementEstimateBn">≈ ৪০টি প্রশ্ন • ১০–১৫ মিনিট</div>
+          <div class="small text-muted mt-2">
+            Tip: Press <kbd>L</kbd> during the test to replay audio.
+          </div>
+        </div>
+        <div class="col-md-5">
+          <div class="d-grid gap-2">
+            <a class="btn btn-{{ 'french' if lang == 'french' else 'spanish' }} btn-lg"
+               id="placementStartLink"
+               data-lang="{{ lang }}"
+               data-base-href="{{ url_for('placement_test', lang=lang) }}"
+               href="{{ url_for('placement_test', lang=lang) }}">
+              Start Placement Test →
+            </a>
+            <a class="btn btn-outline-secondary"
+               id="placementResumeLink"
+               style="display:none"
+               data-start-a1="{{ url_for('lesson_view', lang=lang, lesson_id=a1_first.id) if a1_first else url_for('language_home', lang=lang) }}"
+               data-start-a2="{{ url_for('lesson_view', lang=lang, lesson_id=a2_first.id) if a2_first else url_for('language_home', lang=lang) }}"
+               data-start-b1="{{ url_for('lesson_view', lang=lang, lesson_id=b1_first.id) if b1_first else url_for('language_home', lang=lang) }}"
+               data-start-b2="{{ url_for('lesson_view', lang=lang, lesson_id=b2_first.id) if b2_first else url_for('language_home', lang=lang) }}"
+               href="{{ url_for('language_home', lang=lang) }}">
+              Continue from my last result
+            </a>
+            <div class="small text-muted" id="placementLastResult" style="display:none"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CEFR Level sections -->
   {% set level_meta = {
     'A1': {
       'label': '🟢 A1 — Elementary',

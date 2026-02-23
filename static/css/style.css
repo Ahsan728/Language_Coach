@@ -311,6 +311,32 @@ body { font-family: var(--lc-font-ui); color: var(--text-dark); background: var(
 .score-badge { font-size: 0.8rem; color: #f6a800; }
 .level-header h2 { font-size: 1.5rem; color: var(--text-dark); }
 
+/* ---- Placement Promo ---- */
+.placement-promo{
+  border-radius: var(--radius);
+  border: 2px solid var(--lc-outline) !important;
+  background: linear-gradient(135deg, rgba(255,255,255,0.92), rgba(255,255,255,0.82));
+  position: relative;
+  overflow: hidden;
+}
+.placement-promo::before{
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background:
+    radial-gradient(1200px 240px at 10% 0%, rgba(99,102,241,0.18), transparent 60%),
+    radial-gradient(900px 220px at 90% 0%, rgba(34,197,94,0.16), transparent 60%),
+    radial-gradient(1100px 260px at 50% 100%, rgba(245,158,11,0.14), transparent 60%);
+  pointer-events: none;
+}
+.placement-promo .card-body{
+  position: relative; /* above ::before */
+}
+.placement-promo kbd{
+  border-radius: 8px;
+  border: 1px solid rgba(26,26,46,0.18);
+}
+
 /* ---- Vocabulary Cards ---- */
 .vocab-card {
   border-radius: var(--radius); transition: transform .15s, box-shadow .15s;
@@ -485,6 +511,7 @@ footer { background: var(--lc-footer-bg); color: var(--lc-footer-text); border-t
 footer .text-muted { color: var(--lc-footer-muted) !important; }
 footer a { color: var(--lc-footer-text); }
 footer a:hover { color: var(--lc-footer-text); }
+.lc-footer { line-height: 1.25; }
 
 /* Diacritics helper bar */
 .diacritic-bar { display: flex; flex-wrap: wrap; gap: 4px; min-height: 2rem; }
