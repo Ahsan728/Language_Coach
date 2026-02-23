@@ -354,14 +354,26 @@ from app import app as application
 ```
 > ⚠️ Replace `ahsan728` with your actual PythonAnywhere username
 
-#### Step 6 — Set environment variables (important)
-Web tab → **Environment variables**:
+#### Step 6 — Add your secrets/config (`.env`) (important)
+PythonAnywhere free accounts may not show an “Environment variables” section. This project supports a local `.env` file.
 
-- `SECRET_KEY` = *(required)* random long string (keeps login sessions secure)
-- Optional:
-  - `SHEETS_WEBHOOK_URL`, `SHEETS_WEBHOOK_TOKEN` (Google Sheets logging)
-  - `TTS_PROVIDER=gtts` (server voice for everyone)
-  - `PDF_ENGINE=reportlab` *(recommended on PythonAnywhere)* for lesson PDFs
+In a **Bash** console:
+```bash
+cd ~/Language_Coach
+python -c "import secrets; print(secrets.token_hex(32))"
+nano .env
+```
+
+Paste (example):
+```env
+SECRET_KEY=PASTE_THE_RANDOM_VALUE_HERE
+PDF_ENGINE=reportlab
+# Optional (Google Sheets):
+# SHEETS_WEBHOOK_URL=PASTE_WEB_APP_URL_HERE
+# SHEETS_WEBHOOK_TOKEN=PASTE_TOKEN_HERE
+```
+
+> Alternative: you can also set `os.environ[...]` in the WSGI file before importing `app`, but `.env` is cleaner.
 
 #### Step 7 — Reload & visit
 Web tab → green **Reload** button → your app is live at `https://ahsan728.pythonanywhere.com`
