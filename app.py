@@ -1,4 +1,6 @@
+import base64
 import hashlib
+import io
 import os
 import json
 import random
@@ -959,6 +961,396 @@ def get_lesson_vocab(lang, lesson):
 
     return words
 
+
+_PDF_FONT_LOCK = threading.Lock()
+_PDF_FONT_READY = False
+_PDF_FONT_NAME = 'LC-NotoSerifBengali'
+_PDF_FONT_PATH = os.path.join(BASE_DIR, 'static', 'fonts', 'NotoSerifBengali-Regular.ttf')
+
+
+def _ensure_pdf_font_registered() -> bool:
+    """Register a Unicode font for Bengali/Latin PDF exports (idempotent)."""
+    global _PDF_FONT_READY  # noqa: PLW0603 - intentional cache flag
+    if _PDF_FONT_READY:
+        return True
+
+    with _PDF_FONT_LOCK:
+        if _PDF_FONT_READY:
+            return True
+
+        if not os.path.exists(_PDF_FONT_PATH):
+            return False
+
+        try:
+            from reportlab.pdfbase import pdfmetrics
+            from reportlab.pdfbase.ttfonts import TTFont
+        except Exception:
+            return False
+
+        try:
+            if _PDF_FONT_NAME not in pdfmetrics.getRegisteredFontNames():
+                pdfmetrics.registerFont(TTFont(_PDF_FONT_NAME, _PDF_FONT_PATH))
+        except Exception as exc:
+            print(f"WARNING: Could not register PDF font {_PDF_FONT_NAME}: {exc}")
+            return False
+
+        _PDF_FONT_READY = True
+        return True
+
+
+def _escape_paragraph_text(text: str) -> str:
+    """Escape text for reportlab Paragraph (minimal XML escaping)."""
+    s = '' if text is None else str(text)
+    s = s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+    s = s.replace('\r\n', '\n').replace('\r', '\n').replace('\n', '<br/>')
+    return s
+
+
+def _build_lesson_pdf_bytes_reportlab(lang: str, meta: dict, lesson: dict, vocabulary: list, grammar: Optional[dict]) -> bytes:
+    """Render a single lesson as a downloadable PDF."""
+    try:
+        from reportlab.lib import colors
+        from reportlab.lib.pagesizes import A4
+        from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+        from reportlab.lib.styles import ParagraphStyle
+    except Exception as exc:
+        raise RuntimeError("Missing dependency: reportlab. Run: pip install -r requirements.txt") from exc
+
+    if not _ensure_pdf_font_registered():
+        raise RuntimeError(f"Missing PDF font file: {_PDF_FONT_PATH}")
+
+    font_name = _PDF_FONT_NAME
+    page_w, page_h = A4
+    left = right = 36
+    top = bottom = 40
+    content_width = page_w - left - right
+
+    def para(text: str, style: ParagraphStyle) -> Paragraph:
+        return Paragraph(_escape_paragraph_text(text), style)
+
+    styles = {
+        'title': ParagraphStyle(
+            name='LCTitle',
+            fontName=font_name,
+            fontSize=18,
+            leading=22,
+            spaceAfter=10,
+        ),
+        'subtitle': ParagraphStyle(
+            name='LCSubtitle',
+            fontName=font_name,
+            fontSize=11,
+            leading=14,
+            textColor=colors.HexColor('#444444'),
+            spaceAfter=14,
+        ),
+        'h2': ParagraphStyle(
+            name='LCH2',
+            fontName=font_name,
+            fontSize=13,
+            leading=16,
+            spaceBefore=10,
+            spaceAfter=8,
+            textColor=colors.HexColor('#111111'),
+        ),
+        'normal': ParagraphStyle(
+            name='LCNormal',
+            fontName=font_name,
+            fontSize=11,
+            leading=14,
+            textColor=colors.HexColor('#111111'),
+            spaceAfter=6,
+        ),
+        'muted': ParagraphStyle(
+            name='LCMuted',
+            fontName=font_name,
+            fontSize=11,
+            leading=14,
+            textColor=colors.HexColor('#444444'),
+            spaceAfter=6,
+        ),
+        'cell': ParagraphStyle(
+            name='LCCell',
+            fontName=font_name,
+            fontSize=9,
+            leading=11,
+            textColor=colors.HexColor('#111111'),
+        ),
+    }
+
+    story = []
+
+    lesson_no = lesson.get('id', '')
+    title_en = (lesson.get('title_en') or '').strip()
+    title_bn = (lesson.get('title_bn') or '').strip()
+    title_lang = (lesson.get('title_lang') or '').strip()
+
+    story.append(para(f"{meta.get('name', '').strip()} — Lesson {lesson_no}", styles['h2']))
+    story.append(para(title_en or f"Lesson {lesson_no}", styles['title']))
+    subparts = [p for p in (title_bn, title_lang) if p]
+    if subparts:
+        story.append(para(' • '.join(subparts), styles['subtitle']))
+    else:
+        story.append(Spacer(1, 6))
+
+    desc_en = (lesson.get('description_en') or '').strip()
+    desc_bn = (lesson.get('description_bn') or '').strip()
+    if desc_en:
+        story.append(para(desc_en, styles['normal']))
+    if desc_bn:
+        story.append(para(desc_bn, styles['muted']))
+
+    tip_en = (lesson.get('tip_en') or '').strip()
+    tip_bn = (lesson.get('tip_bn') or '').strip()
+    if tip_en or tip_bn:
+        story.append(Spacer(1, 6))
+        story.append(para("Tip", styles['h2']))
+        if tip_en:
+            story.append(para(tip_en, styles['normal']))
+        if tip_bn:
+            story.append(para(tip_bn, styles['muted']))
+
+    # Vocabulary
+    story.append(Spacer(1, 6))
+    story.append(para("Vocabulary — শব্দভান্ডার", styles['h2']))
+    if vocabulary:
+        header = [
+            para("Word", styles['cell']),
+            para("Pron.", styles['cell']),
+            para("English", styles['cell']),
+            para("বাংলা", styles['cell']),
+        ]
+        rows = [header]
+        for w in vocabulary:
+            article = (w.get('article') or '').strip()
+            word = (w.get('word') or '').strip()
+            full_word = (article + (' ' if article and not article.endswith("'") else '') + word).strip()
+            rows.append([
+                para(full_word, styles['cell']),
+                para((w.get('pronunciation') or '').strip(), styles['cell']),
+                para((w.get('english') or '').strip(), styles['cell']),
+                para((w.get('bengali') or '').strip(), styles['cell']),
+            ])
+
+        col_widths = [0.22 * content_width, 0.16 * content_width, 0.30 * content_width, 0.32 * content_width]
+        vocab_table = Table(rows, colWidths=col_widths, repeatRows=1, hAlign='LEFT')
+        vocab_table.setStyle(TableStyle([
+            ('FONTNAME', (0, 0), (-1, -1), font_name),
+            ('FONTSIZE', (0, 0), (-1, -1), 9),
+            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#f1f3f5')),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.HexColor('#111111')),
+            ('LINEBELOW', (0, 0), (-1, 0), 0.5, colors.HexColor('#adb5bd')),
+            ('GRID', (0, 1), (-1, -1), 0.25, colors.HexColor('#ced4da')),
+            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+            ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#fbfcfd')]),
+            ('LEFTPADDING', (0, 0), (-1, -1), 6),
+            ('RIGHTPADDING', (0, 0), (-1, -1), 6),
+            ('TOPPADDING', (0, 0), (-1, -1), 4),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
+        ]))
+        story.append(vocab_table)
+    else:
+        story.append(para("No vocabulary for this lesson.", styles['muted']))
+
+    # Grammar
+    if grammar:
+        story.append(Spacer(1, 10))
+        story.append(para("Grammar — ব্যাকরণ", styles['h2']))
+        intro_en = (grammar.get('intro_en') or '').strip()
+        intro_bn = (grammar.get('intro_bn') or '').strip()
+        if intro_en:
+            story.append(para(intro_en, styles['normal']))
+        if intro_bn:
+            story.append(para(intro_bn, styles['muted']))
+
+        for section in (grammar.get('sections') or []):
+            sec_en = (section.get('title_en') or '').strip()
+            sec_bn = (section.get('title_bn') or '').strip()
+            if sec_en or sec_bn:
+                story.append(Spacer(1, 8))
+                story.append(para(sec_en or sec_bn, styles['h2']))
+                if sec_en and sec_bn:
+                    story.append(para(sec_bn, styles['muted']))
+
+            table_rows = section.get('table') or []
+            if table_rows:
+                ncols = max((len(r) for r in table_rows if r), default=0)
+                if ncols > 0:
+                    table_data = []
+                    for r in table_rows:
+                        r = list(r or [])
+                        while len(r) < ncols:
+                            r.append('')
+                        table_data.append([para(str(c), styles['cell']) for c in r[:ncols]])
+
+                    col_w = content_width / ncols
+                    g_table = Table(table_data, colWidths=[col_w] * ncols, repeatRows=1, hAlign='LEFT')
+                    g_table.setStyle(TableStyle([
+                        ('FONTNAME', (0, 0), (-1, -1), font_name),
+                        ('FONTSIZE', (0, 0), (-1, -1), 9),
+                        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#f1f3f5')),
+                        ('LINEBELOW', (0, 0), (-1, 0), 0.5, colors.HexColor('#adb5bd')),
+                        ('GRID', (0, 1), (-1, -1), 0.25, colors.HexColor('#ced4da')),
+                        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+                        ('LEFTPADDING', (0, 0), (-1, -1), 6),
+                        ('RIGHTPADDING', (0, 0), (-1, -1), 6),
+                        ('TOPPADDING', (0, 0), (-1, -1), 4),
+                        ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
+                    ]))
+                    story.append(g_table)
+
+            note_en = (section.get('note_en') or '').strip()
+            note_bn = (section.get('note_bn') or '').strip()
+            if note_en or note_bn:
+                story.append(Spacer(1, 6))
+                if note_en:
+                    story.append(para(f"Note: {note_en}", styles['normal']))
+                if note_bn:
+                    story.append(para(note_bn, styles['muted']))
+
+    buf = io.BytesIO()
+    doc = SimpleDocTemplate(
+        buf,
+        pagesize=A4,
+        leftMargin=left,
+        rightMargin=right,
+        topMargin=top,
+        bottomMargin=bottom,
+        title=f"{meta.get('name', '').strip()} Lesson {lesson_no}",
+        author="Language Coach",
+    )
+
+    def on_page(canvas, doc_):
+        canvas.saveState()
+        canvas.setFont(font_name, 9)
+        canvas.setFillColor(colors.HexColor('#666666'))
+        canvas.drawRightString(page_w - right, 18, f"Page {doc_.page}")
+        canvas.restoreState()
+
+    doc.build(story, onFirstPage=on_page, onLaterPages=on_page)
+    return buf.getvalue()
+
+
+_PDF_HTML_ASSET_LOCK = threading.Lock()
+_PDF_HTML_ASSET_CACHE = {}
+
+_PDF_HTML_BN_FONT_REG_PATH = os.path.join(BASE_DIR, 'static', 'fonts', 'NotoSerifBengali-Regular.ttf')
+_PDF_HTML_BN_FONT_BOLD_PATH = os.path.join(BASE_DIR, 'static', 'fonts', 'NotoSerifBengali-Bold.ttf')
+
+
+def _file_to_data_uri(path: str, mime: str) -> str:
+    with open(path, 'rb') as f:
+        b = f.read()
+    return f"data:{mime};base64,{base64.b64encode(b).decode('ascii')}"
+
+
+def _pdf_html_asset(key: str, path: str, mime: str) -> str:
+    """Load & cache a small binary asset as a data URI for HTML-to-PDF rendering."""
+    with _PDF_HTML_ASSET_LOCK:
+        cached = _PDF_HTML_ASSET_CACHE.get(key)
+        if cached:
+            return cached
+        if not os.path.exists(path):
+            raise RuntimeError(f"Missing PDF asset: {path}")
+        data = _file_to_data_uri(path, mime)
+        _PDF_HTML_ASSET_CACHE[key] = data
+        return data
+
+
+def _render_lesson_pdf_html(lang: str, meta: dict, lesson: dict, vocabulary: list, grammar: Optional[dict]) -> str:
+    bn_font_regular_data = _pdf_html_asset('bn_font_regular', _PDF_HTML_BN_FONT_REG_PATH, 'font/ttf')
+    bn_font_bold_data = _pdf_html_asset('bn_font_bold', _PDF_HTML_BN_FONT_BOLD_PATH, 'font/ttf')
+    return render_template(
+        'lesson_pdf.html',
+        lang=lang,
+        meta=meta,
+        lesson=lesson,
+        vocabulary=vocabulary,
+        grammar=grammar,
+        bn_font_regular_data=bn_font_regular_data,
+        bn_font_bold_data=bn_font_bold_data,
+    )
+
+
+def _lesson_pdf_header_footer(lang: str, meta: dict, lesson: dict) -> tuple[str, str]:
+    logo_data = _pdf_html_asset('logo_png', _logo_file_path(), 'image/png')
+
+    lesson_no = lesson.get('id') or ''
+    title = (lesson.get('title_en') or '').strip() or f"Lesson {lesson_no}"
+    lang_name = (meta.get('name') or lang or '').strip()
+    flag = (meta.get('flag') or '').strip()
+
+    header = f"""
+    <div style="width:100%; padding:0 36px; font-family:Arial, sans-serif; color:#111;">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; border-bottom:1px solid #e5e5e5; padding-bottom:6px;">
+        <div style="display:flex; align-items:center; gap:10px; min-width:0;">
+          <div style="width:28px; height:28px; border-radius:999px; overflow:hidden; border:1px solid #e5e5e5; background:#fff; flex:0 0 28px; line-height:0;">
+            <img src="{logo_data}" style="width:100%; height:100%; object-fit:cover; object-position:50% 20%; display:block; border-radius:999px;" />
+          </div>
+          <div style="display:flex; flex-direction:column; min-width:0;">
+            <div style="font-size:10px; font-weight:700; line-height:1.1;">Language Coach</div>
+            <div style="color:#666; font-size:9px; line-height:1.1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+              {flag} {lang_name} · Lesson {lesson_no}
+            </div>
+          </div>
+        </div>
+        <div style="color:#666; font-size:9px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:40%;">{title}</div>
+      </div>
+    </div>
+    """
+
+    year = datetime.now().year
+    footer = f"""
+    <div style="width:100%; padding:0 36px; font-family:Arial, sans-serif; font-size:8.5px; color:#666;">
+      <div style="border-top:1px solid #e5e5e5; padding-top:6px;">
+        <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:12px;">
+          <div style="width:90px;"></div>
+          <div style="flex:1; text-align:center; line-height:1.25;">
+            <div style="font-weight:700; color:#111;">Language Coach</div>
+            <div>📧mentors.career.abroad26@gmail.com</div>
+            <div>An initiative from : <a href="https://www.ahsansuny.com" style="color:#666; text-decoration:none; font-weight:700;">Career Abroad Mentor</a></div>
+            <div>© {year} Ahsan Suny. All rights reserved</div>
+          </div>
+          <div style="width:90px; text-align:right; white-space:nowrap;">Page <span class=\"pageNumber\"></span>/<span class=\"totalPages\"></span></div>
+        </div>
+      </div>
+    </div>
+    """
+
+    return header, footer
+
+
+def _build_lesson_pdf_bytes_chromium(html: str, header_html: str, footer_html: str) -> bytes:
+    """Render HTML to PDF using a headless Chromium engine (supports Bengali shaping)."""
+    try:
+        from playwright.sync_api import sync_playwright
+    except Exception as exc:
+        raise RuntimeError(
+            "Missing dependency: playwright. Run: pip install -r requirements.txt"
+        ) from exc
+
+    try:
+        with sync_playwright() as p:
+            browser = p.chromium.launch(args=['--no-sandbox'])
+            page = browser.new_page()
+            page.set_content(html, wait_until='load')
+            page.wait_for_load_state('networkidle')
+            pdf = page.pdf(
+                format='A4',
+                print_background=True,
+                display_header_footer=True,
+                header_template=header_html,
+                footer_template=footer_html,
+                margin={'top': '96px', 'bottom': '110px', 'left': '36px', 'right': '36px'},
+            )
+            browser.close()
+            return pdf
+    except Exception as exc:
+        msg = str(exc) or ''
+        if 'Executable doesn' in msg or 'browserType.launch' in msg or 'chromium' in msg.lower():
+            raise RuntimeError("Playwright browser is not installed. Run: python -m playwright install chromium") from exc
+        raise
+
 _CEFR_ORDER = {'A1': 1, 'A2': 2, 'B1': 3, 'B2': 4, 'C1': 5, 'C2': 6}
 
 
@@ -1181,6 +1573,49 @@ def lesson_view(lang, lesson_id):
     return render_template('lesson.html', lang=lang, meta=LANG_META[lang],
                            lesson=lesson, vocabulary=vocab, grammar=grammar,
                            next_lesson=next_l, prev_lesson=prev_l)
+
+
+@app.route('/lesson/<lang>/<int:lesson_id>/download.pdf')
+def lesson_download_pdf(lang, lesson_id):
+    if lang not in LANG_META:
+        return redirect(url_for('dashboard'))
+
+    lesson_list = _sorted_lessons(get_lessons().get(lang, []))
+    lesson = _find_lesson(lesson_list, lesson_id)
+    if not lesson:
+        return redirect(url_for('language_home', lang=lang))
+
+    vocab = get_lesson_vocab(lang, lesson)
+    grammar = lesson.get('grammar')
+
+    try:
+        engine = (request.args.get('engine') or (os.environ.get('PDF_ENGINE') or 'chromium')).strip().lower()
+        if engine == 'reportlab':
+            pdf_bytes = _build_lesson_pdf_bytes_reportlab(lang, LANG_META[lang], lesson, vocab, grammar)
+        else:
+            html = _render_lesson_pdf_html(lang, LANG_META[lang], lesson, vocab, grammar)
+            header_html, footer_html = _lesson_pdf_header_footer(lang, LANG_META[lang], lesson)
+            pdf_bytes = _build_lesson_pdf_bytes_chromium(html, header_html, footer_html)
+    except Exception as exc:
+        msg = str(exc) or "Failed to generate PDF."
+        return (msg, 500, {'Content-Type': 'text/plain; charset=utf-8'})
+
+    safe_lang = re.sub(r'[^a-z0-9]+', '-', (lang or '').lower()).strip('-') or 'lesson'
+    try:
+        safe_id = int(lesson.get('id') or lesson_id)
+    except (TypeError, ValueError):
+        safe_id = lesson_id
+    title_en = (lesson.get('title_en') or '').strip()
+    title_slug = re.sub(r'[^a-z0-9]+', '-', _strip_accents(title_en.lower())).strip('-')[:60]
+    filename = f"{safe_lang}-lesson-{safe_id}{('-' + title_slug) if title_slug else ''}.pdf"
+
+    return send_file(
+        io.BytesIO(pdf_bytes),
+        mimetype='application/pdf',
+        as_attachment=True,
+        download_name=filename,
+        max_age=0,
+    )
 
 @app.route('/flashcards/<lang>/<int:lesson_id>')
 def flashcards(lang, lesson_id):

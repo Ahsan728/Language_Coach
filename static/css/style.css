@@ -11,6 +11,10 @@
   --spanish-dark:  #8f0015;
   --gold:          #FABE00;
   --text-dark:     #1a1a2e;
+  --lc-font-ui:    'Poppins', 'Noto Serif Bengali', sans-serif;
+  --lc-font-bn:    'Noto Serif Bengali', serif;
+  --bs-font-sans-serif: var(--lc-font-ui);
+  --bs-body-font-family: var(--lc-font-ui);
 
   /* Theme tokens (default: Purple) */
   --lc-ink:        #1a1a2e;
@@ -68,8 +72,8 @@
 .cefr-B2 { background-color: var(--cefr-B2) !important; color: #fff !important; }
 
 /* ---- Base ---- */
-body { font-family: 'Poppins', sans-serif; color: var(--text-dark); background: var(--lc-page-bg); }
-.bengali-text { font-family: 'Noto Serif Bengali', serif; line-height: 1.8; }
+body { font-family: var(--lc-font-ui); color: var(--text-dark); background: var(--lc-page-bg); }
+.bengali-text { font-family: var(--lc-font-bn); line-height: 1.8; }
 .bg-light { background-color: var(--lc-bg-light) !important; }
 
 /* ---- Navbar ---- */
@@ -101,7 +105,7 @@ body { font-family: 'Poppins', sans-serif; color: var(--text-dark); background: 
   transform-origin: 50% 50%;
 }
 .brand-title { font-size: 1.1rem; font-weight: 700; line-height: 1.2; }
-.brand-subtitle { font-size: 0.7rem; opacity: 0.8; font-family: 'Noto Serif Bengali', serif; }
+.brand-subtitle { font-size: 0.7rem; opacity: 0.8; font-family: var(--lc-font-bn); }
 #mainNav .navbar-brand,
 #mainNav .navbar-brand:hover,
 #mainNav .navbar-nav .nav-link { color: var(--lc-ink) !important; }
@@ -418,7 +422,7 @@ body { font-family: 'Poppins', sans-serif; color: var(--text-dark); background: 
   display: block; width: 100%; padding: 0.875rem 1rem;
   border: 2px solid #dee2e6; border-radius: 12px;
   background: #fff; text-align: left; cursor: pointer;
-  font-family: 'Poppins', sans-serif; font-size: 0.9rem;
+  font-family: var(--lc-font-ui); font-size: 0.9rem;
   transition: all .15s; line-height: 1.4;
 }
 .choice-btn:hover { border-color: #adb5bd; background: #f8f9fa; transform: translateY(-1px); }
@@ -471,7 +475,7 @@ footer a:hover { color: var(--lc-footer-text); }
   font-size: 1rem !important;
   border-radius: 6px !important;
   min-width: 2.2rem;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--lc-font-ui);
   opacity: 0.75;
 }
 .diacritic-btn:hover { opacity: 1; transform: scale(1.1); }

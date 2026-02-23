@@ -38,6 +38,9 @@ The browser will open automatically at `http://localhost:5000`.
 # Install dependencies (first time only)
 pip install -r requirements.txt
 
+# (One-time) Enable Bengali-perfect PDF downloads
+python -m playwright install chromium
+
 # Run the app
 python app.py
 ```

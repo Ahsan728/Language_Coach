@@ -132,9 +132,14 @@
             </div>
           </div>
           <div class="card-footer bg-transparent border-0 p-3 pt-0">
-            <a href="/lesson/{{ lang }}/{{ lesson.id }}" class="btn btn-{{ 'french' if lang == 'french' else 'spanish' }} btn-sm w-100">
-              {{ '✔ Review' if is_done else '▶ Start Lesson' }}
-            </a>
+            <div class="d-grid gap-2">
+              <a href="/lesson/{{ lang }}/{{ lesson.id }}" class="btn btn-{{ 'french' if lang == 'french' else 'spanish' }} btn-sm w-100">
+                {{ '✔ Review' if is_done else '▶ Start Lesson' }}
+              </a>
+              <a href="{{ url_for('lesson_download_pdf', lang=lang, lesson_id=lesson.id, engine='chromium') }}" class="btn btn-outline-secondary btn-sm w-100">
+                <i class="fas fa-file-pdf me-1"></i> Download PDF
+              </a>
+            </div>
           </div>
         </div>
       </div>
