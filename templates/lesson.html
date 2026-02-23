@@ -240,7 +240,7 @@
             <a href="/quiz/{{ lang }}/{{ lesson.id }}" class="btn btn-{{ 'french' if lang == 'french' else 'spanish' }}">
               🧠 Take Quiz — কুইজ দিন
             </a>
-            <a href="{{ url_for('lesson_download_pdf', lang=lang, lesson_id=lesson.id, engine='chromium') }}" class="btn btn-outline-secondary">
+            <a href="{{ url_for('lesson_download_pdf', lang=lang, lesson_id=lesson.id) }}" class="btn btn-outline-secondary">
               <i class="fas fa-file-pdf me-2"></i> Download PDF — পিডিএফ ডাউনলোড
             </a>
           </div>

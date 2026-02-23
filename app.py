@@ -2240,13 +2240,26 @@ def lesson_download_pdf(lang, lesson_id):
     grammar = lesson.get('grammar')
 
     try:
-        engine = (request.args.get('engine') or (os.environ.get('PDF_ENGINE') or 'chromium')).strip().lower()
+        engine_param = (request.args.get('engine') or '').strip().lower()
+        engine = (engine_param or (os.environ.get('PDF_ENGINE') or 'chromium')).strip().lower()
         if engine == 'reportlab':
             pdf_bytes = _build_lesson_pdf_bytes_reportlab(lang, LANG_META[lang], lesson, vocab, grammar)
         else:
-            html = _render_lesson_pdf_html(lang, LANG_META[lang], lesson, vocab, grammar)
-            header_html, footer_html = _lesson_pdf_header_footer(lang, LANG_META[lang], lesson)
-            pdf_bytes = _build_lesson_pdf_bytes_chromium(html, header_html, footer_html)
+            try:
+                html = _render_lesson_pdf_html(lang, LANG_META[lang], lesson, vocab, grammar)
+                header_html, footer_html = _lesson_pdf_header_footer(lang, LANG_META[lang], lesson)
+                pdf_bytes = _build_lesson_pdf_bytes_chromium(html, header_html, footer_html)
+            except Exception as exc:
+                # If Chromium/Playwright isn't available (common on some hosts), fall back to ReportLab
+                # unless the user explicitly requested a specific engine in the URL.
+                if engine_param:
+                    raise
+                msg = str(exc) or type(exc).__name__
+                lower = msg.lower()
+                if ('playwright' in lower) or ('chromium' in lower) or ('browser is not installed' in lower):
+                    pdf_bytes = _build_lesson_pdf_bytes_reportlab(lang, LANG_META[lang], lesson, vocab, grammar)
+                else:
+                    raise
     except Exception as exc:
         msg = str(exc) or "Failed to generate PDF."
         return (msg, 500, {'Content-Type': 'text/plain; charset=utf-8'})
