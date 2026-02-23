@@ -53,7 +53,7 @@ python app.py
 ```
 Then open your browser at **http://localhost:5000**
 
-> Note: PDF downloads use Playwright/Chromium by default. If you can’t install Chromium, set `PDF_ENGINE=reportlab` (PDF quality may be lower for Bengali text).
+> Note: PDF downloads use Playwright/Chromium by default (best Bengali rendering). If you can’t install Chromium, set `PDF_ENGINE=reportlab`. For good Bengali shaping in ReportLab PDFs, install `uharfbuzz` (already included in `requirements.txt`).
 
 ---
 
@@ -338,6 +338,7 @@ git clone https://github.com/Ahsan728/Language_Coach.git
 cd Language_Coach
 pip install -r requirements.txt --user
 ```
+> If Bengali text looks broken in ReportLab PDFs, verify `uharfbuzz` is installed (`python -m pip show uharfbuzz`) and reload your web app.
 > If your repo is private, you must use a GitHub PAT/SSH so PythonAnywhere can clone it.
 
 #### Step 4 — Create the Web App
