@@ -414,8 +414,9 @@ Then reload from the **Web** tab.
 
 ## 👨‍🎓 About This Project
 
-Built for a Bengali-speaking PhD student in Spain learning French and Spanish.
-Vocabulary sourced and curated from bilingual visual dictionaries and CEFR-aligned course materials.
+This project is developed by Ahsan Suny, a PhD researcher in Spain. He studied his masters in France and currently doing his PhD in Spain. 
+He was strugling to have a common planform to learn both French and Spanish language from a common platform. Also he is running mentorship for the 
+students. This project is an initiative for the students whon want to learn these language simply in an interactive way.
 
 **Teaching philosophy:**
 Bengali → English bridge → French/Spanish target
