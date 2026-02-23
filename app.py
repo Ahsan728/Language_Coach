@@ -997,7 +997,10 @@ def _emit_user_snapshot_to_sheets(user: dict, last_event: str = '', language: st
         'page': page or '',
     }
 
-    _sheets_send_sync('upsert_user', SHEETS_USERS_SHEET, row)
+    status = _sheets_send_sync('upsert_user', SHEETS_USERS_SHEET, row)
+    if status and status.get('enabled') and status.get('ok') is False:
+        err = status.get('error') or 'unknown error'
+        print(f"WARNING: Google Sheets user snapshot failed: {err}")
 
 
 def _emit_event_to_sheets(event: str, user: dict = None, language: str = '', lesson_id=None, score=None,
