@@ -935,11 +935,40 @@ def _user_snapshot(user_id: int):
     return out, activity
 
 
+def _get_user_last_lesson_info(user_id: int, language: str = '') -> Optional[dict]:
+    """Return the most recently seen lesson for a user (best-effort)."""
+    try:
+        user_id = int(user_id)
+    except (TypeError, ValueError):
+        return None
+
+    conn = get_db()
+    row = None
+    try:
+        if language:
+            row = conn.execute(
+                'SELECT language, lesson_id, best_score, last_seen FROM user_lesson_progress '
+                'WHERE user_id=? AND language=? ORDER BY last_seen DESC LIMIT 1',
+                (user_id, language),
+            ).fetchone()
+        if row is None:
+            row = conn.execute(
+                'SELECT language, lesson_id, best_score, last_seen FROM user_lesson_progress '
+                'WHERE user_id=? ORDER BY last_seen DESC LIMIT 1',
+                (user_id,),
+            ).fetchone()
+    finally:
+        conn.close()
+
+    return dict(row) if row else None
+
+
 def _emit_user_snapshot_to_sheets(user: dict, last_event: str = '', language: str = '', lesson_id=None, score=None, page: str = ''):
     if not user or not user.get('email'):
         return
     uid = user.get('id')
     progress, activity = _user_snapshot(uid)
+    last_lesson = _get_user_last_lesson_info(uid, language=language) or {}
     now_iso = datetime.now().isoformat(timespec='seconds')
 
     fr = progress.get('french') or {}
@@ -952,9 +981,9 @@ def _emit_user_snapshot_to_sheets(user: dict, last_event: str = '', language: st
         'email': user.get('email') or '',
         'last_login': user.get('last_login') or '',
         'last_event': last_event or '',
-        'last_lang': language or '',
-        'last_lesson_id': lesson_id if lesson_id is not None else '',
-        'last_score': score if score is not None else '',
+        'last_lang': language or (last_lesson.get('language') or ''),
+        'last_lesson_id': lesson_id if lesson_id is not None else (last_lesson.get('lesson_id') if last_lesson else ''),
+        'last_score': score if score is not None else (last_lesson.get('best_score') if last_lesson else ''),
         'french_completed': fr.get('completed', ''),
         'french_total': fr.get('total', ''),
         'french_percent': fr.get('percent', ''),
@@ -968,7 +997,7 @@ def _emit_user_snapshot_to_sheets(user: dict, last_event: str = '', language: st
         'page': page or '',
     }
 
-    _sheets_send('upsert_user', SHEETS_USERS_SHEET, row)
+    _sheets_send_sync('upsert_user', SHEETS_USERS_SHEET, row)
 
 
 def _emit_event_to_sheets(event: str, user: dict = None, language: str = '', lesson_id=None, score=None,
@@ -1162,6 +1191,8 @@ def get_activity_summary(user_id=None):
 
     xp_today = int(row['xp']) if row else 0
     reviews_today = int(row['reviews']) if row else 0
+    correct_today = int(row['correct']) if row else 0
+    wrong_today = int(row['wrong']) if row else 0
 
     active_dates = {r['date'] for r in rows}
     streak = 0
@@ -1173,6 +1204,8 @@ def get_activity_summary(user_id=None):
     return {
         'xp_today': xp_today,
         'reviews_today': reviews_today,
+        'correct_today': correct_today,
+        'wrong_today': wrong_today,
         'streak_days': streak,
     }
 
