@@ -1297,6 +1297,7 @@ def _build_lesson_pdf_bytes_reportlab(lang: str, meta: dict, lesson: dict, vocab
         'title': ParagraphStyle(
             name='LCTitle',
             fontName=font_name,
+            shaping=1,
             fontSize=18,
             leading=22,
             spaceAfter=10,
@@ -1304,6 +1305,7 @@ def _build_lesson_pdf_bytes_reportlab(lang: str, meta: dict, lesson: dict, vocab
         'subtitle': ParagraphStyle(
             name='LCSubtitle',
             fontName=font_name,
+            shaping=1,
             fontSize=11,
             leading=14,
             textColor=colors.HexColor('#444444'),
@@ -1312,6 +1314,7 @@ def _build_lesson_pdf_bytes_reportlab(lang: str, meta: dict, lesson: dict, vocab
         'h2': ParagraphStyle(
             name='LCH2',
             fontName=font_name,
+            shaping=1,
             fontSize=13,
             leading=16,
             spaceBefore=10,
@@ -1321,6 +1324,7 @@ def _build_lesson_pdf_bytes_reportlab(lang: str, meta: dict, lesson: dict, vocab
         'normal': ParagraphStyle(
             name='LCNormal',
             fontName=font_name,
+            shaping=1,
             fontSize=11,
             leading=14,
             textColor=colors.HexColor('#111111'),
@@ -1329,6 +1333,7 @@ def _build_lesson_pdf_bytes_reportlab(lang: str, meta: dict, lesson: dict, vocab
         'muted': ParagraphStyle(
             name='LCMuted',
             fontName=font_name,
+            shaping=1,
             fontSize=11,
             leading=14,
             textColor=colors.HexColor('#444444'),
@@ -1337,6 +1342,7 @@ def _build_lesson_pdf_bytes_reportlab(lang: str, meta: dict, lesson: dict, vocab
         'cell': ParagraphStyle(
             name='LCCell',
             fontName=font_name,
+            shaping=1,
             fontSize=9,
             leading=11,
             textColor=colors.HexColor('#111111'),
