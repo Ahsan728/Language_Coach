@@ -303,8 +303,51 @@ function _speechRecognitionCtor() {
   return window.SpeechRecognition || window.webkitSpeechRecognition || null;
 }
 
+function speechSupportStatus() {
+  const Ctor = _speechRecognitionCtor();
+  if (!Ctor) return { ok: false, reason: 'unsupported' };
+
+  const secure = (typeof window.isSecureContext === 'boolean') ? window.isSecureContext : true;
+  if (!secure) return { ok: false, reason: 'insecure' };
+
+  return { ok: true, reason: 'ok' };
+}
+
+function speechSupportHint(reason) {
+  if (reason === 'insecure') {
+    const host = (typeof location !== 'undefined' && location.host) ? location.host : 'this site';
+    return `Microphone needs HTTPS (or localhost). Open via https:// or http://localhost (not http://${host}).`;
+  }
+  return 'Speech recognition works best in Chrome/Edge. If you are on Firefox/Safari, mic will not work here.';
+}
+
 function isSpeechRecognitionSupported() {
-  return !!_speechRecognitionCtor();
+  return speechSupportStatus().ok;
+}
+
+function speechErrorHint(err) {
+  const raw = String((err && (err.code || err.message)) || '').trim().toLowerCase();
+  const code = raw || 'error';
+
+  if (code.includes('not-allowed') || code.includes('service-not-allowed') || code.includes('denied')) {
+    return 'Mic blocked — click the lock icon → Microphone → Allow, then reload.';
+  }
+  if (code.includes('audio-capture') || code.includes('not-found')) {
+    return 'No microphone found (or it is being used by another app).';
+  }
+  if (code.includes('network')) {
+    return 'Network error — speech recognition needs internet access.';
+  }
+  if (code.includes('no-speech')) {
+    return 'No speech detected — try again (speak closer / louder).';
+  }
+  if (code.includes('timeout')) {
+    return 'Timed out — try again.';
+  }
+  if (code.includes('insecure')) {
+    return 'Microphone requires HTTPS (or localhost).';
+  }
+  return `Mic error: ${code}`;
 }
 
 function speechToTextOnce(langTag, timeoutMs = 9000) {
@@ -704,8 +747,7 @@ async function quizSpeak() {
     const btn = buttons.find(b => normalizeAnswer(b.textContent) === normalizeAnswer(best.raw));
     if (btn && !btn.disabled) btn.click();
   } catch (e) {
-    const msg = (e && e.code) ? String(e.code) : 'error';
-    if (status) status.textContent = `Mic: ${msg}`;
+    if (status) status.textContent = speechErrorHint(e);
   } finally {
     if (speakBtn) {
       speakBtn.disabled = false;
@@ -1412,9 +1454,12 @@ function renderSpeaking(idx) {
 
   const speakBtn = document.getElementById('speakingSpeakBtn');
   const noSupport = document.getElementById('speakingNoSupport');
-  const supported = isSpeechRecognitionSupported();
-  if (noSupport) noSupport.style.display = supported ? 'none' : '';
-  if (speakBtn) speakBtn.disabled = !supported;
+  const support = speechSupportStatus();
+  if (noSupport) {
+    noSupport.textContent = support.ok ? '' : speechSupportHint(support.reason);
+    noSupport.style.display = support.ok ? 'none' : '';
+  }
+  if (speakBtn) speakBtn.disabled = !support.ok;
 
   const nextBtn = document.getElementById('speakingNextBtn');
   if (nextBtn) nextBtn.textContent = (idx >= total - 1) ? 'See Results 🏁' : 'Next →';
@@ -1482,8 +1527,7 @@ async function speakingSpeak() {
       });
     }
   } catch (e) {
-    const msg = (e && e.code) ? String(e.code) : 'error';
-    document.getElementById('speakingHeard').textContent = `Mic: ${msg}`;
+    document.getElementById('speakingHeard').textContent = speechErrorHint(e);
   } finally {
     const btn2 = document.getElementById('speakingSpeakBtn');
     if (btn2) {
@@ -1612,9 +1656,12 @@ function initLessonSpeakMatch() {
   if (!btn || !heardEl || !resEl) return;
 
   const items = (typeof LESSON_SPEAK_MATCH_ITEMS !== 'undefined') ? LESSON_SPEAK_MATCH_ITEMS : [];
-  const supported = isSpeechRecognitionSupported();
+  const support = speechSupportStatus();
 
-  if (noSupport) noSupport.style.display = supported ? 'none' : '';
+  if (noSupport) {
+    noSupport.textContent = support.ok ? '' : speechSupportHint(support.reason);
+    noSupport.style.display = support.ok ? 'none' : '';
+  }
 
   if (!Array.isArray(items) || items.length === 0) {
     if (emptyEl) emptyEl.style.display = '';
@@ -1624,7 +1671,7 @@ function initLessonSpeakMatch() {
   }
   if (emptyEl) emptyEl.style.display = 'none';
 
-  if (!supported) {
+  if (!support.ok) {
     btn.disabled = true;
     if (listenBtn) listenBtn.style.display = 'none';
     return;
@@ -1720,8 +1767,7 @@ function initLessonSpeakMatch() {
       if (!ranked.length) return;
       renderMatch(ranked[0], ranked);
     } catch (e) {
-      const msg = (e && e.code) ? String(e.code) : 'error';
-      heardEl.textContent = `Mic: ${msg}`;
+      heardEl.textContent = speechErrorHint(e);
       resEl.style.display = 'none';
     } finally {
       btn.disabled = false;
