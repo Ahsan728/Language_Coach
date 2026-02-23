@@ -40,7 +40,7 @@
 
         {% for code, m in lang_meta.items() %}
         <li class="nav-item">
-          <a class="nav-link flag-link {% if current_lang == code and request.endpoint in ['language_home','lesson_view','flashcards','quiz','vocabulary_view','review_flashcards','flashcards_category','practice'] %}active{% endif %}"
+          <a class="nav-link flag-link {% if current_lang == code and request.endpoint in ['language_home','lesson_view','flashcards','quiz','dictation','speaking','vocabulary_view','review_flashcards','flashcards_category','practice'] %}active{% endif %}"
              href="{{ url_for('language_home', lang=code) }}">
             {{ m.flag }} <span>{{ m.name_native or m.name }}</span>
           </a>

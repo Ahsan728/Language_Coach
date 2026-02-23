@@ -53,6 +53,60 @@
         {% include "partials/activity_numbers.html" %}
       {% endif %}
 
+      <!-- ========== SPEAK & MATCH (Speech) ========== -->
+      <div class="card border-0 shadow-sm mb-4" id="lcSpeakMatch">
+        <div class="card-header fw-semibold d-flex align-items-center justify-content-between flex-wrap gap-2">
+          <div><i class="fas fa-microphone me-2"></i> Speaking — বলুন ও মিলান</div>
+          <div class="d-flex align-items-center gap-2">
+            <button class="btn btn-sm btn-light border" id="lcSpeakMatchListenBtn" type="button" title="Listen" style="display:none">
+              <i class="fas fa-volume-up"></i>
+            </button>
+            <button class="btn btn-sm btn-outline-{{ 'french' if lang == 'french' else 'spanish' }}" id="lcSpeakMatchBtn" type="button">
+              <i class="fas fa-microphone me-1"></i> Speak
+            </button>
+          </div>
+        </div>
+        <div class="card-body p-4">
+          <p class="text-muted mb-1">
+            Say any <strong>{{ meta.name }}</strong> word from this lesson. We'll try to match it.
+          </p>
+          <p class="text-muted small bengali-text mb-3">
+            এই পাঠের যেকোনো শব্দ বলুন — আমরা মিলিয়ে দেখাবো।
+          </p>
+
+          <div class="alert alert-warning small py-2 px-3 mb-3" id="lcSpeakMatchNoSupport" style="display:none">
+            Speech recognition is not supported in this browser. Try Chrome/Edge (HTTPS or localhost required).
+          </div>
+          <div class="alert alert-info small py-2 px-3 mb-3" id="lcSpeakMatchEmpty" style="display:none">
+            No vocabulary found for this lesson.
+          </div>
+
+          <div class="small text-muted mb-2">
+            Heard: <span class="fw-semibold" id="lcSpeakMatchHeard">—</span>
+          </div>
+
+          <div id="lcSpeakMatchResult" style="display:none">
+            <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
+              <div>
+                <div class="fw-bold fs-4 text-{{ 'french' if lang == 'french' else 'spanish' }}" id="lcSpeakMatchWord"></div>
+                <div class="text-muted small font-monospace mt-1" id="lcSpeakMatchPron"></div>
+                <div class="mt-2">🇬🇧 <span id="lcSpeakMatchEn"></span></div>
+                <div class="mt-1 bengali-text">🇧🇩 <span id="lcSpeakMatchBn"></span></div>
+              </div>
+              <div class="text-end">
+                <span class="badge bg-light text-dark border" id="lcSpeakMatchScore">—</span>
+                <div class="small text-muted mt-2" id="lcSpeakMatchNote"></div>
+              </div>
+            </div>
+            <div class="small text-muted mt-3" id="lcSpeakMatchSuggestions"></div>
+          </div>
+        </div>
+      </div>
+      <script>
+        const LESSON_SPEAK_MATCH_ITEMS = {{ speak_match_json | default('[]') | safe }};
+        const LESSON_SPEAK_MATCH_LANG = '{{ lang }}';
+      </script>
+
       <!-- ========== VOCABULARY SECTION ========== -->
       {% if vocabulary %}
       <h3 class="section-label mb-3">
@@ -178,6 +232,9 @@
             </a>
             <a href="{{ url_for('dictation', lang=lang, lesson_id=lesson.id) }}" class="btn btn-outline-{{ 'french' if lang == 'french' else 'spanish' }}">
               🎧 Dictation — শুনুন ও লিখুন
+            </a>
+            <a href="{{ url_for('speaking', lang=lang, lesson_id=lesson.id) }}" class="btn btn-outline-{{ 'french' if lang == 'french' else 'spanish' }}">
+              🗣️ Speaking Test — বলুন
             </a>
             {% endif %}
             <a href="/quiz/{{ lang }}/{{ lesson.id }}" class="btn btn-{{ 'french' if lang == 'french' else 'spanish' }}">

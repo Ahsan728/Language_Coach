@@ -296,6 +296,158 @@ function langToTtsTag(lang) {
   return '';
 }
 
+/* ===============================================
+   SPEECH RECOGNITION (STT)
+   =============================================== */
+function _speechRecognitionCtor() {
+  return window.SpeechRecognition || window.webkitSpeechRecognition || null;
+}
+
+function isSpeechRecognitionSupported() {
+  return !!_speechRecognitionCtor();
+}
+
+function speechToTextOnce(langTag, timeoutMs = 9000) {
+  return new Promise((resolve, reject) => {
+    const Ctor = _speechRecognitionCtor();
+    if (!Ctor) {
+      const err = new Error('speech-recognition-unsupported');
+      err.code = 'unsupported';
+      reject(err);
+      return;
+    }
+
+    let done = false;
+    let timer = null;
+    let gotResult = false;
+
+    const rec = new Ctor();
+    rec.lang = String(langTag || 'en-US');
+    rec.continuous = false;
+    rec.interimResults = false;
+    rec.maxAlternatives = 3;
+
+    const finish = (fn, arg) => {
+      if (done) return;
+      done = true;
+      if (timer) clearTimeout(timer);
+      try { rec.onresult = rec.onerror = rec.onend = null; } catch { /* noop */ }
+      fn(arg);
+    };
+
+    rec.onresult = (e) => {
+      gotResult = true;
+      const res = e.results && e.results[0] && e.results[0][0];
+      const transcript = res ? String(res.transcript || '').trim() : '';
+      const confidence = (res && typeof res.confidence === 'number') ? res.confidence : null;
+      finish(resolve, { transcript, confidence });
+    };
+
+    rec.onerror = (e) => {
+      const err = new Error(String(e && e.error ? e.error : 'speech-recognition-error'));
+      err.code = (e && e.error) ? e.error : 'error';
+      finish(reject, err);
+    };
+
+    rec.onend = () => {
+      if (done) return;
+      if (gotResult) return;
+      const err = new Error('speech-recognition-no-speech');
+      err.code = 'no-speech';
+      finish(reject, err);
+    };
+
+    try {
+      rec.start();
+    } catch (e) {
+      const err = new Error(String(e && e.message ? e.message : 'speech-recognition-start-failed'));
+      err.code = 'start-failed';
+      finish(reject, err);
+      return;
+    }
+
+    timer = setTimeout(() => {
+      try { rec.stop(); } catch { /* noop */ }
+      const err = new Error('speech-recognition-timeout');
+      err.code = 'timeout';
+      finish(reject, err);
+    }, Math.max(1000, timeoutMs));
+  });
+}
+
+function levenshteinDistance(a, b) {
+  const s = String(a || '');
+  const t = String(b || '');
+  const n = s.length;
+  const m = t.length;
+  if (!n) return m;
+  if (!m) return n;
+
+  const v0 = new Array(m + 1);
+  const v1 = new Array(m + 1);
+  for (let i = 0; i <= m; i++) v0[i] = i;
+
+  for (let i = 0; i < n; i++) {
+    v1[0] = i + 1;
+    for (let j = 0; j < m; j++) {
+      const cost = s[i] === t[j] ? 0 : 1;
+      v1[j + 1] = Math.min(
+        v1[j] + 1,       // insertion
+        v0[j + 1] + 1,   // deletion
+        v0[j] + cost     // substitution
+      );
+    }
+    for (let j = 0; j <= m; j++) v0[j] = v1[j];
+  }
+  return v0[m];
+}
+
+function stringSimilarity(a, b) {
+  const s = String(a || '');
+  const t = String(b || '');
+  if (!s || !t) return 0;
+  if (s === t) return 1;
+  const dist = levenshteinDistance(s, t);
+  const maxLen = Math.max(s.length, t.length);
+  return maxLen ? (1 - dist / maxLen) : 0;
+}
+
+function matchScore(normHeard, normExpected) {
+  const h = String(normHeard || '').trim();
+  const e = String(normExpected || '').trim();
+  if (!h || !e) return 0;
+  if (h === e) return 1;
+
+  const padH = ` ${h} `;
+  const padE = ` ${e} `;
+  if (padH.includes(` ${e} `) || padE.includes(` ${h} `)) {
+    return Math.max(stringSimilarity(h, e), 0.92);
+  }
+  return stringSimilarity(h, e);
+}
+
+function _minSpeakThreshold(normExpected) {
+  const len = String(normExpected || '').length;
+  if (len <= 3) return 0.92;
+  if (len <= 6) return 0.86;
+  if (len <= 10) return 0.82;
+  if (len <= 20) return 0.78;
+  return 0.72;
+}
+
+function bestTextMatch(normQuery, options) {
+  const q = String(normQuery || '').trim();
+  const opts = Array.isArray(options) ? options : [];
+  let best = null;
+  for (const raw of opts) {
+    const norm = normalizeAnswer(raw);
+    if (!norm) continue;
+    const score = matchScore(q, norm);
+    if (!best || score > best.score) best = { raw, norm, score };
+  }
+  return best;
+}
+
 function initTtsProviderMenu() {
   const menu = document.getElementById('ttsProviderMenu');
   if (!menu) return;
@@ -488,9 +640,78 @@ let wrongTotal = 0;
 let currentQuizQuestion = null;
 let quizTtsText = null;
 let quizTtsLang = null;
+let quizSpeakLang = null;
 
 function quizListen() {
   speakText(quizTtsText, quizTtsLang);
+}
+
+function quizSpeakLangForQuestion(q) {
+  if (!q) return null;
+  // Only enable speech answering when the expected answer is in the target language.
+  if (q.kind === 'vocab' && q.mode === 'english_to_word') {
+    return (typeof LANG !== 'undefined') ? langToTtsTag(LANG) : null;
+  }
+  return null;
+}
+
+async function quizSpeak() {
+  const q = currentQuizQuestion || null;
+  if (!q) return;
+
+  const fb = document.getElementById('feedbackBox');
+  const alreadyAnswered = fb && fb.style.display !== 'none';
+  if (alreadyAnswered) return;
+
+  const langTag = quizSpeakLang || quizSpeakLangForQuestion(q);
+  if (!langTag) return;
+
+  const speakBtn = document.getElementById('quizSpeakBtn');
+  const status = document.getElementById('qAccuracy');
+  if (status) status.textContent = 'Listening…';
+  if (speakBtn) {
+    speakBtn.disabled = true;
+    speakBtn.classList.add('lc-mic-active');
+  }
+
+  try {
+    const { transcript } = await speechToTextOnce(langTag, 9000);
+    const heard = String(transcript || '').trim();
+    const normHeard = normalizeAnswer(heard);
+
+    if (!heard || !normHeard) {
+      if (status) status.textContent = 'Heard: —';
+      return;
+    }
+
+    const choices = Array.isArray(q.choices) ? q.choices : [];
+    const best = bestTextMatch(normHeard, choices);
+    if (!best) {
+      if (status) status.textContent = `Heard: ${heard} (no match)`;
+      return;
+    }
+
+    const threshold = _minSpeakThreshold(best.norm);
+    const pct = Math.round(best.score * 100);
+    if (best.score < threshold) {
+      if (status) status.textContent = `Heard: ${heard} (match ${pct}% — try again)`;
+      return;
+    }
+
+    if (status) status.textContent = `Heard: ${heard} (match ${pct}%)`;
+
+    const buttons = Array.from(document.querySelectorAll('#choicesGrid .choice-btn'));
+    const btn = buttons.find(b => normalizeAnswer(b.textContent) === normalizeAnswer(best.raw));
+    if (btn && !btn.disabled) btn.click();
+  } catch (e) {
+    const msg = (e && e.code) ? String(e.code) : 'error';
+    if (status) status.textContent = `Mic: ${msg}`;
+  } finally {
+    if (speakBtn) {
+      speakBtn.disabled = false;
+      speakBtn.classList.remove('lc-mic-active');
+    }
+  }
 }
 
 function initQuiz() {
@@ -511,6 +732,10 @@ function showQuestion(idx) {
   const listenBtn = document.getElementById('quizListenBtn');
   if (listenBtn) listenBtn.style.display = quizTtsText ? '' : 'none';
 
+  quizSpeakLang = quizSpeakLangForQuestion(q);
+  const speakBtn = document.getElementById('quizSpeakBtn');
+  if (speakBtn) speakBtn.style.display = (quizSpeakLang && isSpeechRecognitionSupported()) ? '' : 'none';
+
   document.getElementById('quizCard').style.display = '';
   document.getElementById('resultsCard').style.display = 'none';
   document.getElementById('feedbackBox').style.display = 'none';
@@ -521,6 +746,8 @@ function showQuestion(idx) {
   document.getElementById('questionBn').innerHTML = q.question_bn;
   document.getElementById('qNum').textContent = `Question ${idx + 1}`;
   document.getElementById('scoreDisplay').textContent = `Score: ${correctTotal}`;
+  const qAcc = document.getElementById('qAccuracy');
+  if (qAcc) qAcc.textContent = '';
 
   const grid = document.getElementById('choicesGrid');
   grid.innerHTML = '';
@@ -656,6 +883,8 @@ function normalizeAnswer(str) {
   return String(str || '')
     .toLowerCase()
     .trim()
+    .replace(/œ/g, 'oe')
+    .replace(/æ/g, 'ae')
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
     .replace(/[^a-z0-9\s]/g, ' ')
@@ -1147,6 +1376,194 @@ function initDictation() {
 }
 
 /* ===============================================
+   SPEAKING TEST MODULE
+   =============================================== */
+let speakingIdx = 0;
+let speakingCorrect = 0;
+let speakingWrong = 0;
+let speakingAnswered = false;
+let currentSpeakingItem = null;
+
+function speakingListen() {
+  if (!currentSpeakingItem) return;
+  speakText(currentSpeakingItem.tts_text, currentSpeakingItem.tts_lang);
+}
+
+function renderSpeaking(idx) {
+  if (typeof SPEAKING_ITEMS === 'undefined' || SPEAKING_ITEMS.length === 0) return;
+  const item = SPEAKING_ITEMS[idx];
+  if (!item) return;
+  currentSpeakingItem = item;
+  speakingAnswered = false;
+
+  const total = SPEAKING_ITEMS.length;
+  document.getElementById('speakingCounter').textContent = `Item ${idx + 1} of ${total}`;
+  document.getElementById('speakingProgress').style.width = `${Math.round((idx / total) * 100)}%`;
+  document.getElementById('speakingScore').textContent = `${speakingCorrect} / ${idx}`;
+
+  document.getElementById('speakingTarget').textContent = item.full_word || item.word || '';
+  document.getElementById('speakingPron').textContent = item.pronunciation || '';
+  document.getElementById('speakingEn').textContent = item.english || '';
+  document.getElementById('speakingBn').textContent = item.bengali || '';
+  document.getElementById('speakingHeard').textContent = '—';
+
+  const fb = document.getElementById('speakingFeedback');
+  if (fb) fb.style.display = 'none';
+
+  const speakBtn = document.getElementById('speakingSpeakBtn');
+  const noSupport = document.getElementById('speakingNoSupport');
+  const supported = isSpeechRecognitionSupported();
+  if (noSupport) noSupport.style.display = supported ? 'none' : '';
+  if (speakBtn) speakBtn.disabled = !supported;
+
+  const nextBtn = document.getElementById('speakingNextBtn');
+  if (nextBtn) nextBtn.textContent = (idx >= total - 1) ? 'See Results 🏁' : 'Next →';
+}
+
+async function speakingSpeak() {
+  if (speakingAnswered || !currentSpeakingItem) return;
+  if (!isSpeechRecognitionSupported()) return;
+
+  const btn = document.getElementById('speakingSpeakBtn');
+  if (btn) {
+    btn.disabled = true;
+    btn.classList.add('lc-mic-active');
+  }
+  document.getElementById('speakingHeard').textContent = 'Listening…';
+
+  try {
+    const { transcript } = await speechToTextOnce(currentSpeakingItem.tts_lang, 10000);
+    const heard = String(transcript || '').trim();
+    document.getElementById('speakingHeard').textContent = heard || '—';
+
+    const expected = [
+      currentSpeakingItem.word,
+      currentSpeakingItem.full_word
+    ].filter(Boolean);
+    const normHeard = normalizeAnswer(heard);
+    const best = bestTextMatch(normHeard, expected);
+
+    const fb = document.getElementById('speakingFeedback');
+    const icon = document.getElementById('speakingFeedbackIcon');
+    const text = document.getElementById('speakingFeedbackText');
+    if (!fb || !icon || !text) return;
+
+    const score = best ? best.score : 0;
+    const pct = Math.round(score * 100);
+    const threshold = best ? _minSpeakThreshold(best.norm) : 1;
+    const isCorrect = best && score >= threshold;
+
+    speakingAnswered = true;
+    fb.style.display = 'block';
+
+    if (isCorrect) {
+      speakingCorrect++;
+      fb.className = 'feedback-box correct-fb';
+      icon.textContent = '✅';
+      text.innerHTML = `<strong>Great!</strong> Match ${pct}%<br><span class="small text-muted">Expected: <strong>${escapeHtml(currentSpeakingItem.full_word || currentSpeakingItem.word || '')}</strong></span>`;
+    } else {
+      speakingWrong++;
+      fb.className = 'feedback-box wrong-fb';
+      icon.textContent = '❌';
+      text.innerHTML = `<strong>Try again.</strong> Match ${pct}%<br><span class="small">Correct: <strong>${escapeHtml(currentSpeakingItem.full_word || currentSpeakingItem.word || '')}</strong></span>`;
+    }
+
+    document.getElementById('speakingScore').textContent = `${speakingCorrect} / ${speakingCorrect + speakingWrong}`;
+
+    // SRS tracking
+    const lang = (typeof SPEAKING_LANG !== 'undefined') ? SPEAKING_LANG : null;
+    const wordKey = currentSpeakingItem.word || currentSpeakingItem.full_word || '';
+    if (lang && wordKey) {
+      const xp = isCorrect ? 12 : 3;
+      fetch('/api/word_progress', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({language: lang, word: wordKey, correct: isCorrect ? 1 : 0, source: 'speaking', xp})
+      });
+    }
+  } catch (e) {
+    const msg = (e && e.code) ? String(e.code) : 'error';
+    document.getElementById('speakingHeard').textContent = `Mic: ${msg}`;
+  } finally {
+    const btn2 = document.getElementById('speakingSpeakBtn');
+    if (btn2) {
+      btn2.disabled = speakingAnswered || !isSpeechRecognitionSupported();
+      btn2.classList.remove('lc-mic-active');
+    }
+  }
+}
+
+function speakingNext() {
+  speakingIdx++;
+  if (speakingIdx >= SPEAKING_ITEMS.length) {
+    showSpeakingResults();
+  } else {
+    renderSpeaking(speakingIdx);
+  }
+}
+
+function showSpeakingResults() {
+  document.getElementById('speakingCard').style.display = 'none';
+  const res = document.getElementById('speakingResults');
+  res.style.display = 'block';
+  res.scrollIntoView({behavior: 'smooth', block: 'start'});
+
+  const total = speakingCorrect + speakingWrong;
+  const pct = total > 0 ? Math.round((speakingCorrect / total) * 100) : 0;
+
+  let emoji = '🎉';
+  let title = 'Great job!';
+  let titleBn = 'দারুণ! আরও একটু বলার অনুশীলন করুন।';
+  if (pct >= 90) {
+    emoji = '🏆';
+    title = 'Excellent!';
+    titleBn = 'অসাধারণ!';
+  } else if (pct >= 70) {
+    emoji = '🎉';
+    title = 'Great!';
+    titleBn = 'চমৎকার!';
+  } else if (pct >= 50) {
+    emoji = '🗣️';
+    title = 'Keep going!';
+    titleBn = 'চালিয়ে যান!';
+  } else {
+    emoji = '🎙️';
+    title = 'Practice more!';
+    titleBn = 'আরও অনুশীলন করুন!';
+  }
+
+  document.getElementById('speakingResultEmoji').textContent = emoji;
+  document.getElementById('speakingResultTitle').textContent = title;
+  document.getElementById('speakingResultBn').textContent = titleBn;
+  document.getElementById('speakingResultScore').innerHTML =
+    `<span class="${pct >= 70 ? 'text-success' : pct >= 50 ? 'text-warning' : 'text-danger'}">${pct}%</span>` +
+    `<div class="small text-muted mt-2">${speakingCorrect}/${total} correct</div>`;
+}
+
+function initSpeakingTest() {
+  if (typeof SPEAKING_ITEMS === 'undefined' || SPEAKING_ITEMS.length === 0) return;
+  speakingIdx = 0;
+  speakingCorrect = 0;
+  speakingWrong = 0;
+  speakingAnswered = false;
+  renderSpeaking(0);
+
+  document.addEventListener('keydown', (e) => {
+    const tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : '';
+    if (e.isComposing) return;
+    if (tag === 'input' || tag === 'textarea') return;
+
+    if (e.key.toLowerCase() === 'l') {
+      speakingListen();
+      return;
+    }
+    if (e.key.toLowerCase() === 'm') {
+      speakingSpeak();
+    }
+  });
+}
+
+/* ===============================================
    LESSON VOCAB FILTER
    =============================================== */
 function filterLessonVocab() {
@@ -1167,6 +1584,158 @@ function filterLessonVocab() {
   const countEl = document.getElementById('vocabSearchCount');
   if (countEl) {
     countEl.textContent = q ? `${visible} matching` : `${items.length} words`;
+  }
+}
+
+/* ===============================================
+   LESSON SPEAK & MATCH
+   =============================================== */
+function initLessonSpeakMatch() {
+  const root = document.getElementById('lcSpeakMatch');
+  if (!root) return;
+
+  const btn = document.getElementById('lcSpeakMatchBtn');
+  const listenBtn = document.getElementById('lcSpeakMatchListenBtn');
+  const noSupport = document.getElementById('lcSpeakMatchNoSupport');
+  const emptyEl = document.getElementById('lcSpeakMatchEmpty');
+
+  const heardEl = document.getElementById('lcSpeakMatchHeard');
+  const resEl = document.getElementById('lcSpeakMatchResult');
+  const wordEl = document.getElementById('lcSpeakMatchWord');
+  const pronEl = document.getElementById('lcSpeakMatchPron');
+  const enEl = document.getElementById('lcSpeakMatchEn');
+  const bnEl = document.getElementById('lcSpeakMatchBn');
+  const scoreEl = document.getElementById('lcSpeakMatchScore');
+  const noteEl = document.getElementById('lcSpeakMatchNote');
+  const suggEl = document.getElementById('lcSpeakMatchSuggestions');
+
+  if (!btn || !heardEl || !resEl) return;
+
+  const items = (typeof LESSON_SPEAK_MATCH_ITEMS !== 'undefined') ? LESSON_SPEAK_MATCH_ITEMS : [];
+  const supported = isSpeechRecognitionSupported();
+
+  if (noSupport) noSupport.style.display = supported ? 'none' : '';
+
+  if (!Array.isArray(items) || items.length === 0) {
+    if (emptyEl) emptyEl.style.display = '';
+    btn.disabled = true;
+    if (listenBtn) listenBtn.style.display = 'none';
+    return;
+  }
+  if (emptyEl) emptyEl.style.display = 'none';
+
+  if (!supported) {
+    btn.disabled = true;
+    if (listenBtn) listenBtn.style.display = 'none';
+    return;
+  }
+
+  const lang = (typeof LESSON_SPEAK_MATCH_LANG !== 'undefined') ? LESSON_SPEAK_MATCH_LANG : '';
+  const langTag = langToTtsTag(lang) || 'en-US';
+
+  let selected = null;
+
+  function renderMatch(entry, ranked) {
+    if (!entry || !entry.item) return;
+    const it = entry.item;
+    selected = it;
+
+    const label = it.full_word || it.word || '';
+    if (wordEl) wordEl.textContent = label;
+    if (pronEl) pronEl.textContent = it.pronunciation || '';
+    if (enEl) enEl.textContent = it.english || '';
+    if (bnEl) bnEl.textContent = it.bengali || '';
+
+    const pct = Math.round((entry.score || 0) * 100);
+    if (scoreEl) scoreEl.textContent = `Match: ${pct}%`;
+
+    const thresh = _minSpeakThreshold(normalizeAnswer(label));
+    if (noteEl) {
+      noteEl.textContent = entry.score >= thresh ? 'Looks matched' : 'Not sure — pick from suggestions';
+    }
+
+    if (listenBtn) listenBtn.style.display = label ? '' : 'none';
+
+    if (suggEl) {
+      suggEl.innerHTML = '';
+      const top = Array.isArray(ranked) ? ranked.slice(0, 4) : [];
+      if (top.length > 1) {
+        const p = document.createElement('div');
+        p.textContent = 'Did you mean:';
+        suggEl.appendChild(p);
+
+        const wrap = document.createElement('div');
+        wrap.className = 'mt-2 d-flex flex-wrap gap-2 lc-speak-suggestions';
+        top.forEach(r => {
+          const t = r.item ? (r.item.full_word || r.item.word || '') : '';
+          if (!t) return;
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'btn btn-sm btn-light border';
+          b.textContent = t;
+          b.addEventListener('click', () => renderMatch(r, ranked));
+          wrap.appendChild(b);
+        });
+        suggEl.appendChild(wrap);
+      }
+    }
+
+    resEl.style.display = '';
+  }
+
+  function rankMatches(normHeard) {
+    const wantExamples = (String(normHeard || '').split(' ').filter(Boolean).length >= 3);
+    const ranked = items.map(it => {
+      const candidates = [];
+      if (it.full_word) candidates.push(it.full_word);
+      if (it.word && it.word !== it.full_word) candidates.push(it.word);
+      if (wantExamples && it.example) candidates.push(it.example);
+
+      let best = 0;
+      for (const c of candidates) {
+        const norm = normalizeAnswer(c);
+        if (!norm) continue;
+        best = Math.max(best, matchScore(normHeard, norm));
+      }
+      return { item: it, score: best };
+    });
+    ranked.sort((a, b) => (b.score || 0) - (a.score || 0));
+    return ranked;
+  }
+
+  btn.addEventListener('click', async () => {
+    btn.disabled = true;
+    btn.classList.add('lc-mic-active');
+    heardEl.textContent = 'Listening…';
+    resEl.style.display = 'none';
+
+    try {
+      const { transcript } = await speechToTextOnce(langTag, 10000);
+      const heard = String(transcript || '').trim();
+      heardEl.textContent = heard || '—';
+      const normHeard = normalizeAnswer(heard);
+      if (!normHeard) return;
+
+      const ranked = rankMatches(normHeard);
+      if (!ranked.length) return;
+      renderMatch(ranked[0], ranked);
+    } catch (e) {
+      const msg = (e && e.code) ? String(e.code) : 'error';
+      heardEl.textContent = `Mic: ${msg}`;
+      resEl.style.display = 'none';
+    } finally {
+      btn.disabled = false;
+      btn.classList.remove('lc-mic-active');
+    }
+  });
+
+  if (listenBtn) {
+    listenBtn.addEventListener('click', () => {
+      if (!selected) return;
+      const txt = selected.tts_text || selected.full_word || selected.word || '';
+      const tag = selected.tts_lang || langTag;
+      speakText(txt, tag);
+    });
   }
 }
 
@@ -1477,8 +2046,12 @@ document.addEventListener('DOMContentLoaded', () => {
   initPractice();
   // Dictation page
   initDictation();
+  // Speaking test page
+  initSpeakingTest();
   // Lesson vocab filter
   filterLessonVocab();
+  // Lesson speak & match
+  initLessonSpeakMatch();
   // Vocabulary explorer page
   initVocabExplorer();
   // Diacritics input helper (practice + dictation pages)

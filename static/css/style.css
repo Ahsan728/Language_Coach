@@ -441,6 +441,19 @@ body { font-family: var(--lc-font-ui); color: var(--text-dark); background: var(
 .feedback-box.wrong-fb   { background: #f8d7da; }
 .feedback-icon { font-size: 2rem; margin-bottom: 0.5rem; }
 
+/* ---- Speech (STT) ---- */
+.lc-mic-active{
+  background: rgba(220,53,69,0.10) !important;
+  border-color: rgba(220,53,69,0.35) !important;
+  animation: lcMicPulse 1.3s infinite;
+}
+.lc-mic-active i{ color: #dc3545; }
+@keyframes lcMicPulse{
+  0%   { box-shadow: 0 0 0 0 rgba(220,53,69,0.35); }
+  100% { box-shadow: 0 0 0 14px rgba(220,53,69,0); }
+}
+.lc-speak-suggestions .btn{ border-radius: 999px; }
+
 /* Results */
 .result-emoji { font-size: 5rem; }
 .score-display { font-size: 3.5rem; font-weight: 800; }

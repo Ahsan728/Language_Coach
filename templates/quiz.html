@@ -48,9 +48,14 @@
               <h4 class="question-text mb-2" id="questionEn">Loading...</h4>
               <p class="question-bengali bengali-text text-muted mb-4" id="questionBn"></p>
             </div>
-            <button class="btn btn-light btn-sm" id="quizListenBtn" type="button" onclick="quizListen()" style="display:none">
-              <i class="fas fa-volume-up"></i>
-            </button>
+            <div class="d-flex flex-column gap-2">
+              <button class="btn btn-light btn-sm" id="quizListenBtn" type="button" onclick="quizListen()" style="display:none" title="Listen">
+                <i class="fas fa-volume-up"></i>
+              </button>
+              <button class="btn btn-light btn-sm" id="quizSpeakBtn" type="button" onclick="quizSpeak()" style="display:none" title="Answer by speaking">
+                <i class="fas fa-microphone"></i>
+              </button>
+            </div>
           </div>
 
           <div class="choices-grid" id="choicesGrid">

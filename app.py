@@ -1565,6 +1565,26 @@ def lesson_view(lang, lesson_id):
     touch_lesson(lang, lesson_id, user_id=current_user_id())
     vocab   = get_lesson_vocab(lang, lesson)
     grammar = lesson.get('grammar')
+    tts_lang = 'fr-FR' if lang == 'french' else 'es-ES'
+    speak_match = []
+    for w in (vocab or []):
+        word = (w.get('word') or '').strip()
+        if not word:
+            continue
+        article = (w.get('article') or '').strip()
+        full_word = (article + (' ' if article and not article.endswith("'") else '') + word).strip() or word
+        speak_match.append({
+            'word': word,
+            'full_word': full_word,
+            'english': (w.get('english') or '').strip(),
+            'bengali': (w.get('bengali') or '').strip(),
+            'pronunciation': (w.get('pronunciation') or '').strip(),
+            'example': (w.get('example') or '').strip(),
+            'example_en': (w.get('example_en') or '').strip(),
+            'example_bn': (w.get('example_bn') or '').strip(),
+            'tts_text': full_word,
+            'tts_lang': tts_lang,
+        })
     # next lesson for navigation
     idx      = next((i for i, l in enumerate(lesson_list) if l.get('id') == lesson_id), None)
     next_l   = lesson_list[idx + 1] if idx is not None and idx + 1 < len(lesson_list) else None
@@ -1572,7 +1592,8 @@ def lesson_view(lang, lesson_id):
 
     return render_template('lesson.html', lang=lang, meta=LANG_META[lang],
                            lesson=lesson, vocabulary=vocab, grammar=grammar,
-                           next_lesson=next_l, prev_lesson=prev_l)
+                           next_lesson=next_l, prev_lesson=prev_l,
+                           speak_match_json=json.dumps(speak_match, ensure_ascii=False))
 
 
 @app.route('/lesson/<lang>/<int:lesson_id>/download.pdf')
@@ -2086,6 +2107,51 @@ def dictation(lang, lesson_id):
     random.shuffle(items)
 
     return render_template('dictation.html',
+                           lang=lang, meta=LANG_META[lang],
+                           lesson=lesson,
+                           items=items,
+                           items_json=json.dumps(items, ensure_ascii=False))
+
+
+@app.route('/speaking/<lang>/<int:lesson_id>')
+def speaking(lang, lesson_id):
+    if lang not in LANG_META:
+        return redirect(url_for('dashboard'))
+    lesson_list = _sorted_lessons(get_lessons().get(lang, []))
+    lesson = _find_lesson(lesson_list, lesson_id)
+    if not lesson:
+        return redirect(url_for('language_home', lang=lang))
+    touch_lesson(lang, lesson_id, user_id=current_user_id())
+
+    vocab = get_lesson_vocab(lang, lesson)
+    if not vocab:
+        return redirect(url_for('lesson_view', lang=lang, lesson_id=lesson_id))
+
+    tts_lang = 'fr-FR' if lang == 'french' else 'es-ES'
+    items = []
+    for w in vocab:
+        word = (w.get('word') or '').strip()
+        if not word:
+            continue
+        article = (w.get('article') or '').strip()
+        full_word = (article + (' ' if article and not article.endswith("'") else '') + word).strip() or word
+        items.append({
+            'word': word,
+            'full_word': full_word,
+            'english': (w.get('english') or '').strip(),
+            'bengali': (w.get('bengali') or '').strip(),
+            'pronunciation': (w.get('pronunciation') or '').strip(),
+            'example': (w.get('example') or '').strip(),
+            'example_en': (w.get('example_en') or '').strip(),
+            'example_bn': (w.get('example_bn') or '').strip(),
+            'tts_text': full_word,
+            'tts_lang': tts_lang,
+        })
+
+    random.shuffle(items)
+    items = items[:min(20, len(items))]
+
+    return render_template('speaking.html',
                            lang=lang, meta=LANG_META[lang],
                            lesson=lesson,
                            items=items,
