@@ -45,6 +45,12 @@ data/resource_sentences.json
 .env
 .env.*
 !.env.example
+# Some hosts/users create `env` (without the dot). Treat it as a secret file too.
+env
+
+# Local temporary PDFs/images (debug outputs)
+tmp_*.png
+tmp_*.pdf
 
 # OS
 .DS_Store

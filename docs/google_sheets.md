@@ -137,6 +137,7 @@ Set these environment variables where you run the Flask app:
 
 - `SHEETS_WEBHOOK_URL` = *(your Apps Script “Web app URL”)* (keep it private)
 - `SHEETS_WEBHOOK_TOKEN` = *(the same TOKEN you set in Apps Script properties)* (keep it private)
+- `APP_TIMEZONE` = *(optional)* e.g. `Asia/Dhaka` (fixes timestamps on hosts that run in UTC)
 
 ### Option A — PowerShell (temporary)
 
@@ -167,6 +168,22 @@ Optional (defaults shown):
 - `SHEETS_WEBHOOK_TIMEOUT=3.0`
 
 Restart the server after setting env vars.
+
+### Option C — PythonAnywhere (recommended for live)
+
+On PythonAnywhere, exporting variables in the Bash console only affects that console session. Your **web app** runs in a separate process, so set env vars in a file that the app can read.
+
+1. Go to **Files** → open your project folder (the same folder as `app.py`).
+2. Create/edit a file named `.env` (**or** `env` — both are supported).
+3. Add:
+
+```env
+SHEETS_WEBHOOK_URL=PASTE_WEB_APP_URL_HERE
+SHEETS_WEBHOOK_TOKEN=PASTE_TOKEN_HERE
+APP_TIMEZONE=Asia/Dhaka
+```
+
+4. Go to the **Web** tab and click **Reload**.
 
 ## 4) What gets logged
 

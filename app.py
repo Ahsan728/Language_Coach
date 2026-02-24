@@ -7,13 +7,14 @@ import random
 import re
 import sqlite3
 import threading
+import time
 import unicodedata
 import uuid
 from datetime import datetime, date, timedelta
 from collections import Counter
 from functools import lru_cache, wraps
 from typing import Optional
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urlparse
 from urllib.request import Request, urlopen
 from flask import Flask, render_template, jsonify, request, redirect, url_for, send_file, session
 
@@ -49,7 +50,44 @@ def _load_env_file(path: str) -> None:
         return
 
 
-_load_env_file(os.path.join(os.path.dirname(os.path.abspath(__file__)), '.env'))
+_ENV_DIR = os.path.dirname(os.path.abspath(__file__))
+_load_env_file(os.path.join(_ENV_DIR, '.env'))
+# PythonAnywhere users often create `env` (without the dot). Support that too.
+_load_env_file(os.path.join(_ENV_DIR, 'env'))
+
+# ---------- App timezone ----------
+# PythonAnywhere servers commonly run in UTC. Set `APP_TIMEZONE=Asia/Dhaka` (or your IANA timezone)
+# to make "today" and logged timestamps match your local time.
+APP_TIMEZONE = (os.environ.get('APP_TIMEZONE') or '').strip()
+_APP_TZ = None
+if APP_TIMEZONE:
+    try:
+        from zoneinfo import ZoneInfo  # Python 3.9+
+        _APP_TZ = ZoneInfo(APP_TIMEZONE)
+    except Exception:
+        _APP_TZ = None
+
+
+def _app_now() -> datetime:
+    """Naive local datetime in the configured `APP_TIMEZONE` (or system local time)."""
+    if _APP_TZ is not None:
+        return datetime.now(_APP_TZ).replace(tzinfo=None)
+    return datetime.now()
+
+
+def _now_iso() -> str:
+    """ISO timestamp (seconds precision) using app-local time (Sheets friendly)."""
+    return _app_now().isoformat(timespec='seconds')
+
+
+def _today_date() -> date:
+    """Today's date in app-local time."""
+    return _app_now().date()
+
+
+def _today_iso() -> str:
+    """YYYY-MM-DD using app-local time."""
+    return _today_date().isoformat()
 
 app = Flask(__name__)
 _secret_key = os.environ.get('SECRET_KEY', '').strip()
@@ -565,7 +603,7 @@ def _build_resource_drill_questions(lang, total_q, vocab_by_cat, vocab_all, reso
     stop = _STOPWORDS.get(lang, set())
 
     # Prefer due words, but fall back to any vocab word if no SRS history exists.
-    now_iso = datetime.now().isoformat(timespec='seconds')
+    now_iso = _now_iso()
     conn = get_db()
     if user_id is None:
         due_rows = conn.execute('''
@@ -861,6 +899,8 @@ def _sheets_send(action: str, sheet: str, row: dict):
                     SHEETS_WEBHOOK_URL,
                     json=payload,
                     timeout=SHEETS_WEBHOOK_TIMEOUT,
+                    allow_redirects=False,
+                    headers={'User-Agent': 'LanguageCoach/1.0'},
                 )
                 _ = (resp.content or b'')[:256]
                 return
@@ -905,13 +945,39 @@ def _sheets_send_sync(action: str, sheet: str, row: dict):
         # Prefer requests if available (more robust redirect/TLS handling on some hosts).
         try:
             import requests  # type: ignore
+            redirect_statuses = {301, 302, 303, 307, 308}
+
+            # Post without following redirects. Apps Script often returns a 302 to a
+            # `script.googleusercontent.com` URL that serves the JSON response.
             resp = requests.post(
                 SHEETS_WEBHOOK_URL,
                 json=payload,
                 timeout=SHEETS_WEBHOOK_TIMEOUT,
+                allow_redirects=False,
+                headers={'User-Agent': 'LanguageCoach/1.0'},
             )
             raw = (resp.content or b'')[:8192]
             status = int(resp.status_code)
+
+            # If we got redirected, try to follow the redirect to confirm JSON.
+            # If the follow fails (common on some restricted hosts), assume the POST succeeded.
+            if status in redirect_statuses:
+                location = (resp.headers or {}).get('location') or (resp.headers or {}).get('Location')
+                if not location:
+                    return {'enabled': True, 'ok': True, 'error': None, 'note': 'redirect_no_location'}
+                try:
+                    follow = requests.get(
+                        location,
+                        timeout=SHEETS_WEBHOOK_TIMEOUT,
+                        headers={'User-Agent': 'LanguageCoach/1.0'},
+                    )
+                    follow_status = int(follow.status_code)
+                    if follow_status >= 400:
+                        return {'enabled': True, 'ok': True, 'error': None, 'note': f'redirect_follow_http_{follow_status}'}
+                    raw = (follow.content or b'')[:8192]
+                    status = follow_status
+                except Exception:
+                    return {'enabled': True, 'ok': True, 'error': None, 'note': 'redirect_follow_failed'}
         except Exception:
             body = json.dumps(payload, ensure_ascii=False).encode('utf-8')
             req = Request(
@@ -935,7 +1001,15 @@ def _sheets_send_sync(action: str, sheet: str, row: dict):
 
     if status >= 400:
         snippet = raw.decode('utf-8', 'replace')[:300].strip()
-        return {'enabled': True, 'ok': False, 'error': f"http_{status}: {snippet or 'request_failed'}"}
+        host = ''
+        try:
+            host = urlparse(SHEETS_WEBHOOK_URL).hostname or ''
+        except Exception:
+            host = ''
+        prefix = f"http_{status}"
+        if host:
+            prefix += f" ({host})"
+        return {'enabled': True, 'ok': False, 'error': f"{prefix}: {snippet or 'request_failed'}"}
 
     try:
         parsed = json.loads(raw.decode('utf-8', 'replace') or '{}')
@@ -1008,7 +1082,7 @@ def _emit_user_snapshot_to_sheets(user: dict, last_event: str = '', language: st
     uid = user.get('id')
     progress, activity = _user_snapshot(uid)
     last_lesson = _get_user_last_lesson_info(uid, language=language) or {}
-    now_iso = datetime.now().isoformat(timespec='seconds')
+    now_iso = _now_iso()
 
     fr = progress.get('french') or {}
     es = progress.get('spanish') or {}
@@ -1044,7 +1118,7 @@ def _emit_user_snapshot_to_sheets(user: dict, last_event: str = '', language: st
 
 def _emit_event_to_sheets(event: str, user: dict = None, language: str = '', lesson_id=None, score=None,
                           category: str = '', message: str = '', page: str = ''):
-    now_iso = datetime.now().isoformat(timespec='seconds')
+    now_iso = _now_iso()
     user = user or {}
     uid = user.get('id')
     progress, activity = _user_snapshot(uid) if uid is not None else ({}, {})
@@ -1110,7 +1184,7 @@ def upsert_user(name: str, email: str) -> int:
     if not email:
         raise ValueError('Missing email')
 
-    now_iso = datetime.now().isoformat(timespec='seconds')
+    now_iso = _now_iso()
     conn = get_db()
     row = conn.execute('SELECT id, name FROM users WHERE email=?', (email,)).fetchone()
     if row:
@@ -1158,7 +1232,7 @@ def load_progress(lang, user_id=None):
 def touch_lesson(lang, lesson_id, user_id=None):
     """Update last_seen for a lesson even if the user doesn't finish a quiz."""
     conn = get_db()
-    now_iso = datetime.now().isoformat(timespec='seconds')
+    now_iso = _now_iso()
     if user_id is None:
         conn.execute('''
             INSERT INTO lesson_progress (language, lesson_id, completed, best_score, attempts, last_seen)
@@ -1184,7 +1258,7 @@ def add_activity(xp=0, reviews=0, correct=0, wrong=0, user_id=None):
     if xp == 0 and reviews == 0 and correct == 0 and wrong == 0:
         return
 
-    today = date.today().isoformat()
+    today = _today_iso()
     conn = get_db()
     if user_id is None:
         conn.execute('''
@@ -1211,7 +1285,7 @@ def add_activity(xp=0, reviews=0, correct=0, wrong=0, user_id=None):
 
 
 def get_activity_summary(user_id=None):
-    today = date.today()
+    today = _today_date()
     today_key = today.isoformat()
 
     conn = get_db()
@@ -1639,7 +1713,7 @@ def _build_lesson_pdf_bytes_reportlab(lang: str, meta: dict, lesson: dict, vocab
         canvas.setLineWidth(0.8)
         canvas.line(left, footer_line_y, page_w - right, footer_line_y)
 
-        year = datetime.now().year
+        year = _app_now().year
         footer_center_x = (left + (page_w - right)) / 2
         canvas.setFillColor(colors.HexColor('#111111'))
         canvas.setFont(font_bold, 9)
@@ -1727,7 +1801,7 @@ def _lesson_pdf_header_footer(lang: str, meta: dict, lesson: dict) -> tuple[str,
     </div>
     """
 
-    year = datetime.now().year
+    year = _app_now().year
     footer = f"""
     <div style="width:100%; padding:0 36px; font-family:Arial, sans-serif; font-size:8.5px; color:#666;">
       <div style="border-top:1px solid #e5e5e5; padding-top:6px;">
@@ -2178,7 +2252,7 @@ def _static_asset_version():
             pass
     if mtimes:
         return str(max(mtimes))
-    return str(int(datetime.now().timestamp()))
+    return str(int(time.time()))
 
 
 @app.context_processor
@@ -2191,7 +2265,7 @@ def inject_globals():
         'tts_provider': app.config.get('TTS_PROVIDER', 'auto'),
         'ui_theme': ui_theme,
         'auth_user': auth_user,
-        'current_year': datetime.now().year,
+        'current_year': _app_now().year,
         'static_version': _static_asset_version(),
     }
 
@@ -2566,7 +2640,7 @@ def review_flashcards(lang):
 
     review_words = []
     if mode == 'due':
-        now_iso = datetime.now().isoformat(timespec='seconds')
+        now_iso = _now_iso()
         conn = get_db()
         if uid is None:
             rows = conn.execute('''
@@ -2699,7 +2773,7 @@ def practice(lang):
 
     # Prefer due words (spaced repetition); otherwise pick random vocabulary.
     uid = current_user_id()
-    now_iso = datetime.now().isoformat(timespec='seconds')
+    now_iso = _now_iso()
     conn = get_db()
     if uid is None:
         due_rows = conn.execute('''
@@ -3237,7 +3311,7 @@ def api_complete():
         return jsonify({'ok': False}), 400
 
     uid = current_user_id()
-    now_iso = datetime.now().isoformat(timespec='seconds')
+    now_iso = _now_iso()
     conn = get_db()
     if uid is None:
         conn.execute('''
@@ -3297,7 +3371,7 @@ def api_feedback():
         page = page[:300]
 
     uid = current_user_id()
-    now_iso = datetime.now().isoformat(timespec='seconds')
+    now_iso = _now_iso()
 
     conn = get_db()
     conn.execute(
@@ -3348,7 +3422,7 @@ def api_word_progress():
     xp = max(0, min(50, xp))
     if lang not in LANG_META or not word:
         return jsonify({'ok': False}), 400
-    now = datetime.now()
+    now = _app_now()
     now_iso = now.isoformat(timespec='seconds')
 
     # Simple spaced repetition (Leitner boxes)
@@ -3435,7 +3509,7 @@ def api_word_progress():
                 ''', (uid, lang, word, 0, 1, new_box, next_due, now_iso))
 
     # Log daily activity for streak/XP (client can pass xp per action)
-    today = date.today().isoformat()
+    today = _today_iso()
     if uid is None:
         conn.execute('''
             INSERT INTO daily_activity (date, xp, reviews, correct, wrong)
