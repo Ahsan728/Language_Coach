@@ -871,6 +871,41 @@ def _default_name_from_email(email: str) -> str:
     return local
 
 
+_SHEETS_ALLOWED_WEBHOOK_HOSTS = {
+    'script.google.com',
+    'script.googleusercontent.com',
+}
+
+
+def _validate_sheets_webhook_url(url: str) -> Optional[str]:
+    """Return an error string if the webhook URL is misconfigured (otherwise None)."""
+    u = (url or '').strip()
+    if not u:
+        return 'not_configured'
+    try:
+        parsed = urlparse(u)
+    except Exception:
+        return 'bad_webhook_url: invalid URL'
+
+    scheme = (parsed.scheme or '').lower()
+    host = (parsed.hostname or '').lower()
+
+    if scheme not in {'http', 'https'}:
+        return 'bad_webhook_url: must start with https://'
+
+    # Common mistake: pasting the spreadsheet URL instead of the Apps Script Web App URL.
+    if host in {'docs.google.com', 'drive.google.com'}:
+        return 'bad_webhook_url: paste the Apps Script Web App URL (https://script.google.com/macros/s/.../exec), not the spreadsheet link'
+
+    if host and host not in _SHEETS_ALLOWED_WEBHOOK_HOSTS:
+        return f'bad_webhook_url: expected script.google.com (got {host})'
+
+    if not host:
+        return 'bad_webhook_url: missing host'
+
+    return None
+
+
 def _sheets_send(action: str, sheet: str, row: dict):
     """Send a row to Google Sheets via an Apps Script webhook (optional).
 
@@ -880,6 +915,9 @@ def _sheets_send(action: str, sheet: str, row: dict):
       - SHEETS_WEBHOOK_TOKEN (optional but recommended)
     """
     if not SHEETS_WEBHOOK_URL:
+        return
+    url_error = _validate_sheets_webhook_url(SHEETS_WEBHOOK_URL)
+    if url_error and url_error != 'not_configured':
         return
 
     payload = {
@@ -932,6 +970,9 @@ def _sheets_send_sync(action: str, sheet: str, row: dict):
     """Send a row to Google Sheets and return status (for UX / debugging)."""
     if not SHEETS_WEBHOOK_URL:
         return {'enabled': False, 'ok': False, 'error': 'not_configured'}
+    url_error = _validate_sheets_webhook_url(SHEETS_WEBHOOK_URL)
+    if url_error and url_error != 'not_configured':
+        return {'enabled': True, 'ok': False, 'error': url_error}
 
     payload = {
         'action': (action or '').strip() or 'append_row',
