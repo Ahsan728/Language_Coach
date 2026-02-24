@@ -9,6 +9,8 @@
 
 A fully local language learning web application built in Python (Flask). Designed for Bengali/English speakers learning French and Spanish — covering vocabulary, grammar, and tenses with explanations in both Bengali and English. Inspired by Duolingo, aligned with the CEFR framework (A1 → A2 → B1 → B2).
 
+**Live app:** https://language.ahsansuny.com
+
 | Feature | Details |
 |---------|---------|
 | 🇧🇩 Teaching language | Bengali + English |
