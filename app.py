@@ -889,6 +889,7 @@ def _validate_sheets_webhook_url(url: str) -> Optional[str]:
 
     scheme = (parsed.scheme or '').lower()
     host = (parsed.hostname or '').lower()
+    path = parsed.path or ''
 
     if scheme not in {'http', 'https'}:
         return 'bad_webhook_url: must start with https://'
@@ -902,6 +903,11 @@ def _validate_sheets_webhook_url(url: str) -> Optional[str]:
 
     if not host:
         return 'bad_webhook_url: missing host'
+
+    # Apps Script Web App URLs end with `/exec` (or `/dev` in test mode).
+    if host == 'script.google.com':
+        if not (path.endswith('/exec') or path.endswith('/dev')):
+            return 'bad_webhook_url: Apps Script Web App URL must end with /exec (or /dev)'
 
     return None
 

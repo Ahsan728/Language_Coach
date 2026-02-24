@@ -139,6 +139,8 @@ Set these environment variables where you run the Flask app:
 - `SHEETS_WEBHOOK_TOKEN` = *(the same TOKEN you set in Apps Script properties)* (keep it private)
 - `APP_TIMEZONE` = *(optional)* e.g. `Asia/Dhaka` (fixes timestamps on hosts that run in UTC)
 
+Important: the Apps Script Web App URL must end with `/exec` (or `/dev`).
+
 ### Option A — PowerShell (temporary)
 
 Important: these variables must be set **in the same terminal session where you start the server**. If the server is already running, restart it. If you start the server using `start.bat` by double‑clicking, it won’t inherit the variables from your PowerShell window — use Option B instead.
