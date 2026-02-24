@@ -852,18 +852,32 @@ def _sheets_send(action: str, sheet: str, row: dict):
     if SHEETS_WEBHOOK_TOKEN:
         payload['token'] = SHEETS_WEBHOOK_TOKEN
 
-    body = json.dumps(payload, ensure_ascii=False).encode('utf-8')
-    req = Request(
-        SHEETS_WEBHOOK_URL,
-        data=body,
-        headers={'Content-Type': 'application/json; charset=utf-8'},
-    )
-
     def _do_post():
         try:
-            with urlopen(req, timeout=SHEETS_WEBHOOK_TIMEOUT) as resp:
-                # Read a tiny amount to ensure the request completes.
-                resp.read(256)
+            # Prefer requests if available (more robust redirect/TLS handling on some hosts).
+            try:
+                import requests  # type: ignore
+                resp = requests.post(
+                    SHEETS_WEBHOOK_URL,
+                    json=payload,
+                    timeout=SHEETS_WEBHOOK_TIMEOUT,
+                )
+                _ = (resp.content or b'')[:256]
+                return
+            except Exception:
+                pass
+
+            body = json.dumps(payload, ensure_ascii=False).encode('utf-8')
+            req = Request(
+                SHEETS_WEBHOOK_URL,
+                data=body,
+                headers={'Content-Type': 'application/json; charset=utf-8'},
+            )
+            try:
+                with urlopen(req, timeout=SHEETS_WEBHOOK_TIMEOUT) as resp:
+                    resp.read(256)
+            except Exception:
+                return
         except Exception:
             return
 
@@ -887,22 +901,47 @@ def _sheets_send_sync(action: str, sheet: str, row: dict):
     if SHEETS_WEBHOOK_TOKEN:
         payload['token'] = SHEETS_WEBHOOK_TOKEN
 
-    body = json.dumps(payload, ensure_ascii=False).encode('utf-8')
-    req = Request(
-        SHEETS_WEBHOOK_URL,
-        data=body,
-        headers={'Content-Type': 'application/json; charset=utf-8'},
-    )
     try:
-        with urlopen(req, timeout=SHEETS_WEBHOOK_TIMEOUT) as resp:
-            raw = (resp.read(8192) or b'')
+        # Prefer requests if available (more robust redirect/TLS handling on some hosts).
+        try:
+            import requests  # type: ignore
+            resp = requests.post(
+                SHEETS_WEBHOOK_URL,
+                json=payload,
+                timeout=SHEETS_WEBHOOK_TIMEOUT,
+            )
+            raw = (resp.content or b'')[:8192]
+            status = int(resp.status_code)
+        except Exception:
+            body = json.dumps(payload, ensure_ascii=False).encode('utf-8')
+            req = Request(
+                SHEETS_WEBHOOK_URL,
+                data=body,
+                headers={'Content-Type': 'application/json; charset=utf-8'},
+            )
+            try:
+                from urllib.error import HTTPError
+                with urlopen(req, timeout=SHEETS_WEBHOOK_TIMEOUT) as resp:
+                    raw = (resp.read(8192) or b'')
+                    status = int(getattr(resp, 'status', 200) or 200)
+            except HTTPError as http_err:
+                status = int(getattr(http_err, 'code', 500) or 500)
+                raw = (http_err.read(8192) or b'')
+            except Exception as exc:
+                # If the urllib path fails, surface a useful error string.
+                return {'enabled': True, 'ok': False, 'error': str(exc) or type(exc).__name__}
     except Exception as exc:
         return {'enabled': True, 'ok': False, 'error': str(exc) or type(exc).__name__}
+
+    if status >= 400:
+        snippet = raw.decode('utf-8', 'replace')[:300].strip()
+        return {'enabled': True, 'ok': False, 'error': f"http_{status}: {snippet or 'request_failed'}"}
 
     try:
         parsed = json.loads(raw.decode('utf-8', 'replace') or '{}')
     except Exception:
-        return {'enabled': True, 'ok': False, 'error': 'non_json_response'}
+        snippet = raw.decode('utf-8', 'replace')[:300].strip()
+        return {'enabled': True, 'ok': False, 'error': f"non_json_response: {snippet or 'invalid'}"}
 
     if isinstance(parsed, dict):
         ok = bool(parsed.get('ok'))
