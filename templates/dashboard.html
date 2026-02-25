@@ -182,39 +182,92 @@
 <!-- Features -->
 <section class="py-5">
   <div class="container">
+    {% set fr_next = fr.next_lesson if fr else None %}
+    {% set es_next = es.next_lesson if es else None %}
     <h2 class="section-title text-center mb-5">কীভাবে শিখবেন — <span class="title-pill title-pill-alt">How You Learn</span></h2>
     <div class="row g-4 text-center">
       <div class="col-md-3 col-6">
-        <div class="feature-card p-3">
+        <button type="button"
+                class="feature-card feature-card-action p-3 h-100 w-100"
+                data-feature="vocabulary"
+                data-fr-href="{{ url_for('vocabulary_view', lang='french') }}"
+                data-es-href="{{ url_for('vocabulary_view', lang='spanish') }}"
+                data-bs-toggle="modal"
+                data-bs-target="#featureLangModal"
+                aria-label="Open Vocabulary">
           <div class="feature-icon">📖</div>
           <h5 class="mt-3">Vocabulary<br><small class="text-muted">শব্দভান্ডার</small></h5>
           <p class="small text-muted">Words with Bengali, English &amp; pronunciation</p>
-        </div>
+        </button>
       </div>
       <div class="col-md-3 col-6">
-        <div class="feature-card p-3">
+        <button type="button"
+                class="feature-card feature-card-action p-3 h-100 w-100"
+                data-feature="flashcards"
+                data-fr-href="{{ url_for('review_flashcards', lang='french') }}"
+                data-es-href="{{ url_for('review_flashcards', lang='spanish') }}"
+                data-bs-toggle="modal"
+                data-bs-target="#featureLangModal"
+                aria-label="Open Flashcards">
           <div class="feature-icon">🃏</div>
           <h5 class="mt-3">Flashcards<br><small class="text-muted">ফ্ল্যাশকার্ড</small></h5>
           <p class="small text-muted">Interactive flip cards for memorization</p>
-        </div>
+        </button>
       </div>
       <div class="col-md-3 col-6">
-        <div class="feature-card p-3">
+        <button type="button"
+                class="feature-card feature-card-action p-3 h-100 w-100"
+                data-feature="quizzes"
+                data-fr-href="{{ url_for('quiz', lang='french', lesson_id=fr_next.id) if fr_next else url_for('language_home', lang='french') }}"
+                data-es-href="{{ url_for('quiz', lang='spanish', lesson_id=es_next.id) if es_next else url_for('language_home', lang='spanish') }}"
+                data-bs-toggle="modal"
+                data-bs-target="#featureLangModal"
+                aria-label="Open Quizzes">
           <div class="feature-icon">🧠</div>
           <h5 class="mt-3">Quizzes<br><small class="text-muted">কুইজ</small></h5>
           <p class="small text-muted">Test yourself with multiple-choice questions</p>
-        </div>
+        </button>
       </div>
       <div class="col-md-3 col-6">
-        <div class="feature-card p-3">
+        <button type="button"
+                class="feature-card feature-card-action p-3 h-100 w-100"
+                data-feature="grammar"
+                data-fr-href="{{ (url_for('lesson_view', lang='french', lesson_id=fr_next.id) ~ '#grammar') if fr_next else url_for('language_home', lang='french') }}"
+                data-es-href="{{ (url_for('lesson_view', lang='spanish', lesson_id=es_next.id) ~ '#grammar') if es_next else url_for('language_home', lang='spanish') }}"
+                data-bs-toggle="modal"
+                data-bs-target="#featureLangModal"
+                aria-label="Open Grammar">
           <div class="feature-icon">📐</div>
           <h5 class="mt-3">Grammar<br><small class="text-muted">ব্যাকরণ</small></h5>
           <p class="small text-muted">Articles, tenses explained in Bengali</p>
-        </div>
+        </button>
       </div>
     </div>
   </div>
 </section>
+
+<!-- Feature language picker modal -->
+<div class="modal fade" id="featureLangModal" tabindex="-1" aria-labelledby="featureLangLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="featureLangLabel">Open</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="small text-muted mb-3">Choose a language</div>
+        <div class="d-grid gap-2">
+          <a id="featureLangFrench" class="btn btn-french" href="{{ url_for('language_home', lang='french') }}">
+            {{ lang_meta['french'].flag }} French
+          </a>
+          <a id="featureLangSpanish" class="btn btn-spanish" href="{{ url_for('language_home', lang='spanish') }}">
+            {{ lang_meta['spanish'].flag }} Spanish
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- CEFR Learning Path -->
 <section class="py-5 bg-light">
@@ -393,6 +446,38 @@
     btn.addEventListener('click', () => {
       elText.value = btn.dataset.text || '';
       runLookup();
+    });
+  });
+})();
+</script>
+
+<script>
+(() => {
+  const modalEl = document.getElementById('featureLangModal');
+  if (!modalEl) return;
+
+  const titleEl = document.getElementById('featureLangLabel');
+  const btnFr = document.getElementById('featureLangFrench');
+  const btnEs = document.getElementById('featureLangSpanish');
+
+  const labels = {
+    vocabulary: 'Vocabulary',
+    flashcards: 'Flashcards',
+    quizzes: 'Quizzes',
+    grammar: 'Grammar',
+  };
+
+  document.querySelectorAll('.feature-card-action[data-feature]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const feature = btn.dataset.feature || '';
+      const label = labels[feature] || 'Feature';
+
+      const frHref = btn.getAttribute('data-fr-href') || '';
+      const esHref = btn.getAttribute('data-es-href') || '';
+
+      if (titleEl) titleEl.textContent = `Open ${label}`;
+      if (btnFr && frHref) btnFr.href = frHref;
+      if (btnEs && esHref) btnEs.href = esHref;
     });
   });
 })();

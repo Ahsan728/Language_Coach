@@ -272,9 +272,11 @@ body { font-family: var(--lc-font-ui); color: var(--text-dark); background: var(
 .progress-bar { border-radius: 20px; transition: width 1s ease; }
 
 /* ---- Features ---- */
-.feature-card { border-radius: var(--radius); transition: transform .2s; cursor: default; }
+.feature-card { border-radius: var(--radius); transition: transform .2s; cursor: pointer; }
 .feature-card { background: rgba(255,255,255,0.80); border: 2px solid var(--lc-outline); box-shadow: var(--shadow); }
 .feature-card:hover { transform: translateY(-4px); }
+.feature-card-action { text-align: center; }
+.feature-card-action:focus-visible { outline: 3px solid rgba(26, 26, 46, 0.25); outline-offset: 4px; }
 .feature-icon { font-size: 2.5rem; }
 
 /* ---- Learning Path ---- */
