@@ -26,7 +26,7 @@ A fully local language learning web application built in Python (Flask). Designe
 | 🗣️ Speaking | Speak into your mic and match words/phrases (browser speech recognition) |
 | 🔁 Spaced Repetition | Leitner box SRS: due-words review, weak-word review |
 | 📄 Lesson PDFs | Download any lesson as a PDF (Bengali font-safe) |
-| 🔊 Pronunciation | Browser TTS by default + optional server TTS (gTTS) for consistent accent online |
+| 🔊 Pronunciation | Server TTS (gTTS) by default (cached) + browser fallback if server fails |
 | 🔎 Translate & Listen | Mini dictionary/translator on the home page with audio |
 | 💬 Feedback | Built-in feedback box (saved locally + optional Google Sheets logging) |
 | 🌐 Resources | Curated external links + study notes |
@@ -59,17 +59,16 @@ Then open your browser at **http://localhost:5000**
 
 ---
 
-## Online Deployment (Server TTS)
+## 🔊 Pronunciation (TTS)
 
-To make pronunciation work for everyone online (even if a user has no Spanish/French voice installed), use server-side TTS:
+This app uses **server-side gTTS** by default, so everyone hears the same pronunciation.
 
-- Procfile deployments: server TTS is enabled by default (gTTS).
-- Other hosts: set `TTS_PROVIDER=gtts` in your environment variables.
-- Optional (recommended): set `TTS_CACHE_DIR` to a writable (or persistent) folder to cache generated MP3s.
+- Audio is generated on first play and cached under `data/tts_cache/` (tunable; see `.env.example`).
+- If server TTS fails, the app automatically falls back to **browser TTS** when the user has a matching French/Spanish voice installed.
 
 Notes:
 - gTTS requires outbound internet access from your server and sends text to Google to generate audio.
-- If server TTS fails, the app automatically falls back to browser TTS.
+- On hosts with ephemeral storage, you can point `TTS_CACHE_DIR` to a writable/persistent folder (if available).
 
 ## Local Resources (PDFs + Links)
 
@@ -151,6 +150,7 @@ Language Coach/
 │
 └── scripts/
     ├── build_resource_sentences.py # Build Context sentence index from PDFs
+    ├── cleanup_storage.py          # Disk housekeeping (TTS cache + debug files)
     ├── validate_content.py         # Content validation for lessons/vocab JSON
     ├── auto_push.ps1               # Auto commit+push (watch mode)
     ├── auto_push_once.ps1          # One-time sync
@@ -183,6 +183,8 @@ The app **auto-reloads JSON** when files change — edit content while the serve
 - You can browse most pages without an account.
 - When you open a **Lesson** or the **Placement Test**, the app asks you to sign in with **email only** (no password).
 - This is required to save progress per user.
+- Optional: tick **Keep me logged in** to stay signed in on this device (duration controlled by `REMEMBER_ME_DAYS`, default 30 days).
+- Dashboard shortcuts: the **Vocabulary / Flashcards / Quizzes / Grammar** cards are clickable and jump to those sections (you may be asked to pick French/Spanish first).
 
 ### 1. Take the Placement Test 🎯 (recommended)
 - From a language page, click **Placement Test**.
@@ -307,16 +309,14 @@ SECRET_KEY=PASTE_A_RANDOM_SECRET_HERE
 # PDF_ENGINE=chromium
 ```
 
- - Change port: set the `PORT` environment variable.
-    - PowerShell: `$env:PORT=8000`
-    - cmd.exe: `set PORT=8000`
+- Change port: set the `PORT` environment variable.
+  - PowerShell: `$env:PORT=8000`
+  - cmd.exe: `set PORT=8000`
 
- - Server-side TTS (same pronunciation for everyone): set `TTS_PROVIDER=gtts`.
-   - PowerShell: `$env:TTS_PROVIDER='gtts'`
-   - cmd.exe: `set TTS_PROVIDER=gtts`
-   - Audio is cached under `data/tts_cache/` (first play generates; next plays are instant).
+- "Keep me logged in" duration: set `REMEMBER_ME_DAYS` (default 30; max 365).
+- Pronunciation audio is cached under `data/tts_cache/` (first play generates; next plays are instant). Cache limits are configurable in `.env.example`.
 
- ---
+---
 
 ## ☁️ Deployment — Share with Friends
 
@@ -338,13 +338,22 @@ Dashboard → **Consoles** → **Bash** → Start
 ```bash
 git clone https://github.com/Ahsan728/Language_Coach.git
 cd Language_Coach
-pip install -r requirements.txt --user
+
+# Create a virtualenv (recommended on PythonAnywhere; avoids ~/.local bloat)
+python3.10 -m venv ~/.virtualenvs/language_coach_venv
+source ~/.virtualenvs/language_coach_venv/bin/activate
+
+pip install -r requirements.txt
 ```
 > If Bengali text looks broken in ReportLab PDFs, verify `uharfbuzz` is installed (`python -m pip show uharfbuzz`) and reload your web app.
 > If your repo is private, you must use a GitHub PAT/SSH so PythonAnywhere can clone it.
 
 #### Step 4 — Create the Web App
 Dashboard → **Web** → **Add a new web app** → **Manual configuration** → **Python 3.10**
+
+In the **Web** tab, set:
+- **Source code:** `/home/ahsan728/Language_Coach`
+- **Virtualenv:** `/home/ahsan728/.virtualenvs/language_coach_venv`
 
 #### Step 5 — Configure the WSGI file
 Click the **WSGI configuration file** link and replace the contents with:
@@ -387,7 +396,7 @@ PythonAnywhere free accounts have limited disk space. This app can generate serv
 - The app auto-cleans the TTS cache (defaults: 80 MB max, 45-day TTL) and periodically removes debug artifacts (tmp files, `__pycache__`, `*.pyc`) during normal web requests. You can tune it via env vars (see `.env.example`).
 - You can also run a manual cleanup anytime:
   - `python scripts/cleanup_storage.py`
-- If your plan supports PythonAnywhere **Scheduled tasks**, you can schedule that command daily.
+- PythonAnywhere **Scheduled tasks** are paid-only; on the free plan the on-request automatic cleanup is usually enough.
 
 ---
 
@@ -405,7 +414,7 @@ PythonAnywhere free accounts have limited disk space. This app can generate serv
 
 Environment variables (Render dashboard):
 - `SECRET_KEY` *(required)*
-- Optional: `SHEETS_WEBHOOK_URL`, `SHEETS_WEBHOOK_TOKEN`, `TTS_PROVIDER=gtts`, `PDF_ENGINE=chromium|reportlab`
+- Optional: `SHEETS_WEBHOOK_URL`, `SHEETS_WEBHOOK_TOKEN`, `PDF_ENGINE=chromium|reportlab`, and TTS cache vars from `.env.example` (like `TTS_CACHE_DIR`, `TTS_CACHE_MAX_MB`, `TTS_CACHE_TTL_DAYS`)
 
 Every `git push` triggers an automatic redeploy.
 
@@ -437,9 +446,7 @@ Then reload from the **Web** tab.
 
 ## 👨‍🎓 About This Project
 
-This project is developed by Ahsan Suny, a PhD researcher in Spain. He studied his masters in France and currently doing his PhD in Spain. 
-He was strugling to have a common planform to learn both French and Spanish language from a common platform. Also he is running mentorship for the 
-students. This project is an initiative for the students whon want to learn these language simply in an interactive way.
+This project is developed by Ahsan Suny, a PhD researcher in Spain. After studying in France and Spain, he wanted a simple platform to learn both French and Spanish from one place, with explanations in Bengali and English. This project is also used to support students in mentorship.
 
 **Teaching philosophy:**
 Bengali → English bridge → French/Spanish target
