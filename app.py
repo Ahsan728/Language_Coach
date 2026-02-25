@@ -102,6 +102,14 @@ if not _secret_key:
     _secret_key = 'language_coach_dev_INSECURE'
 app.secret_key = _secret_key
 
+# ---------- Session lifetime ("Keep me logged in") ----------
+try:
+    remember_days = int(os.environ.get('REMEMBER_ME_DAYS') or 30)
+except (TypeError, ValueError):
+    remember_days = 30
+remember_days = max(1, min(365, remember_days))
+app.permanent_session_lifetime = timedelta(days=remember_days)
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(BASE_DIR, 'data')
 DB_PATH  = os.path.join(DATA_DIR, 'progress.db')
@@ -2382,6 +2390,7 @@ def login():
     next_url = request.args.get('next') or request.form.get('next') or url_for('dashboard')
     name = (request.form.get('name') or '').strip() if request.method == 'POST' else ''
     email = _normalize_email(request.form.get('email')) if request.method == 'POST' else ''
+    remember = True if request.method != 'POST' else (str(request.form.get('remember') or '').strip().lower() in {'1', 'true', 'on', 'yes'})
     error = None
 
     if request.method == 'POST':
@@ -2389,13 +2398,14 @@ def login():
             error = 'Please enter a valid email address.'
         else:
             user_id = upsert_user(name, email)
+            session.permanent = remember
             session['user_id'] = user_id
             user = get_user_by_id(user_id)
             _emit_event_to_sheets('login', user=user, page=_safe_next_url(next_url))
             _emit_user_snapshot_to_sheets(user, last_event='login', page=_safe_next_url(next_url))
             return redirect(_safe_next_url(next_url))
 
-    return render_template('login.html', error=error, next=_safe_next_url(next_url), name=name, email=email)
+    return render_template('login.html', error=error, next=_safe_next_url(next_url), name=name, email=email, remember=remember)
 
 
 @app.route('/logout')

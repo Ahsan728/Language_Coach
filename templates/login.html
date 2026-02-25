@@ -30,6 +30,15 @@
             <input id="email" name="email" type="email" class="form-control" value="{{ email or '' }}" autocomplete="email" required>
           </div>
 
+          <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox" id="remember" name="remember" value="1"
+                   {% if remember %}checked{% endif %}>
+            <label class="form-check-label" for="remember">
+              Keep me logged in on this device
+            </label>
+            <div class="form-text">Don’t use this on shared/public computers.</div>
+          </div>
+
           <button type="submit" class="btn btn-primary w-100">
             <i class="fas fa-user-check me-2"></i> Continue
           </button>
