@@ -381,6 +381,13 @@ PDF_ENGINE=reportlab
 #### Step 7 — Reload & visit
 Web tab → green **Reload** button → your app is live at `https://ahsan728.pythonanywhere.com`
 
+#### Maintenance (storage)
+PythonAnywhere free accounts have limited disk space. This app can generate server-side gTTS MP3 cache files under `data/tts_cache/`.
+
+- The app auto-cleans the TTS cache (defaults: 80 MB max, 45-day TTL). You can tune it via env vars (see `.env.example`).
+- You can also run a manual cleanup (or schedule it daily in the **Tasks** tab):
+  - `python scripts/cleanup_storage.py`
+
 ---
 
 ### 🥈 Option B — Render (Easy GitHub Auto-Deploy)
