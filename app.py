@@ -5,6 +5,7 @@ import os
 import json
 import random
 import re
+import shutil
 import sqlite3
 import threading
 import time
@@ -3366,6 +3367,133 @@ def _trigger_tts_cache_cleanup(cache_dir: str, keep_paths=None) -> None:
 
     t = threading.Thread(target=_run, daemon=True)
     t.start()
+
+
+_PROJECT_DEBUG_CLEAN_LOCK = threading.Lock()
+_PROJECT_DEBUG_CLEAN_RUNNING = False
+_PROJECT_DEBUG_CLEAN_LAST_TS = 0.0
+
+
+def _cleanup_project_debug_files(project_root: str) -> dict:
+    """Best-effort cleanup for local debug artifacts under the project folder."""
+    removed = 0
+    removed_bytes = 0
+
+    if not project_root or not os.path.isdir(project_root):
+        return {'ok': False, 'error': 'missing_project_root'}
+
+    # Top-level tmp_* artifacts (kept out of git via .gitignore, but can fill server disk).
+    try:
+        for name in os.listdir(project_root):
+            low = (name or '').lower()
+            if not low.startswith('tmp_'):
+                continue
+            if not (low.endswith('.png') or low.endswith('.pdf')):
+                continue
+            path = os.path.join(project_root, name)
+            if not os.path.isfile(path):
+                continue
+            try:
+                size = int(os.path.getsize(path) or 0)
+            except OSError:
+                size = 0
+            try:
+                os.remove(path)
+                removed += 1
+                removed_bytes += size
+            except OSError:
+                pass
+    except OSError:
+        pass
+
+    # __pycache__ and *.pyc (project only)
+    skip_dirs = {'.git', 'venv', '.venv', 'env', 'node_modules'}
+    try:
+        for root, dirs, files in os.walk(project_root):
+            dirs[:] = [d for d in dirs if d not in skip_dirs]
+            if '__pycache__' in dirs:
+                cache_path = os.path.join(root, '__pycache__')
+                try:
+                    # Size accounting isn't critical; ignore errors.
+                    for dp, __, fnames in os.walk(cache_path):
+                        for f in fnames:
+                            try:
+                                removed_bytes += int(os.path.getsize(os.path.join(dp, f)) or 0)
+                            except OSError:
+                                pass
+                except OSError:
+                    pass
+                try:
+                    shutil.rmtree(cache_path, ignore_errors=True)
+                    removed += 1
+                except OSError:
+                    pass
+                try:
+                    dirs.remove('__pycache__')
+                except ValueError:
+                    pass
+            for f in files:
+                if not f.endswith('.pyc'):
+                    continue
+                p = os.path.join(root, f)
+                try:
+                    size = int(os.path.getsize(p) or 0)
+                except OSError:
+                    size = 0
+                try:
+                    os.remove(p)
+                    removed += 1
+                    removed_bytes += size
+                except OSError:
+                    pass
+    except OSError:
+        pass
+
+    return {'ok': True, 'removed': removed, 'removed_bytes': removed_bytes}
+
+
+def _trigger_project_debug_cleanup(project_root: str) -> None:
+    """Rate-limited background cleanup for project debug artifacts."""
+    global _PROJECT_DEBUG_CLEAN_RUNNING, _PROJECT_DEBUG_CLEAN_LAST_TS  # noqa: PLW0603 - intentional module cache
+
+    interval = _env_int('PROJECT_DEBUG_CLEANUP_INTERVAL_SEC', 2592000, min_val=0, max_val=31536000)
+    if interval <= 0:
+        return
+
+    now = time.time()
+    with _PROJECT_DEBUG_CLEAN_LOCK:
+        if _PROJECT_DEBUG_CLEAN_RUNNING:
+            return
+        if (now - _PROJECT_DEBUG_CLEAN_LAST_TS) < float(interval):
+            return
+        _PROJECT_DEBUG_CLEAN_RUNNING = True
+
+    def _run():
+        global _PROJECT_DEBUG_CLEAN_RUNNING, _PROJECT_DEBUG_CLEAN_LAST_TS  # noqa: PLW0603 - intentional module cache
+        try:
+            _cleanup_project_debug_files(project_root)
+        except Exception as exc:
+            print(f"WARNING: Project debug cleanup failed: {exc}")
+        finally:
+            with _PROJECT_DEBUG_CLEAN_LOCK:
+                _PROJECT_DEBUG_CLEAN_LAST_TS = time.time()
+                _PROJECT_DEBUG_CLEAN_RUNNING = False
+
+    t = threading.Thread(target=_run, daemon=True)
+    t.start()
+
+
+@app.before_request
+def _maybe_run_housekeeping():  # pragma: no cover
+    """Run lightweight housekeeping even when Scheduled Tasks are unavailable (free tiers)."""
+    try:
+        cache_dir = app.config.get('TTS_CACHE_DIR') or TTS_CACHE_DIR
+        _trigger_tts_cache_cleanup(cache_dir)
+        _trigger_project_debug_cleanup(BASE_DIR)
+    except Exception:
+        # Never block user requests because of housekeeping.
+        return None
+    return None
 
 
 @app.route('/api/tts')
