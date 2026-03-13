@@ -2298,7 +2298,7 @@ def _static_asset_version():
     paths = [
         os.path.join(BASE_DIR, 'static', 'css', 'style.css'),
         os.path.join(BASE_DIR, 'static', 'js', 'app.js'),
-        os.path.join(BASE_DIR, 'logo', 'AhsanSuny_Logo.png'),
+        *_logo_candidate_paths(),
     ]
     mtimes = []
     for p in paths:
@@ -2418,8 +2418,20 @@ def logout():
     return redirect(url_for('dashboard'))
 
 
+def _logo_candidate_paths():
+    return [
+        os.path.join(BASE_DIR, 'logo', 'Language_Coach_logo.png'),
+        os.path.join(BASE_DIR, 'logo', 'languagecoach_logo.png'),
+        os.path.join(BASE_DIR, 'logo', 'AhsanSuny_Logo.png'),
+    ]
+
+
 def _logo_file_path():
-    return os.path.join(BASE_DIR, 'logo', 'AhsanSuny_Logo.png')
+    # Prefer the Language Coach-specific filename, but keep compatibility with the older name.
+    for path in _logo_candidate_paths():
+        if os.path.exists(path):
+            return path
+    return _logo_candidate_paths()[0]
 
 
 @app.route('/logo.png')
@@ -2428,7 +2440,7 @@ def logo_png():
     if not os.path.exists(path):
         return ('Missing logo', 404)
     resp = send_file(path, mimetype='image/png', conditional=True)
-    resp.headers['Cache-Control'] = 'public, max-age=86400'
+    resp.headers['Cache-Control'] = 'public, max-age=31536000, immutable'
     return resp
 
 
