@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="logo/Language_Coach_logo.png" alt="Language Coach logo" width="160">
+</p>
+
 # 🌍 Language Coach — ভাষা শিক্ষক
 
 > **Learn French & Spanish through Bengali and English — locally, interactively, step by step.**
