@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="brand_navy">#143C63</color>
+    <color name="brand_blue">#1F6FB2</color>
+    <color name="brand_teal">#3A8F8D</color>
+    <color name="brand_red">#C24C3A</color>
+    <color name="brand_amber">#F2B84B</color>
+    <color name="brand_surface">#F6F7FB</color>
+    <color name="brand_surface_dark">#17212B</color>
+    <color name="ic_launcher_background">#143C63</color>
+    <color name="splash_background">#143C63</color>
+</resources>

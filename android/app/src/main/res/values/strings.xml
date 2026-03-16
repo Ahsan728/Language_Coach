@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="login_title">Continue your learning</string>
+    <string name="login_subtitle">Sign in through the approved Android email-only session contract.</string>
+    <string name="login_name_label">Name</string>
+    <string name="login_email_label">Email</string>
+    <string name="login_remember_label">Keep me signed in</string>
+    <string name="login_cta">Sign in</string>
+    <string name="login_legacy_hint">Android auth now targets the approved `/api/v1/auth/session` bearer-token flow. The session is only persisted when keep-me-signed-in is enabled.</string>
+    <string name="dashboard_title">Language Coach</string>
+    <string name="dashboard_subtitle">Android foundation ready for lessons, vocabulary, practice, and progress.</string>
+    <string name="dashboard_sign_out">Sign out</string>
+    <string name="feature_languages">Languages</string>
+    <string name="feature_lessons">Lessons</string>
+    <string name="feature_vocabulary">Vocabulary</string>
+    <string name="feature_practice">Practice</string>
+    <string name="feature_progress">Progress</string>
+    <string name="feature_resources">Resources</string>
+    <string name="feature_placeholder_cta">Back to dashboard</string>
+    <string name="splash_loading">Loading your foundation…</string>
+</resources>
