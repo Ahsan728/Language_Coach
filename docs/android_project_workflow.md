@@ -4,6 +4,8 @@
 
 This document converts the current Language Coach web application into an execution-ready, phase-by-phase workflow for building a native Android application without disrupting the live web product.
 
+Companion UI specification: `docs/android_ui_screen_spec.md`
+
 The plan assumes the current system remains the source of truth during migration:
 
 - Flask backend in `app.py`
